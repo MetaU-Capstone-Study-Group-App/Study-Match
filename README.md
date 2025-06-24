@@ -7,9 +7,7 @@ Although studying in groups can have immense benefits, college students often st
 
 
 ## Links
-**Project Plan**: [doc]<https://docs.google.com/document/d/1eHsWmT6L5t1MaBCWfHl4n3_ljuKcGrzTytoTGFtJxdo/edit?usp=sharing>
-**Wireframes**: [here]<add a link to wire frames>
-<img src="OR_INSERT_INLINE_YOUR_WIREFRAME_IMAGE_URL" width=600>
+**Project Plan**: <https://docs.google.com/document/d/1eHsWmT6L5t1MaBCWfHl4n3_ljuKcGrzTytoTGFtJxdo/edit?usp=sharing>
 
 <add any other links here as you work on your project>
 
