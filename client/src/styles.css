@@ -1,0 +1,123 @@
+:root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    font-weight: 500;
+    color: #646cff;
+    text-decoration: inherit;
+}
+a:hover {
+    color: #D3D3D3;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+}
+
+button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+button:hover {
+    border-color: #D3D3D3;
+}
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        color: #213547;
+        background-color: #ffffff;
+    }
+    a:hover {
+        color: #747bff;
+    }
+    button {
+        background-color: #f9f9f9;
+    }
+}
+
+#root {
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+.home, .profile-page, .groups-page {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.home-main, .profile-page-main, .groups-page-main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 25px;
+    flex: 1;
+}
+
+.home-footer, .profile-page-footer, .groups-page-footer {
+    display: flex;
+    background-color: #068484;
+    color: white;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: auto;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+    margin-left: 70px;
+    margin-right: 70px;
+}
+
+.navbar-left {
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.navbar-right {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-profile-button, .navbar-home-button, .navbar-groups-button {
+    background-color: transparent;
+}
