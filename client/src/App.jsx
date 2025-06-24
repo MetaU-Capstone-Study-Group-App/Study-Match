@@ -1,21 +1,15 @@
 import './App.css'
+import Home from './Home.jsx'
+import { Routes, Route } from 'react-router-dom'
+import ProfilePage from './ProfilePage.jsx'
 
 const App = () => {
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Study Match</h1>
-      </header>
-
-      <main className="app-main">
-        
-      </main>
-
-      <footer className="app-footer">
-        <p>© Study Match. All Rights Reserved.</p>
-      </footer>
-    </div>
-  )
+    <Routes>
+        <Route path='/' element={<Home />}/>
+        <Route path='/profile' element={<ProfilePage />}/>
+    </Routes>
+    )
 }
 
 export default App
