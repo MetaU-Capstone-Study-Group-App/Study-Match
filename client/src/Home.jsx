@@ -23,7 +23,7 @@ const Home = () => {
             <button onClick={handleLogin}>go to login</button>
         </main>
 
-        <footer className="home-footer">
+        <footer className="footer">
             <p>© Study Match. All Rights Reserved.</p>
         </footer>
         </div>

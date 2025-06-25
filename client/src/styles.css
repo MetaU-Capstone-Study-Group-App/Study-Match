@@ -54,6 +54,11 @@ button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
 }
 
+.buttons {
+    background-color: #068484;
+    color: white;
+}
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;
@@ -89,7 +94,38 @@ button:focus-visible {
     flex: 1;
 }
 
-.home-footer, .profile-page-footer, .groups-page-footer {
+.login, .signup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+    flex: 1;
+    text-align: center;
+    min-height: 100vh;
+}
+
+.login-form, .signup-form {
+    border: 1px solid black;
+    box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+    border-radius: 10px;
+    display: flex;
+    gap: 50px;
+    flex-direction: column;
+    padding: 100px;
+    background-color: #ececec;
+    margin-bottom: 60px;
+}
+
+.login-username-input, .login-password-input, .signup-inputs {
+    display: flex;
+    gap: 20px;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.footer {
     display: flex;
     background-color: #068484;
     color: white;

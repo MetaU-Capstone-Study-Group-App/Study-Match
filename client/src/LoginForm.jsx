@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from './contexts/UserContext';
+import './styles.css'
+import Navbar from "./NavBar";
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({ username: "", password: "" });
@@ -42,35 +44,49 @@ const LoginForm = () => {
     };
 
     return (
-        <form onSubmit={handleLoginSubmit} className="login-form">
-            <label>
-                Username:
-                <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleLoginChange}
-                    required
-                />
-            </label>
+        <div className="login">
+            <div className="navbar">
+                <div className="navbar-left">
+                    <h1>Study Match</h1>
+                </div>
+            </div>
+            <h2>Login</h2>
+            <form onSubmit={handleLoginSubmit} className="login-form">
+                <label className="login-labels">
+                    Username:
+                    <input
+                        type="text"
+                        className="login-username-input"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleLoginChange}
+                        required
+                    />
+                </label>
 
-            <label>
-                Password:
-                <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleLoginChange}
-                    required
-                />
-            </label>
+                <label className="login-labels">
+                    Password:
+                    <input
+                        type="password"
+                        className="login-password-input"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleLoginChange}
+                        required
+                    />
+                </label>
 
-            <button type="submit">Log In</button>
+                <button type="submit" className="buttons">Log In</button>
+                <button type="submit" className="buttons" onClick={() => {navigate("/auth/signup")}}>Sign Up</button>
 
-            {message && (
-                <p className={`message ${message.type}`}>{message.text}</p>
-            )}
-        </form>
+                {message && (
+                    <p className={`message ${message.type}`}>{message.text}</p>
+                )}
+            </form>
+            <footer className="footer">
+                <p>© Study Match. All Rights Reserved.</p>
+            </footer>
+        </div>
     );
 };
 

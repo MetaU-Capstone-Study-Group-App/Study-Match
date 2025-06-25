@@ -44,40 +44,54 @@ const SignupForm = () => {
     }
 
     return (
-        <form className="signup-form" onSubmit={handleSubmit}>
-            <label htmlFor="name">Name</label>
-            <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-            />
-            <label htmlFor="username">Username</label>
-            <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-            />
-            <label htmlFor="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-            />
-            <div className="form-buttons">
-                <button type="submit">Sign Up</button>
-            </div>
-            {message && (
-                <div className={`message ${message.type}`}>
-                    {message.text}
+        <div className="signup">
+            <div className="navbar">
+                <div className="navbar-left">
+                    <h1>Study Match</h1>
                 </div>
-            )}
-        </form>
+            </div>
+            <h2>Sign Up</h2>
+            <form className="signup-form" onSubmit={handleSubmit}>
+                <label htmlFor="name">Name</label>
+                <input
+                    type="text"
+                    className="signup-inputs"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                />
+                <label htmlFor="username">Username</label>
+                <input
+                    type="text"
+                    className="signup-inputs"
+                    id="username"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                />
+                <label htmlFor="password">Password</label>
+                <input
+                    type="password"
+                    className="signup-inputs"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                />
+                <div className="form-buttons">
+                    <button className="buttons" type="submit">Sign Up</button>
+                </div>
+                {message && (
+                    <div className={`message ${message.type}`}>
+                        {message.text}
+                    </div>
+                )}
+            </form>
+            <footer className="footer">
+                <p>© Study Match. All Rights Reserved.</p>
+            </footer>
+        </div>
     )
 }
 

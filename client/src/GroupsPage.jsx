@@ -13,7 +13,7 @@ const GroupsPage = () => {
             
         </main>
 
-        <footer className="profile-page-footer">
+        <footer className="footer">
             <p>© Study Match. All Rights Reserved.</p>
         </footer>
         </div>
