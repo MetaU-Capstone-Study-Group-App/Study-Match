@@ -9,15 +9,17 @@ app.use(cors({
     origin: 'http://localhost:5173', 
     credentials: true
 }))
-app.use(express.json())
-app.use('/auth', authRoutes)
 
-// app.use(session({
-//     secret: 'study-match', 
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 60 } 
-// }))
+app.use(express.json())
+
+app.use(session({
+    secret: 'study-match', 
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 60 } 
+}))
+
+app.use('/auth', authRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
