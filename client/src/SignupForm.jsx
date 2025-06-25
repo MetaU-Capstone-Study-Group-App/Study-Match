@@ -1,8 +1,12 @@
 import { useState } from "react"
+import { useUser } from "./contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const SignupForm = () => {
     const [formData, setFormData] = useState({ username: "", password: "", })
     const [message, setMessage] = useState("")
+    const { setUser } = useUser();
+    const navigate = useNavigate();
 
     const handleChange = (event) => {
         const { name, value } = event.target
@@ -22,12 +26,15 @@ const SignupForm = () => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
+                credentials: "include",
             })
 
             const data = await response.json()
 
             if (response.ok) {
                 setMessage({ type: "success", text: "Signup successful!" })
+                setUser(data); 
+                navigate("/");
             } else {
                 setMessage({ type: "error", text: data.error || "Signup failed." })
             }
