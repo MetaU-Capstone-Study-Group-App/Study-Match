@@ -1,6 +1,7 @@
 import Navbar from './NavBar';
 import { useUser } from "./contexts/UserContext";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 const ProfilePage = () => {
     const { user, setUser } = useUser();
@@ -28,8 +29,8 @@ const ProfilePage = () => {
                     </>
                 ) : (
                     <>
-                        <a href="/auth/signup">Sign Up</a>
-                        <a href="/auth/login">Login</a>
+                        <button type="submit" className="buttons" onClick={() => {navigate("/auth/login")}}>Log In</button>
+                        <button type="submit" className="buttons" onClick={() => {navigate("/auth/signup")}}>Sign Up</button>
                     </>
                 )}
             </div>

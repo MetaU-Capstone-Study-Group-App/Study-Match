@@ -77,7 +77,10 @@ const LoginForm = () => {
                 </label>
 
                 <button type="submit" className="buttons">Log In</button>
-                <button type="submit" className="buttons" onClick={() => {navigate("/auth/signup")}}>Sign Up</button>
+                <label className="signup-label">
+                    Don't have an account?
+                    <button type="submit" className="buttons" onClick={() => {navigate("/auth/signup")}}>Sign Up</button>
+                </label>
 
                 {message && (
                     <p className={`message ${message.type}`}>{message.text}</p>

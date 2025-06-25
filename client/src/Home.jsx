@@ -5,12 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
     const navigate = useNavigate();
-    const handleSignUp = () => {
-        navigate('/auth/signup');
-    }
-    const handleLogin = () => {
-        navigate('/auth/login');
-    }
+
     return (
         <div className="home">
         <header className="home-header">
@@ -19,8 +14,7 @@ const Home = () => {
         </header>
 
         <main className="home-main">
-            <button onClick={handleSignUp}>go to signup</button>
-            <button onClick={handleLogin}>go to login</button>
+
         </main>
 
         <footer className="footer">

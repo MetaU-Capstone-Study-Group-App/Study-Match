@@ -105,6 +105,12 @@ button:focus-visible {
     min-height: 100vh;
 }
 
+.signup-label {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .login-form, .signup-form {
     border: 1px solid black;
     box-shadow: 0 12px 20px rgba(0,0,0,0.15);
@@ -115,6 +121,8 @@ button:focus-visible {
     padding: 100px;
     background-color: #ececec;
     margin-bottom: 60px;
+    justify-content: center;
+    text-align: center;
 }
 
 .login-username-input, .login-password-input, .signup-inputs {

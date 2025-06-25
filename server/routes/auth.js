@@ -37,6 +37,9 @@ router.post('/signup', async (req, res) => {
             }
         })
 
+        req.session.userId = newUser.id
+        req.session.username = newUser.username
+
         res.status(201).json({ message: "You've successfully created an account!" })
     } catch (error) {
         console.error(error)

@@ -88,9 +88,6 @@ const SignupForm = () => {
                     </div>
                 )}
             </form>
-            <footer className="footer">
-                <p>© Study Match. All Rights Reserved.</p>
-            </footer>
         </div>
     )
 }
