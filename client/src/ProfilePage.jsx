@@ -24,7 +24,7 @@ const ProfilePage = () => {
             <div>
                 {user ? (
                     <>
-                        <h2>Welcome, {user.username}!</h2>
+                        <h2>Welcome, {user.username ? user.username : "User"}!</h2>
                         <button className="buttons" onClick={handleLogout}>Log Out</button>
                     </>
                 ) : (

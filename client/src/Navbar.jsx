@@ -4,7 +4,7 @@ import './styles.css'
 const Navbar = () => {
     const navigate = useNavigate();
 
-    const handleNavigateProfilePage = async () => {
+    const handleNavigateProfilePage = () => {
         navigate('/profile');
     }
 
