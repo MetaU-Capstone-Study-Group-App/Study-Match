@@ -40,7 +40,7 @@ router.post('/signup', async (req, res) => {
         req.session.username = newUser.username
         req.session.name = newUser.name
 
-        res.status(201).json({message: "You've successfully created an account!"})
+        res.json({id: req.session.userId, username: newUser.username, name: newUser.name})
     } catch (error) {
         console.error(error)
         res.status(500).json({error: "Not able to create an account."})
@@ -73,7 +73,7 @@ router.post('/login', async (req, res) => {
         req.session.username = user.username
         req.session.name = user.name
 
-        res.json({message: "Login was successful!"})
+        res.json({id: req.session.userId, username: user.username, name: user.name})
     } catch (error) {
         console.error(error)
         res.status(500).json({error: "Not able to login."})

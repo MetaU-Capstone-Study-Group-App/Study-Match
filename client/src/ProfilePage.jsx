@@ -24,12 +24,25 @@ const ProfilePage = () => {
             <div>
                 {user && user.username ? (
                     <>
-                        <h1 className="page-header">Welcome, {user.username}!</h1>
-                        <img src="src/images/profile-pic.png" alt="user.name"/>
-                        <p>Name: {user.name}</p>
-                        <p>Username: {user.username}</p>
-                        <p>Current Study Groups:</p>
-                        <button className="buttons" onClick={handleLogout}>Log Out</button>
+                        <div className="profile-top">
+                            <h1 className="page-header">Hello, {user.name}!</h1>
+                        </div>
+                        <div className="profile-info-section">
+                            <div className="profile-left">
+                                <img src="src/images/profile-pic.png" alt="user.name" className="profile-pic"/>
+                            </div>
+                            <div className="profile-right">
+                                <p><b>Username:</b> {user.username}</p>
+                                <p><b>Current Study Groups:</b></p>
+                            </div>
+                            <div className='profile-buttons'>
+                                <button className="buttons" onClick={handleLogout}>Log Out</button>
+                                <button className="buttons">Edit Profile</button>
+                            </div>
+                        </div>
+                        <div className="avilability-info-section">
+                            <h1 className="page-header">Your Availability</h1>
+                        </div>
                     </>
                 ) : (
                     <>
