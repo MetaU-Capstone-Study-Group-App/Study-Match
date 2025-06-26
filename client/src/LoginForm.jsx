@@ -5,13 +5,13 @@ import './styles.css'
 import Navbar from "./NavBar";
 
 const LoginForm = () => {
-    const [formData, setFormData] = useState({ username: "", password: "" });
+    const [formData, setFormData] = useState({username: "", password: ""});
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
-    const { setUser } = useUser();
+    const {setUser} = useUser();
 
     const handleLoginChange = (event) => {
-        const { name, value } = event.target;
+        const {name, value} = event.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
@@ -20,11 +20,10 @@ const LoginForm = () => {
 
     const handleLoginSubmit = async (event) => {
         event.preventDefault();
-
         try {
             const response = await fetch("http://localhost:3000/auth/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(formData),
                 credentials: "include",
             });
@@ -32,14 +31,14 @@ const LoginForm = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setMessage({ type: "success", text: "Login successful!" });
+                setMessage({type: "success", text: "Login successful!"});
                 setUser(data); 
                 navigate("/"); 
             } else {
-                setMessage({ type: "error", text: data.error || "Login failed." });
+                setMessage({type: "error", text: data.error || "Login failed."});
             }
         } catch (error) {
-            setMessage({ type: "error", text: "Network error. Please try again." });
+            setMessage({type: "error", text: "Network error. Please try again."});
         }
     };
 

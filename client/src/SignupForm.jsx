@@ -3,13 +3,13 @@ import { useUser } from "./contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 
 const SignupForm = () => {
-    const [formData, setFormData] = useState({ username: "", password: "", })
+    const [formData, setFormData] = useState({username: "", password: "",})
     const [message, setMessage] = useState("")
-    const { setUser } = useUser();
+    const {setUser} = useUser();
     const navigate = useNavigate();
 
     const handleChange = (event) => {
-        const { name, value } = event.target
+        const {name, value} = event.target
 
         setFormData((prev) => ({
             ...prev,
@@ -19,12 +19,11 @@ const SignupForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault(); 
-        console.log("User Input:", formData); 
 
         try {
             const response = await fetch("http://localhost:3000/auth/signup", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(formData),
                 credentials: "include",
             })
@@ -32,14 +31,14 @@ const SignupForm = () => {
             const data = await response.json()
 
             if (response.ok) {
-                setMessage({ type: "success", text: "Signup successful!" })
+                setMessage({type: "success", text: "Signup successful!"})
                 setUser(data); 
                 navigate("/");
             } else {
-                setMessage({ type: "error", text: data.error || "Signup failed." })
+                setMessage({type: "error", text: data.error || "Signup failed."})
             }
         } catch (error) {
-            setMessage({ type: "error", text: "Network error. Please try again." })
+            setMessage({type: "error", text: "Network error. Please try again."})
         }
     }
 

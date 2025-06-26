@@ -2,7 +2,6 @@ import './styles.css'
 import Navbar from './NavBar';
 import { useNavigate } from 'react-router-dom';
 
-
 const Home = () => {
     const navigate = useNavigate();
 
@@ -14,7 +13,6 @@ const Home = () => {
         </header>
 
         <main className="home-main">
-
         </main>
 
         <footer className="footer">

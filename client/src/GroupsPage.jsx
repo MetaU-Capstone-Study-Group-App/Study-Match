@@ -9,8 +9,7 @@ const GroupsPage = () => {
             <h2>Your Groups</h2>
         </header>
 
-        <main className="profile-page-main">
-            
+        <main className="profile-page-main">  
         </main>
 
         <footer className="footer">

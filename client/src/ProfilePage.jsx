@@ -4,14 +4,25 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 const ProfilePage = () => {
-    const { user, setUser } = useUser();
+    const {user, setUser} = useUser();
     const navigate = useNavigate();
+    const [username, setUsername] = useState();
 
     const handleLogout = async () => {
-        await fetch("http://localhost:3000/auth/logout", { method: "POST", credentials: "include" });
+        await fetch("http://localhost:3000/auth/logout", {method: "POST", credentials: "include"});
         setUser(null); 
         navigate("/");
     };
+
+    const handleRefresh = async () => {
+        const fetchedUsername = await user.username;
+        setUsername(fetchedUsername);
+    }
+
+    useEffect(() => {
+        handleRefresh();
+        console.log(user)
+    }, [user])
 
     return (
         <div>
@@ -24,7 +35,7 @@ const ProfilePage = () => {
             <div>
                 {user ? (
                     <>
-                        <h2>Welcome, {user.username ? user.username : "User"}!</h2>
+                        <h2>Welcome, {username}!</h2>
                         <button className="buttons" onClick={handleLogout}>Log Out</button>
                     </>
                 ) : (

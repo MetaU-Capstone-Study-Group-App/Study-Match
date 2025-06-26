@@ -10,11 +10,11 @@ import LoginForm from './LoginForm.jsx'
 import WithAuth from './WithAuth.jsx'
 
 const App = () => {
-  const { user, setUser } = useUser();
+  const {user, setUser} = useUser();
   const ProtectedHome = WithAuth(Home);
 
   useEffect(() => {
-    fetch("http://localhost:3000/auth/me", { credentials: "include" })
+    fetch("http://localhost:3000/auth/me", {credentials: "include"})
       .then((response) => response.json())
       .then((data) => {
         if (data.id) {
