@@ -94,6 +94,10 @@ button:focus-visible {
     flex: 1;
 }
 
+.page-header {
+    font-size: 40px;
+}
+
 .login, .signup {
     display: flex;
     justify-content: center;

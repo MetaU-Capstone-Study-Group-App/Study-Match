@@ -3,6 +3,7 @@ const app = express()
 const cors = require('cors')
 const PORT = 3000
 const authRoutes = require('./routes/auth.js')
+const userRoutes = require('./routes/UserRoutes.js')
 const session = require('express-session')
 
 app.use(cors({

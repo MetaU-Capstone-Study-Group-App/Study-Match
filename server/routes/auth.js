@@ -38,6 +38,7 @@ router.post('/signup', async (req, res) => {
 
         req.session.userId = newUser.id
         req.session.username = newUser.username
+        req.session.name = newUser.name
 
         res.status(201).json({message: "You've successfully created an account!"})
     } catch (error) {
@@ -70,6 +71,7 @@ router.post('/login', async (req, res) => {
 
         req.session.userId = user.id
         req.session.username = user.username
+        req.session.name = user.name
 
         res.json({message: "Login was successful!"})
     } catch (error) {
@@ -87,10 +89,10 @@ router.get('/me', async (req, res) => {
     try {
         const user = await prisma.user.findUnique({
             where: {id: req.session.userId},
-            select: {username: true}
+            select: {username: true, name: true}
         })
 
-        res.json({id: req.session.userId, username: user.username})
+        res.json({id: req.session.userId, username: user.username, name: user.name})
     } catch (error) {
         console.error(error);
         res.status(500).json({error: "Error fetching user session data"})
