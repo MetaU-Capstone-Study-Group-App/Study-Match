@@ -9,11 +9,10 @@ const GroupsPage = () => {
             <h2>Your Groups</h2>
         </header>
 
-        <main className="profile-page-main">
-            
+        <main className="profile-page-main">  
         </main>
 
-        <footer className="profile-page-footer">
+        <footer className="footer">
             <p>© Study Match. All Rights Reserved.</p>
         </footer>
         </div>
