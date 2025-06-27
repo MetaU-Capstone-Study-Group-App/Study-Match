@@ -86,12 +86,66 @@ button:focus-visible {
     flex-direction: column;
 }
 
-.home-main, .profile-page-main, .groups-page-main{
+.home-main, .groups-page-main{
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 25px;
     flex: 1;
+}
+
+.profile-page-main{
+    display: flex;
+    margin: 25px;
+    flex: 1;
+    flex-direction: column;
+    margin-left: 150px;
+    margin-right: 150px;
+}
+
+.profile-info-section {
+    border: 1px solid;
+    display: flex;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    margin-bottom: 60px;
+}
+
+.profile-pic {
+    display: flex;
+    border-radius: 25px;
+}
+
+.profile-left {
+    display: flex;
+    flex-direction: column;
+    margin: 30px;
+    padding: 30px;
+}
+
+.profile-right {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    padding: 30px;
+    gap: 20px;
+    text-align: left;
+}
+
+.profile-buttons {
+    display: flex;
+    margin: 20px;
+    margin-left: auto;
+    margin-top: auto;
+    padding: 30px;
+    gap: 40px;
+    height: 20%;
+}
+
+.page-header {
+    font-size: 40px;
 }
 
 .login, .signup {
