@@ -9,7 +9,7 @@ const Navbar = () => {
     }
 
     const handleNavigateHomePage = () => {
-        navigate('/');
+        navigate('/home');
     }
 
     const handleNavigateGroupsPage = () => {

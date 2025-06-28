@@ -1,11 +1,12 @@
 import './styles.css'
-import Home from './Home.jsx'
+import Home from './pages/Home.jsx'
 import { Routes, Route } from 'react-router-dom'
 import { useEffect } from 'react'
-import ProfilePage from './ProfilePage.jsx'
-import GroupsPage from './GroupsPage.jsx'
+import ProfilePage from './pages/ProfilePage.jsx'
+import GroupsPage from './pages/GroupsPage.jsx'
 import { useUser } from './contexts/UserContext';
 import SignupForm from './SignupForm.jsx'
+import InitialPage from './pages/InitialPage.jsx'
 import LoginForm from './LoginForm.jsx'
 import WithAuth from './WithAuth.jsx'
 
@@ -25,7 +26,8 @@ const App = () => {
 
   return (
     <Routes>
-        <Route exact path='/' element={<ProtectedHome />}/>
+        <Route path="/" element={<InitialPage />} />
+        <Route path='/home' element={<ProtectedHome />}/>
         <Route path='/groups' element={<GroupsPage />}/>
         <Route path='/profile' element={<ProfilePage />}/>
         <Route path="/auth/signup" element={<SignupForm />} />
