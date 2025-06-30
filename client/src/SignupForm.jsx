@@ -33,7 +33,7 @@ const SignupForm = () => {
             if (response.ok) {
                 setMessage({type: "success", text: "Signup successful!"})
                 setUser(data); 
-                navigate("/home");
+                navigate("/personalityQuiz");
             } else {
                 setMessage({type: "error", text: data.error || "Signup failed."})
             }

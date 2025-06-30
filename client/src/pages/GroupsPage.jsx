@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../NavBar';
+import Footer from '../Footer';
 
 const GroupsPage = () => {
     return (
@@ -11,10 +12,8 @@ const GroupsPage = () => {
 
         <main className="profile-page-main">  
         </main>
-
-        <footer className="footer">
-            <p>© Study Match. All Rights Reserved.</p>
-        </footer>
+        
+        <Footer />
         </div>
     )
 }
