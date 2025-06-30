@@ -13,6 +13,7 @@ const PersonalityQuiz = () => {
 
     const handleChangeQuestion = () => {
         setCurrentQuestionDisplayed((prev) => prev + 1);
+        setSliderValue(1);
     }
 
     return (
