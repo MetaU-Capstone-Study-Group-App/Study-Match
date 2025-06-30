@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from './contexts/UserContext';
 import './styles.css'
-import Navbar from "./NavBar";
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({username: "", password: ""});
@@ -33,7 +32,7 @@ const LoginForm = () => {
             if (response.ok) {
                 setMessage({type: "success", text: "Login successful!"});
                 setUser(data); 
-                navigate("/"); 
+                navigate("/home"); 
             } else {
                 setMessage({type: "error", text: data.error || "Login failed."});
             }
@@ -90,6 +89,6 @@ const LoginForm = () => {
             </footer>
         </div>
     );
-};
+}
 
 export default LoginForm;

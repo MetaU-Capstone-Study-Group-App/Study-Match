@@ -15,11 +15,11 @@ const WithAuth = (WrappedComponent) => {
                         if (data.id) { 
                             setUser(data); 
                         } else {
-                            navigate("/auth/login");
+                            navigate("/");
                         }
                     })
                     .catch(() => {
-                        navigate("/auth/login");
+                        navigate("/");
                     });
             }
         }, [user, setUser, navigate]);
