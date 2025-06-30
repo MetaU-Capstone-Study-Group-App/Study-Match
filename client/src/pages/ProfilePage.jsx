@@ -1,12 +1,12 @@
 import Navbar from '../NavBar';
 import { useUser } from "../contexts/UserContext";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import FileUpload from '../FileUpload';
 
 const ProfilePage = () => {
     const {user, setUser} = useUser();
-    const [uploadedFile, setUploadedFile] = useState();
+    const [uploadedFile, setUploadedFile] = useState(null);
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -15,28 +15,42 @@ const ProfilePage = () => {
         navigate("/");
     };
 
-    const handleFileInputChange = async (event) => {
-        const formData = new FormData();
-        formData.append('profile_picture', uploadedFile);
+    const fetchData = async (endpoint, method = "GET", credentials = "same-origin", body = null) => {
         try {
-            const response = await fetch(`http://localhost:3000/user/upload/${user.id}`, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                body: formData,
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
+                method: method,
+                credentials: credentials,
+                body: body,
             });
             if (!response.ok){
                 throw new Error('Not able to fetch data.')
             }
-            const data = await response.json();
-            setUploadedFile(data);
+            return response;
         }
         catch {
             console.log("Error fetching data.")
         }
-        setUploadedFile(URL.createObjectURL(event.target.files[0]));
     }
+
+    const fetchProfilePicture = async () => {
+        const imageToDisplay = await fetchData(`user/profilePicture/${user.id}`, "GET", "include", null);
+        const imageBlob = await imageToDisplay.blob();
+        setUploadedFile(URL.createObjectURL(imageBlob));
+    }
+
+    const handleFileInputChange = async (event) => {
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('profile_picture', file);
+        const storeImage = await fetchData(`user/upload/${user.id}`, "PUT", "include", formData);
+        fetchProfilePicture();
+    }
+
+    useEffect(() => {
+        if (user){
+            fetchProfilePicture();
+        }
+    }, [user])
 
     return (
         <div>
@@ -54,7 +68,7 @@ const ProfilePage = () => {
                         </div>
                         <div className="profile-info-section">
                             <div className="profile-left">
-                                <img src={uploadedFile ? uploadedFile : "src/images/profile-pic.png"} alt="user.name" className="profile-pic" width="250" height="250"/>
+                                <img src={uploadedFile ? uploadedFile : "src/images/profile-pic.png"} alt={user.name} className="profile-pic" width="250" height="250"/>
                                 <FileUpload handleFileInputChange={handleFileInputChange}/>
                             </div>
                             <div className="profile-right">
