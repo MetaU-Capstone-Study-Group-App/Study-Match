@@ -224,3 +224,31 @@ button:focus-visible {
 .file-input {
     display: none;
 }
+
+.personality-quiz-form {
+    display: flex;
+    flex-direction: column;
+    margin: 50px;
+    padding: 50px;
+    padding-left: 150px;
+    padding-right: 150px;
+    border: 1px solid black;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.personality-quiz-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.slider {
+    margin: 30px;
+}
+
+#personality-quiz-button {
+    width: 30%;
+}

@@ -1,6 +1,7 @@
 import '../styles.css'
 import Navbar from '../NavBar';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../Footer';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -15,9 +16,7 @@ const Home = () => {
         <main className="home-main">
         </main>
 
-        <footer className="footer">
-            <p>© Study Match. All Rights Reserved.</p>
-        </footer>
+        <Footer />
         </div>
     )
 }

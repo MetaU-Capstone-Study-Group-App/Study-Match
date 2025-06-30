@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext';
 import '../styles.css'
 import Navbar from "../NavBar";
+import Footer from "../Footer";
 
 const InitialPage = () => {
     const navigate = useNavigate();
@@ -33,9 +34,7 @@ const InitialPage = () => {
         <main className="home-main">
         </main>
 
-        <footer className="footer">
-            <p>© Study Match. All Rights Reserved.</p>
-        </footer>
+        <Footer />
         </div>
     )
 };

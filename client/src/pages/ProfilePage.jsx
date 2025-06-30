@@ -3,6 +3,7 @@ import { useUser } from "../contexts/UserContext";
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import FileUpload from '../FileUpload';
+import Footer from '../Footer';
 
 const ProfilePage = () => {
     const {user, setUser} = useUser();
@@ -94,9 +95,7 @@ const ProfilePage = () => {
             </div>
         </main>
 
-        <footer className="footer">
-            <p>© Study Match. All Rights Reserved.</p>
-        </footer>
+        <Footer />
         </div>
         </div>
     )
