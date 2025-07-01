@@ -2,16 +2,54 @@ import { useState } from "react";
 import PersonalityQuestions from './data/PersonalityQuestions'
 import './styles.css'
 import Footer from "./Footer";
+import { useUser } from "./contexts/UserContext";
 
 const PersonalityQuiz = () => {
+    const {user, setUser} = useUser();
     const [sliderValue, setSliderValue] = useState(1);
     const [currentQuestionDisplayed, setCurrentQuestionDisplayed] = useState(1);
+
+    const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
+        try {
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
+                method: method,
+                headers: headers,
+                credentials: credentials,
+                body: body,
+            });
+            if (!response.ok){
+                throw new Error('Not able to fetch data.')
+            }
+            return response;
+        }
+        catch {
+            console.log("Error fetching data.")
+        }
+    }
+
+    const storeQuizResponse = async () => {
+        let currentObject = null;
+        PersonalityQuestions.map(obj => {
+            if (obj.id === currentQuestionDisplayed){
+                currentObject = obj;
+            }
+        })
+        const newResponseData = {
+            user_id: user.id,
+            question_id: currentObject.id,
+            question: currentObject.question,
+            question_trait: currentObject.trait,
+            response: sliderValue
+        }
+        const newResponse = await fetchData("quiz/responses/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newResponseData));
+    }
 
     const handleSliderChange = (event) => {
         setSliderValue(parseInt(event.target.value))
     }
 
     const handleChangeQuestion = () => {
+        storeQuizResponse();
         setCurrentQuestionDisplayed((prev) => prev + 1);
         setSliderValue(1);
     }
@@ -31,7 +69,7 @@ const PersonalityQuiz = () => {
                     PersonalityQuestions.map(obj => {
                         if (obj.id === currentQuestionDisplayed){
                             return (
-                                <div>
+                                <div key={obj.id}>
                                     {obj.question}
                                 </div>
                             )
