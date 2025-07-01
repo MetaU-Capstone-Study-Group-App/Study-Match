@@ -20,6 +20,27 @@ model User {
   password              String
   profile_picture       Bytes?         
   created_at            DateTime       @default(now())
+  personality_quiz      Quiz? 
 
   @@map("users")
+}
+
+model Quiz {
+  id               Int              @id 
+  quiz_responses   QuizResponse[]
+  user             User             @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction) 
+  
+  @@map("quizzes")
+}
+
+model QuizResponse {
+  id               Int              @id @default(autoincrement())
+  user_id          Int
+  question_id      Int
+  question         String
+  question_trait   String
+  response         Int
+  quiz             Quiz             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("quizResponses")
 }
