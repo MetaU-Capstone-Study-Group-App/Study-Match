@@ -1,12 +1,12 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useUser } from "./contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 
 const SignupForm = () => {
     const [formData, setFormData] = useState({username: "", password: "",})
     const [message, setMessage] = useState("")
-    const {setUser} = useUser();
     const navigate = useNavigate();
+    const {user, setUser} = useUser();
 
     const handleChange = (event) => {
         const {name, value} = event.target
@@ -17,22 +17,40 @@ const SignupForm = () => {
         }))
     }
 
+    const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
+        try {
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
+                method: method,
+                headers: headers,
+                credentials: credentials,
+                body: body,
+            });
+            if (!response.ok){
+                throw new Error('Not able to fetch data.')
+            }
+            return response;
+        }
+        catch {
+            console.log("Error fetching data.")
+        }
+    }
+
+    const createPersonalityQuiz = async (dataId) => {
+        const newQuizData = {
+            id: dataId,
+        }
+        const newQuiz = await fetchData("quiz/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newQuizData));
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault(); 
-
         try {
-            const response = await fetch("http://localhost:3000/auth/signup", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(formData),
-                credentials: "include",
-            })
-
+            const response = await fetchData("auth/signup", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(formData))
             const data = await response.json()
-
             if (response.ok) {
                 setMessage({type: "success", text: "Signup successful!"})
                 setUser(data); 
+                createPersonalityQuiz(data.id);
                 navigate("/personalityQuiz");
             } else {
                 setMessage({type: "error", text: data.error || "Signup failed."})
