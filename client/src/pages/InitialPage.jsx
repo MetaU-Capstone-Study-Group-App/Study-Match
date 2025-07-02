@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext';
 import '../styles.css'
-import Navbar from "../NavBar";
-import Footer from "../Footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const InitialPage = () => {
     const navigate = useNavigate();

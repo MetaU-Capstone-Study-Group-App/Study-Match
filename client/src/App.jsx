@@ -5,11 +5,12 @@ import { useEffect } from 'react'
 import ProfilePage from './pages/ProfilePage.jsx'
 import GroupsPage from './pages/GroupsPage.jsx'
 import { useUser } from './contexts/UserContext';
-import SignupForm from './SignupForm.jsx'
+import SignupForm from './components/SignupForm.jsx'
 import InitialPage from './pages/InitialPage.jsx'
-import LoginForm from './LoginForm.jsx'
-import WithAuth from './WithAuth.jsx'
-import PersonalityQuiz from './PersonalityQuiz.jsx'
+import LoginForm from './components/LoginForm.jsx'
+import WithAuth from './components/WithAuth.jsx'
+import PersonalityQuiz from './components/PersonalityQuiz.jsx'
+import CalendarPage from './pages/CalendarPage.jsx'
 
 const App = () => {
   const {user, setUser} = useUser();
@@ -32,6 +33,7 @@ const App = () => {
         <Route path='/groups' element={<GroupsPage />}/>
         <Route path='/profile' element={<ProfilePage />}/>
         <Route path='/personalityQuiz' element={<PersonalityQuiz />}/>
+        <Route path='/calendar' element={<CalendarPage />}/>
         <Route path="/auth/signup" element={<SignupForm />} />
         <Route path="/auth/login" element={<LoginForm />} />
     </Routes>

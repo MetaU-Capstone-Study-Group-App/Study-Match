@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../NavBar';
-import Footer from '../Footer';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const GroupsPage = () => {
     return (
@@ -12,7 +12,7 @@ const GroupsPage = () => {
 
         <main className="profile-page-main">  
         </main>
-        
+
         <Footer />
         </div>
     )

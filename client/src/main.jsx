@@ -7,10 +7,8 @@ import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <StrictMode>
-      <UserProvider>
-        <App />
-      </UserProvider>
-    </StrictMode>
+    <UserProvider>
+      <App />
+    </UserProvider>
   </BrowserRouter>
 )

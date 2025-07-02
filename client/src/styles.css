@@ -252,3 +252,43 @@ button:focus-visible {
 #personality-quiz-button {
     width: 30%;
 }
+
+.calendar {
+    margin: 100px;
+}
+
+.calendar-component {
+    min-height: 80vh;
+}
+
+.event-popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    overflow: auto;
+}
+
+.event-popup-form {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    width: 500px;
+}
+
+.event-popup-inputs {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.event-popup-button {
+    margin-right: 10px;
+    margin-top: 10px;
+}
