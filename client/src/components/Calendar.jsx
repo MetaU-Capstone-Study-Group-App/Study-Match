@@ -6,6 +6,9 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import EventPopup from "./EventPopup"; 
 
 const localizer = momentLocalizer(moment);
+const DEFAULT_YEAR = 2025;
+const DEFAULT_MONTH = 5;
+const DEFAULT_DAY = 1;
 
 const Calendar = () => {
     const [events, setEvents] = useState([]);
@@ -51,6 +54,11 @@ const Calendar = () => {
         setSelectedEvent(null);
     }
 
+    const formats = {
+        dayFormat: (date, culture, localizer) =>
+            localizer.format(date, 'dddd', culture),
+    }
+
     return (
         <>
             <div className="calendar">
@@ -59,11 +67,16 @@ const Calendar = () => {
                     selectable
                     localizer={localizer}
                     events={events}
+                    defaultView="week"
+                    views={["week"]}
+                    toolbar={false}
                     startAccessor="start"
                     endAccessor="end"
+                    date={new Date(DEFAULT_YEAR, DEFAULT_MONTH, DEFAULT_DAY)}
                     onSelectSlot={handleSelectSlot}
                     onSelectEvent={handleSelectEvent}
                     eventPropGetter={eventPropGetter}
+                    formats={formats}
                 />
             </div>
             {isOpenEvent && (

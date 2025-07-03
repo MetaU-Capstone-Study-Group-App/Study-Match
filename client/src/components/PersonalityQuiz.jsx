@@ -44,7 +44,7 @@ const PersonalityQuiz = () => {
             response: sliderValue
         }
         const newResponse = await fetchData("quiz/responses/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newResponseData));
-        if (currentObject.id >= 10){
+        if (currentObject.id >= PersonalityQuestions.length){
             navigate('/calendar');
         }
     }
