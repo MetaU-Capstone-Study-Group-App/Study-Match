@@ -1,13 +1,15 @@
 import { useState } from "react";
-import PersonalityQuestions from './data/PersonalityQuestions'
-import './styles.css'
+import PersonalityQuestions from '../data/PersonalityQuestions'
+import '../styles.css'
 import Footer from "./Footer";
-import { useUser } from "./contexts/UserContext";
+import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const PersonalityQuiz = () => {
     const {user, setUser} = useUser();
     const [sliderValue, setSliderValue] = useState(1);
     const [currentQuestionDisplayed, setCurrentQuestionDisplayed] = useState(1);
+    const navigate = useNavigate();
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
@@ -42,6 +44,9 @@ const PersonalityQuiz = () => {
             response: sliderValue
         }
         const newResponse = await fetchData("quiz/responses/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newResponseData));
+        if (currentObject.id >= 10){
+            navigate('/calendar');
+        }
     }
 
     const handleSliderChange = (event) => {

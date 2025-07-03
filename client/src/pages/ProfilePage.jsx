@@ -1,9 +1,9 @@
-import Navbar from '../NavBar';
+import Navbar from '../components/Navbar';
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import FileUpload from '../FileUpload';
-import Footer from '../Footer';
+import FileUpload from '../components/FileUpload';
+import Footer from '../components/Footer';
 
 const ProfilePage = () => {
     const {user, setUser} = useUser();
@@ -80,9 +80,6 @@ const ProfilePage = () => {
                                 <button className="buttons" onClick={handleLogout}>Log Out</button>
                                 <button className="buttons">Edit Profile</button>
                             </div>
-                        </div>
-                        <div className="avilability-info-section">
-                            <h1 className="page-header">Your Availability</h1>
                         </div>
                     </>
                 ) : (

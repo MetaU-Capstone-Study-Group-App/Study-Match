@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import './styles.css'
+import '../styles.css'
 
 const Navbar = () => {
     const navigate = useNavigate();
