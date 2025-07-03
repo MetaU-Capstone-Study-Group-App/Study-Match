@@ -1,38 +1,52 @@
 import { useEffect, useState } from "react";
 import '../styles.css';
+import WeekDays from "../data/WeekDays";
+
+const TIME_INPUT_TYPE = "time";
+const MILLISECONDS_IN_HOUR = 3600000;
+const DEFAULT_YEAR = 2025;
+const DEFAULT_MONTH = 5;
+const END_OF_TIME_FORMAT_LENGTH = 5;
 
 const EventPopup = ({isOpen, onClose, onSave, date, event}) => {
     const [title, setTitle] = useState("");
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
-
-    const convertTimeZone = (date) => {
-        date.setHours(date.getHours() - 7);
-        return date;
-    }
+    const [weekday, setWeekday] = useState("");
 
     useEffect(() => {
         if (event) {
             setTitle(event.title || "");
-            setStart(event.start.toISOString().slice(0, 16));
-            setEnd(event.end.toISOString().slice(0, 16));
+            setStart(event.start.toTimeString().slice(0, END_OF_TIME_FORMAT_LENGTH));
+            setEnd(event.end.toTimeString().slice(0, END_OF_TIME_FORMAT_LENGTH));
+            setWeekday(new Date(event.start).toLocaleDateString('en-US', {weekday: "long"}));
         } else if (date) {
-            let defaultStart = new Date(date);
-            defaultStart = convertTimeZone(defaultStart);
-            const defaultEnd = new Date(defaultStart.getTime() + 60 * 60 * 1000);
-            setStart(defaultStart.toISOString().slice(0, 16));
-            setEnd(defaultEnd.toISOString().slice(0, 16));
+            const defaultStart = new Date(date);
+            const defaultEnd = new Date(defaultStart.getTime() + MILLISECONDS_IN_HOUR);
+            setStart(defaultStart.toTimeString().slice(0, END_OF_TIME_FORMAT_LENGTH));
+            setEnd(defaultEnd.toTimeString().slice(0, END_OF_TIME_FORMAT_LENGTH));
+            setWeekday(new Date(date).toLocaleDateString('en-US', {weekday: "long"}));
             setTitle("");
         }
     }, [date, event])
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        onSave({
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const dayOfWeek = WeekDays[weekday];
+        const initialDate = new Date(DEFAULT_YEAR, DEFAULT_MONTH, dayOfWeek)
+        const [startHour, startMinute] = start.split(":");
+        const [endHour, endMinute] = end.split(":");
+        const startDate = new Date(initialDate);
+        startDate.setHours(startHour, startMinute);
+        const endDate = new Date(initialDate);
+        endDate.setHours(endHour, endMinute);
+
+        onSave ({
             id: event?.id,
             title,
-            start: new Date(start),
-            end: new Date(end),
+            start: startDate,
+            end: endDate,
         })
     }
 
@@ -41,10 +55,10 @@ const EventPopup = ({isOpen, onClose, onSave, date, event}) => {
     return (
         <div className="event-popup-container">
             <div className="event-popup-form">
-                <h2>{event ? "Edit Event" : "Add Event"}</h2>
+                <h2>{event ? "Edit Class" : "Add Class"}</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Title:</label>
+                        <label>Class Name:</label>
                         <input
                             className="event-popup-inputs"
                             type="text"
@@ -57,7 +71,7 @@ const EventPopup = ({isOpen, onClose, onSave, date, event}) => {
                         <label>Start:</label>
                         <input
                             className="event-popup-inputs"
-                            type="datetime-local"
+                            type={TIME_INPUT_TYPE}
                             value={start}
                             onChange={(event) => setStart(event.target.value)}
                             required
@@ -67,7 +81,7 @@ const EventPopup = ({isOpen, onClose, onSave, date, event}) => {
                         <label>End:</label>
                         <input
                             className="event-popup-inputs"
-                            type="datetime-local"
+                            type={TIME_INPUT_TYPE}
                             value={end}
                             onChange={(event) => setEnd(event.target.value)}
                             required
