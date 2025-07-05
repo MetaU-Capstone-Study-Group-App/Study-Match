@@ -5,7 +5,7 @@ const router = express.Router()
 const prisma = new PrismaClient();
 
 router.post('/', async (req, res) => {
-    const { id } = req.body
+    const {id} = req.body
     const newBusyTimeData = await prisma.busyTimes.create({
         data: {
             id,
@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
 })
 
 router.post('/busyTime', async (req, res) => {
-    const { id, user_id, day_of_week, start_time, end_time } = req.body
+    const {id, user_id, day_of_week, start_time, end_time, class_name} = req.body
     const newBusyTimeData = await prisma.busyTime.create({
         data: {
             id,
@@ -23,9 +23,35 @@ router.post('/busyTime', async (req, res) => {
             day_of_week,
             start_time,
             end_time,
+            class_name,
         }
     })
     res.json(newBusyTimeData);
+})
+
+router.put('/busyTime/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    const {user_id, day_of_week, start_time, end_time, class_name} = req.body
+    const newBusyTimeData = await prisma.busyTime.update({
+        where: {id: parseInt(id)},
+        data: {
+            id,
+            user_id,
+            day_of_week,
+            start_time,
+            end_time,
+            class_name,
+        }
+    })
+    res.json(newBusyTimeData);
+})
+
+router.get('/busyTime/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const busyTimes = await prisma.busyTime.findMany({
+        where: {user_id: parseInt(userId)},
+    });
+    res.json(busyTimes);
 })
 
 module.exports = router
