@@ -8,11 +8,25 @@ const DEFAULT_YEAR = 2025;
 const DEFAULT_MONTH = 5;
 const END_OF_TIME_FORMAT_LENGTH = 5;
 
-const EventPopup = ({isOpen, onClose, onSave, date, event}) => {
+const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData}) => {
     const [title, setTitle] = useState("");
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
     const [weekday, setWeekday] = useState("");
+    const [isCreatingClass, setIsCreatingClass] = useState(false);
+    const [classList, setClassList] = useState([]);
+    const [newClassName, setNewClassName] = useState("");
+
+    useEffect(() => {
+        const fetchClasses = async () => {
+            const classData = await fetchData("availability/classes/", "GET");
+            const sortedClassData = classData.sort((a,b) => 
+                a.name.localeCompare(b.name)
+            )
+            setClassList(sortedClassData);
+        }
+        fetchClasses();
+    }, [])
 
     useEffect(() => {
         if (event) {
@@ -30,8 +44,14 @@ const EventPopup = ({isOpen, onClose, onSave, date, event}) => {
         }
     }, [date, event])
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        let eventTitle = title;
+        if (isCreatingClass && newClassName){
+            const newClass = await fetchData('availability/classes/', "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify({name: newClassName}));
+            eventTitle = newClass.name;
+        }
 
         const dayOfWeek = WeekDays[weekday];
         const initialDate = new Date(DEFAULT_YEAR, DEFAULT_MONTH, dayOfWeek)
@@ -44,7 +64,7 @@ const EventPopup = ({isOpen, onClose, onSave, date, event}) => {
 
         onSave ({
             id: event?.id,
-            title,
+            title: eventTitle,
             start: startDate,
             end: endDate,
         })
@@ -55,17 +75,46 @@ const EventPopup = ({isOpen, onClose, onSave, date, event}) => {
     return (
         <div className="event-popup-container">
             <div className="event-popup-form">
-                <h2>{event ? "Edit Class" : "Add Class"}</h2>
+                <h2>{event ? "Edit Event" : "Add Event"}</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Class Name:</label>
-                        <input
-                            className="event-popup-inputs"
-                            type="text"
-                            value={title}
-                            onChange={(event) => setTitle(event.target.value)}
-                            required
-                        />
+                        <label>Class/Event Name:</label>
+                        {!isCreatingClass ? (
+                            <select
+                                className="event-popup-inputs"
+                                value={title}
+                                onChange={(e) => {
+                                    if (e.target.value === "add_new_class"){
+                                        setIsCreatingClass(true);
+                                        setTitle("");
+                                    }
+                                    else {
+                                        setTitle(e.target.value);
+                                    }
+                                }}
+                                required
+                            >
+                                <option value="" disabled>Select a Class/Event</option>
+                                <option value="Meeting">Meeting</option>
+                                <option value="add_new_class">Add a New Class</option>
+                                {classList.map((c) => (
+                                    <option value={c.name} key={c.id}>{c.name}</option> 
+                                ))}
+                                <option value="Other">Other</option>
+                            </select>
+                        ) : (
+                            <div>
+                                <input
+                                    className="event-popup-inputs"
+                                    type="text"
+                                    placeholder="Name of New Class"
+                                    value={newClassName}
+                                    onChange={(event) => setNewClassName(event.target.value)}
+                                    required
+                                />
+                                <button className="event-popup-buttons" id="add-class-button" onClick={() => setIsCreatingClass(false)}>Cancel</button>
+                            </div>
+                        )}
                     </div>
                     <div>
                         <label>Start:</label>
@@ -87,8 +136,8 @@ const EventPopup = ({isOpen, onClose, onSave, date, event}) => {
                             required
                         />
                     </div>
-                    <button type="submit" className="event-popup-button">Save</button>
-                    <button type="button" onClick={onClose}>Cancel</button>
+                    <button type="submit" className="event-popup-buttons">Save</button>
+                    <button type="button" className="event-popup-buttons" onClick={onClose}>Cancel</button>
                 </form>
             </div>
         </div>

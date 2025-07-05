@@ -54,4 +54,19 @@ router.get('/busyTime/:userId', async (req, res) => {
     res.json(busyTimes);
 })
 
+router.get('/classes', async (req, res) => {
+    const classes = await prisma.class.findMany();
+    res.json(classes);
+})
+
+router.post('/classes', async (req, res) => {
+    const {name} = req.body
+    const newClass = await prisma.class.create({
+        data: {
+            name,
+        }
+    })
+    res.json(newClass);
+})
+
 module.exports = router
