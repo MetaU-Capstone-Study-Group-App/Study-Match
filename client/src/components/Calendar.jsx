@@ -83,9 +83,10 @@ const Calendar = () => {
     const storeBusyTime = async (eventData, eventExists) => {
         const busyTimeEndpoint = eventExists ? `availability/busyTime/${eventId}/` : "availability/busyTime/";
         const busyTimeMethod = eventExists ? "PUT" : "POST";
+        const dayOfWeekInt = WeekDays[eventData.start.toLocaleDateString('en-US', { weekday: 'long' })];
         const newBusyTimeData = {
             user_id: user.id,
-            day_of_week: eventData.start.toLocaleDateString('en-US', { weekday: 'long' }),
+            day_of_week: dayOfWeekInt,
             start_time: eventData.start.toLocaleTimeString('en-US', { hour12: false }),
             end_time: eventData.end.toLocaleTimeString('en-US', { hour12: false }),
             class_name: eventData.title
@@ -98,7 +99,7 @@ const Calendar = () => {
         if (user){
             const userEvents = await fetchData(`availability/busyTime/${user.id}`, "GET", {"Content-Type": "application/json"});
             const formattedEvents = userEvents.map(e => {
-                const dayOfWeek = WeekDays[e.day_of_week];
+                const dayOfWeek = e.day_of_week;
                 const initialDate = new Date(DEFAULT_YEAR, DEFAULT_MONTH, dayOfWeek)
                 const [startHour, startMinute] = e.start_time.split(":");
                 const [endHour, endMinute] = e.end_time.split(":");
@@ -155,6 +156,7 @@ const Calendar = () => {
                     onSave={handleSaveEvent}
                     date={selectedDate}
                     event={selectedEvent}
+                    fetchData={fetchData}
                 />
             )}
         </>
