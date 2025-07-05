@@ -9,7 +9,7 @@ const CalendarPage = () => {
                     <h1>Study Match</h1>
                 </div>
             </div>
-            <div className="page-header">Availability</div>
+            <div className="page-header">Class Schedule</div>
             <p>Please input the classes you're taking, along with their respective times and days.</p>
             <Calendar />
             <Footer />
