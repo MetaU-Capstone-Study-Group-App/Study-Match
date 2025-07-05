@@ -86,8 +86,8 @@ const Calendar = () => {
         const newBusyTimeData = {
             user_id: user.id,
             day_of_week: eventData.start.toLocaleDateString('en-US', { weekday: 'long' }),
-            start_time: eventData.start.toLocaleTimeString(),
-            end_time: eventData.end.toLocaleTimeString(),
+            start_time: eventData.start.toLocaleTimeString('en-US', { hour12: false }),
+            end_time: eventData.end.toLocaleTimeString('en-US', { hour12: false }),
             class_name: eventData.title
         }
         const newBusyTime = await fetchData(busyTimeEndpoint, busyTimeMethod, {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newBusyTimeData));
