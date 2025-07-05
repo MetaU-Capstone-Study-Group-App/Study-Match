@@ -106,6 +106,7 @@ const Calendar = () => {
                 startDate.setHours(startHour, startMinute);
                 const endDate = new Date(initialDate);
                 endDate.setHours(endHour, endMinute);
+                setEventId(e.id);
 
                 return {
                     id: e.id,
