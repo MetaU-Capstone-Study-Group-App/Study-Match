@@ -6,6 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import EventPopup from "./EventPopup"; 
 import { useUser } from "../contexts/UserContext";
 import WeekDays from "../data/WeekDays";
+import MatchByAvailability from "../utils/MatchByAvailability";
 
 const localizer = momentLocalizer(moment);
 const DEFAULT_YEAR = 2025;
@@ -19,6 +20,7 @@ const Calendar = () => {
     const [isOpenEvent, setIsOpenEvent] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [eventId, setEventId] = useState();
+    const [busyTimes, setBusyTimes] = useState([]);
 
     const eventPropGetter = (event) => {
         const backgroundColor = '#068484';
@@ -98,6 +100,7 @@ const Calendar = () => {
     const fetchEvents = async () => {
         if (user){
             const userEvents = await fetchData(`availability/busyTime/${user.id}`, "GET", {"Content-Type": "application/json"});
+            setBusyTimes(userEvents);
             const formattedEvents = userEvents.map(e => {
                 const dayOfWeek = e.day_of_week;
                 const initialDate = new Date(DEFAULT_YEAR, DEFAULT_MONTH, dayOfWeek)
@@ -129,6 +132,12 @@ const Calendar = () => {
         fetchEvents();
     }, [user])
 
+    const matchByAvailability = () => {
+        if (busyTimes){
+            MatchByAvailability(busyTimes);
+        }
+    }
+
     return (
         <>
             <div className="calendar">
@@ -159,6 +168,7 @@ const Calendar = () => {
                     fetchData={fetchData}
                 />
             )}
+            <button className="buttons" id='submit-availability-button' onClick={matchByAvailability}>Submit Availability</button>
         </>
     )
 }
