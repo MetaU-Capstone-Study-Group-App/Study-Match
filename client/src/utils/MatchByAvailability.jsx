@@ -1,3 +1,5 @@
+const MINUTES_IN_HOUR = 60;
+
 const sortBusyTimes = (busyTimes) => {
     const busyTimesPerDay = [];
 
@@ -12,7 +14,6 @@ const sortBusyTimes = (busyTimes) => {
 }
 
 const getFreeTimes = (busyTimesPerDay) => {
-    const MINUTES_IN_HOUR = 60;
     const STUDY_GROUPS_START = 8 * 60;
     const STUDY_GROUPS_END = 20 * 60;
     const DAYS_IN_WEEK = 7;
@@ -79,11 +80,39 @@ const getFreeTimes = (busyTimesPerDay) => {
             freeTimes[i].push({start_time: STUDY_GROUPS_START, end_time: STUDY_GROUPS_END});
         }
     }
+    return freeTimes;
 }
 
-const MatchByAvailability = (busyTimes) => {
+const getOneHourFreeTimes = (day, dayOfWeek) => {
+    const oneHourFreeTimes = [];
+    for (const freeTime of day){
+        let currentEnd = freeTime.end_time;
+        while (currentEnd > freeTime.start_time){
+            if (currentEnd - MINUTES_IN_HOUR >= freeTime.start_time){
+                const currentStart = currentEnd - MINUTES_IN_HOUR;
+                oneHourFreeTimes.push({start_time: currentStart, end_time: currentEnd, day_of_week: dayOfWeek});
+                currentEnd = currentStart;
+            }
+            else {
+                oneHourFreeTimes.push({start_time: freeTime.start_time, end_time: currentEnd, dayOfWeek: dayOfWeek});
+                break;
+            }
+        }
+    }
+}
+
+const MatchByAvailability = async (busyTimes, fetchData) => {
     const busyTimesPerDay = sortBusyTimes(busyTimes);
-    getFreeTimes(busyTimesPerDay);
+    const freeTimes = getFreeTimes(busyTimesPerDay);
+    const usersInEachClass = [];
+
+    const userClasses = await fetchData('availability/userClasses/', "GET", {"Content-Type": "application/json"});
+    for (const userClass of userClasses){
+        if (!usersInEachClass[userClass.class_id]){
+            usersInEachClass[userClass.class_id] = [];
+        }
+        usersInEachClass[userClass.class_id].push(userClass.user_id);
+    }
 }
 
 export default MatchByAvailability;

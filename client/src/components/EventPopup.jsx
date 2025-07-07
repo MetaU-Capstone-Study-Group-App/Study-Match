@@ -8,7 +8,7 @@ const DEFAULT_YEAR = 2025;
 const DEFAULT_MONTH = 5;
 const END_OF_TIME_FORMAT_LENGTH = 5;
 
-const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData}) => {
+const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData, user}) => {
     const [title, setTitle] = useState("");
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
@@ -44,6 +44,15 @@ const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData}) => {
         }
     }, [date, event])
 
+    const getClassId = async (className) => {
+        const classes = await fetchData('availability/classes/', "GET", {"Content-Type": "application/json"});
+        for (const c of classes){
+            if (c.name === className){
+                return c.id;
+            }
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -68,6 +77,9 @@ const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData}) => {
             start: startDate,
             end: endDate,
         })
+
+        const classId = await getClassId(eventTitle);
+        const newUserClass = await fetchData('availability/userClasses/', "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify({user_id: user.id, class_id: classId}));
     }
 
     if (!isOpen) return null;

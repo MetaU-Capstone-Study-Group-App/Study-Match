@@ -134,7 +134,7 @@ const Calendar = () => {
 
     const matchByAvailability = () => {
         if (busyTimes){
-            MatchByAvailability(busyTimes);
+            MatchByAvailability(busyTimes, fetchData);
         }
     }
 
@@ -166,6 +166,7 @@ const Calendar = () => {
                     date={selectedDate}
                     event={selectedEvent}
                     fetchData={fetchData}
+                    user={user}
                 />
             )}
             <button className="buttons" id='submit-availability-button' onClick={matchByAvailability}>Submit Availability</button>
