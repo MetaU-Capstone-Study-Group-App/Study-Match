@@ -111,7 +111,9 @@ const MatchByAvailability = async (busyTimes, fetchData) => {
         if (!usersInEachClass[userClass.class_id]){
             usersInEachClass[userClass.class_id] = [];
         }
-        usersInEachClass[userClass.class_id].push(userClass.user_id);
+        if (!usersInEachClass[userClass.class_id].includes(userClass.user_id)){
+            usersInEachClass[userClass.class_id].push(userClass.user_id);
+        }
     }
 }
 
