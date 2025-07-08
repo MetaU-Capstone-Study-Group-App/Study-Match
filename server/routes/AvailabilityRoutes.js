@@ -69,4 +69,20 @@ router.post('/classes', async (req, res) => {
     res.json(newClass);
 })
 
+router.post('/userClasses', async (req, res) => {
+    const {user_id, class_id} = req.body
+    const newUserClass = await prisma.userClass.create({
+        data: {
+            user_id,
+            class_id
+        }
+    })
+    res.json(newUserClass);
+})
+
+router.get('/userClasses', async (req, res) => {
+    const userClasses = await prisma.userClass.findMany();
+    res.json(userClasses);
+})
+
 module.exports = router
