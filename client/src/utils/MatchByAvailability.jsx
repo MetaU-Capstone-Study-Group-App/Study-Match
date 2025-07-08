@@ -1,4 +1,5 @@
 const MINUTES_IN_HOUR = 60;
+const DAYS_IN_WEEK = 7;
 
 const sortBusyTimes = (busyTimes) => {
     const busyTimesPerDay = [];
@@ -16,7 +17,6 @@ const sortBusyTimes = (busyTimes) => {
 const getFreeTimes = (busyTimesPerDay) => {
     const STUDY_GROUPS_START = 8 * 60;
     const STUDY_GROUPS_END = 20 * 60;
-    const DAYS_IN_WEEK = 7;
     const freeTimes = [];
     let currentEndTime = STUDY_GROUPS_END;
     const mergedOverlapBusyTimes = [];
@@ -59,25 +59,25 @@ const getFreeTimes = (busyTimesPerDay) => {
         day.map((busyTime) => {
             if (busyTime.start_time < currentEndTime){
                 if ((busyTime.end_time < STUDY_GROUPS_START) && (STUDY_GROUPS_START !== currentEndTime)){
-                    freeTimes[day[0].day_of_week].push({start_time: STUDY_GROUPS_START, end_time: currentEndTime});
+                    freeTimes[day[0].day_of_week].push({start_time: STUDY_GROUPS_START, end_time: currentEndTime, day_of_week: day[0].day_of_week});
                 }
                 else {
                     if (!(busyTime.end_time >= STUDY_GROUPS_END) && (busyTime.end_time !== currentEndTime)){
-                        freeTimes[day[0].day_of_week].push({start_time: busyTime.end_time, end_time: currentEndTime});
+                        freeTimes[day[0].day_of_week].push({start_time: busyTime.end_time, end_time: currentEndTime, day_of_week: day[0].day_of_week});
                     }
                 }
                 currentEndTime = busyTime.start_time;
             }
         })
         if ((currentEndTime > STUDY_GROUPS_START) && (STUDY_GROUPS_START !== currentEndTime)){
-            freeTimes[day[0].day_of_week].push({start_time: STUDY_GROUPS_START, end_time: currentEndTime});
+            freeTimes[day[0].day_of_week].push({start_time: STUDY_GROUPS_START, end_time: currentEndTime, day_of_week: day[0].day_of_week});
         }
     }
 
     for (let i = 1; i <= DAYS_IN_WEEK; i++){
         if (!freeTimes[i]){
             freeTimes[i] = [];
-            freeTimes[i].push({start_time: STUDY_GROUPS_START, end_time: STUDY_GROUPS_END});
+            freeTimes[i].push({start_time: STUDY_GROUPS_START, end_time: STUDY_GROUPS_END, day_of_week: i});
         }
     }
     return freeTimes;
@@ -90,20 +90,76 @@ const getOneHourFreeTimes = (day, dayOfWeek) => {
         while (currentEnd > freeTime.start_time){
             if (currentEnd - MINUTES_IN_HOUR >= freeTime.start_time){
                 const currentStart = currentEnd - MINUTES_IN_HOUR;
-                oneHourFreeTimes.push({start_time: currentStart, end_time: currentEnd, day_of_week: dayOfWeek});
+                oneHourFreeTimes.push({day_of_week: dayOfWeek, start_time: currentStart, end_time: currentEnd});
                 currentEnd = currentStart;
             }
             else {
-                oneHourFreeTimes.push({start_time: freeTime.start_time, end_time: currentEnd, dayOfWeek: dayOfWeek});
+                oneHourFreeTimes.push({dayOfWeek: dayOfWeek, start_time: freeTime.start_time, end_time: currentEnd});
                 break;
             }
         }
     }
+    return oneHourFreeTimes;
+}
+
+const findSharedAvailability = async (usersInEachClass, fetchData) => {
+    const sharedUserAvailability = new Map();
+    const classIds = [];
+    let classCount = 0;
+    for (const classId in usersInEachClass){
+        classIds.push(classId);
+    }
+    for (const c of usersInEachClass){
+        if (!c){
+            continue;
+        }
+        for (const user of c){
+            if (!sharedUserAvailability.has(classIds[classCount])){
+                sharedUserAvailability.set(classIds[classCount], new Map());
+            }
+            const availabilityForClass = sharedUserAvailability.get(classIds[classCount]);
+            const userEvents = await fetchData(`availability/busyTime/${user}`, "GET", {"Content-Type": "application/json"});
+            const busyTimesPerDay = sortBusyTimes(userEvents);
+            const freeTimes = getFreeTimes(busyTimesPerDay);
+            for (const day of freeTimes){
+                let existingDayOfWeek;
+                if (!day){
+                    continue;
+                }
+                for (let i = 0; i < day.length; i++){
+                    if (day[i].day_of_week){
+                        existingDayOfWeek = day[i].day_of_week;
+                        break;
+                    }
+                }
+                const oneHourFreeTimes = getOneHourFreeTimes(day, existingDayOfWeek);
+                for (let freeTime of oneHourFreeTimes){
+                    freeTime = JSON.stringify(freeTime);
+                    if (availabilityForClass.has(freeTime)){
+                        const usersAtTimeArray = availabilityForClass.get(freeTime);
+                        usersAtTimeArray.push(user);
+                    }
+                    else {
+                        availabilityForClass.set(freeTime, [user]);
+                    }
+                }
+            }
+        }
+        classCount++;
+    }
+    const finalSharedUserAvailability = new Map();
+    for (const [outerMapKey, innerMap] of sharedUserAvailability){
+        finalSharedUserAvailability.set(outerMapKey, new Map());
+        const finalAvailabilityForClass = finalSharedUserAvailability.get(outerMapKey);
+        for (const [innerMapKey, innerMapValue] of innerMap){
+            const parsedKey = JSON.parse(innerMapKey);
+            finalAvailabilityForClass.set(parsedKey, innerMapValue);
+        }
+    }
+    return finalSharedUserAvailability;
 }
 
 const MatchByAvailability = async (busyTimes, fetchData) => {
-    const busyTimesPerDay = sortBusyTimes(busyTimes);
-    const freeTimes = getFreeTimes(busyTimesPerDay);
     const usersInEachClass = [];
 
     const userClasses = await fetchData('availability/userClasses/', "GET", {"Content-Type": "application/json"});
@@ -115,6 +171,7 @@ const MatchByAvailability = async (busyTimes, fetchData) => {
             usersInEachClass[userClass.class_id].push(userClass.user_id);
         }
     }
+    const sharedUserAvailability = await findSharedAvailability(usersInEachClass, fetchData);
 }
 
 export default MatchByAvailability;
