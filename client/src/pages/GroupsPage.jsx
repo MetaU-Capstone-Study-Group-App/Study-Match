@@ -4,10 +4,12 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CreateGroup from '../components/CreateGroup';
 import NewGroupModal from '../components/NewGroupModal';
+import { useUser } from "../contexts/UserContext";
 
 const GroupsPage = () => {
     const [groupModalIsOpen, setGroupModalIsOpen] = useState(false);
     const [classList, setClassList] = useState([]);
+    const {user, setUser} = useUser();
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
@@ -28,8 +30,17 @@ const GroupsPage = () => {
         }
     }
 
+    const addUserToGroup = async (newGroupId) => {
+        const newUserExistingGroupData = {
+            user_id: user.id,
+            existing_group_id: newGroupId
+        }
+        const newUserExistingGroup = await fetchData("group/userExistingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newUserExistingGroupData));
+    }
+
     const createGroup = async (newGroupData) => {
         const newGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
+        addUserToGroup(newGroup.id);
     }
 
     const onModalClose = () => {

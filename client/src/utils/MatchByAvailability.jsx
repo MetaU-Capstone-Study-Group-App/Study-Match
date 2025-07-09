@@ -14,17 +14,12 @@ const sortBusyTimes = (busyTimes) => {
     return busyTimesPerDay;
 }
 
-const getFreeTimes = (busyTimesPerDay) => {
+const getFreeTimes = (busyTimesPerDay, stringToTime) => {
     const STUDY_GROUPS_START = 8 * 60;
     const STUDY_GROUPS_END = 20 * 60;
     const freeTimes = [];
     let currentEndTime = STUDY_GROUPS_END;
     const mergedOverlapBusyTimes = [];
-
-    const stringToTime = (timeString) => {
-        const [hours, minutes] = timeString.split(":").map(Number);
-        return hours * MINUTES_IN_HOUR + minutes;
-    }
 
     const busyTimesPerDayInMins = busyTimesPerDay.map((busyTimes) => {
         return busyTimes.map((busyTime) => ({
@@ -102,7 +97,7 @@ const getOneHourFreeTimes = (day, dayOfWeek) => {
     return oneHourFreeTimes;
 }
 
-const findSharedAvailability = async (usersInEachClass, fetchData) => {
+const findSharedAvailability = async (usersInEachClass, fetchData, stringToTime) => {
     const sharedUserAvailability = new Map();
     const classIds = [];
     let classCount = 0;
@@ -120,7 +115,7 @@ const findSharedAvailability = async (usersInEachClass, fetchData) => {
             const availabilityForClass = sharedUserAvailability.get(classIds[classCount]);
             const userEvents = await fetchData(`availability/busyTime/${user}`, "GET", {"Content-Type": "application/json"});
             const busyTimesPerDay = sortBusyTimes(userEvents);
-            const freeTimes = getFreeTimes(busyTimesPerDay);
+            const freeTimes = getFreeTimes(busyTimesPerDay, stringToTime);
             for (const day of freeTimes){
                 let existingDayOfWeek;
                 if (!day){
@@ -159,8 +154,40 @@ const findSharedAvailability = async (usersInEachClass, fetchData) => {
     return finalSharedUserAvailability;
 }
 
-const MatchByAvailability = async (busyTimes, fetchData) => {
+const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvailability) => {
+    const existingGroups = await fetchData("group/existingGroup/", "GET");
+
+    const filteredExistingGroups = existingGroups.map((group) => {
+        return [group.class_id, {
+            day_of_week: group.day_of_week,
+            start_time: stringToTime(group.start_time),
+            end_time: stringToTime(group.end_time)
+        }]
+    })
+
+    for (const c of sharedUserAvailability){
+        for (const groupsPerClass of c){
+            for (const possibleGroup of groupsPerClass){
+                for (const existingGroup of filteredExistingGroups){
+                    if (c[0] == existingGroup[0]){
+                        if (JSON.stringify(possibleGroup[0]) === JSON.stringify(existingGroup[1])){
+                            existingGroup.users = possibleGroup[1];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return filteredExistingGroups;
+}
+
+const MatchByAvailability = async (fetchData) => {
     const usersInEachClass = [];
+    
+    const stringToTime = (timeString) => {
+        const [hours, minutes] = timeString.split(":").map(Number);
+        return hours * MINUTES_IN_HOUR + minutes;
+    }
 
     const userClasses = await fetchData('availability/userClasses/', "GET", {"Content-Type": "application/json"});
     for (const userClass of userClasses){
@@ -171,7 +198,8 @@ const MatchByAvailability = async (busyTimes, fetchData) => {
             usersInEachClass[userClass.class_id].push(userClass.user_id);
         }
     }
-    const sharedUserAvailability = await findSharedAvailability(usersInEachClass, fetchData);
+    const sharedUserAvailability = await findSharedAvailability(usersInEachClass, fetchData, stringToTime);
+    const groupsByAvailability = await findGroupsByAvailability(fetchData, stringToTime, sharedUserAvailability);
 }
 
 export default MatchByAvailability;

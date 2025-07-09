@@ -28,8 +28,8 @@ const NewGroupModal = ({groupModalIsOpen, onModalClose, createGroup, fetchData, 
         createGroup({class_id: classId, day_of_week: Number(dayOfWeek), start_time: startTime, end_time: endTime});
         setClassName("");
         setDayOfWeek("");
-        setStartTime("");
-        setEndTime("");
+        setStartTime("08:00");
+        setEndTime("09:00");
         onModalClose();
     }
     
