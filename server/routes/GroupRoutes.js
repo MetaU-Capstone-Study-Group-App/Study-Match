@@ -1,0 +1,32 @@
+const express = require('express')
+const { PrismaClient } = require('@prisma/client')
+const router = express.Router()
+const prisma = new PrismaClient();
+
+router.post('/existingGroup', async (req, res) => {
+    const {id, class_id, day_of_week, start_time, end_time} = req.body
+    const newExistingGroupData = await prisma.existingGroup.create({
+        data: {
+            id,
+            class_id,
+            day_of_week,
+            start_time,
+            end_time
+        }
+    })
+    res.json(newExistingGroupData);
+})
+
+router.post('/userExistingGroup', async (req, res) => {
+    const {id, user_id, existing_group_id} = req.body
+    const newUserExistingGroupData = await prisma.userExistingGroup.create({
+        data: {
+            id,
+            user_id,
+            existing_group_id
+        }
+    })
+    res.json(newUserExistingGroupData);
+})
+
+module.exports = router

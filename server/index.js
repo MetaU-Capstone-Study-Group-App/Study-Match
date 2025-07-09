@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth.js')
 const userRoutes = require('./routes/UserRoutes.js')
 const quizRoutes = require('./routes/QuizRoutes.js')
 const availabilityRoutes = require('./routes/AvailabilityRoutes.js')
+const groupRoutes = require('./routes/GroupRoutes.js')
 const session = require('express-session')
 
 app.use(cors({
@@ -26,6 +27,7 @@ app.use('/auth', authRoutes)
 app.use('/user', userRoutes)
 app.use('/quiz', quizRoutes)
 app.use('/availability', availabilityRoutes)
+app.use('/group', groupRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
