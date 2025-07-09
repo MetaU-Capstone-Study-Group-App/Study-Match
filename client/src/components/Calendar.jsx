@@ -134,7 +134,7 @@ const Calendar = () => {
 
     const matchByAvailability = () => {
         if (busyTimes){
-            MatchByAvailability(busyTimes, fetchData);
+            MatchByAvailability(fetchData);
         }
     }
 

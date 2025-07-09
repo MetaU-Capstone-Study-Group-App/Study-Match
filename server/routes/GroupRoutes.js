@@ -29,4 +29,14 @@ router.post('/userExistingGroup', async (req, res) => {
     res.json(newUserExistingGroupData);
 })
 
+router.get('/existingGroup', async (req, res) => {
+    const existingGroups = await prisma.existingGroup.findMany();
+    res.json(existingGroups);
+})
+
+router.get('/userExistingGroup', async (req, res) => {
+    const userExistingGroups = await prisma.userExistingGroup.findMany();
+    res.json(userExistingGroups);
+})
+
 module.exports = router
