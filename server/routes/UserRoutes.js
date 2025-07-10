@@ -28,4 +28,9 @@ router.get('/profilePicture/:userId', async (req, res) => {
     res.send(currentUser.profile_picture)
 })
 
+router.get('/', async (req, res) => {
+    const users = await prisma.user.findMany();
+    res.json(users);
+})
+
 module.exports = router

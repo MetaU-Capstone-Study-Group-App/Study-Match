@@ -2,12 +2,15 @@ import { useState } from "react";
 import '../styles.css'
 import WeekDays from "../data/WeekDays";
 
-const NewGroupModal = ({groupModalIsOpen, onModalClose, createGroup, fetchData, classList}) => {
+const NewGroupModal = ({groupModalIsOpen, onModalClose, createGroup, fetchData, classList, fetchExistingGroups}) => {
     const TIME_INPUT_TYPE = "time";
+    const DEFAULT_START = "08:00";
+    const DEFAULT_END = "09:00";
+    const HOURS_IN_DAY = 24;
     const [className, setClassName] = useState("")
     const [dayOfWeek, setDayOfWeek] = useState("")
-    const [startTime, setStartTime] = useState("08:00")
-    const [endTime, setEndTime] = useState("09:00")
+    const [startTime, setStartTime] = useState(DEFAULT_START)
+    const [endTime, setEndTime] = useState(DEFAULT_END)
 
     if (!groupModalIsOpen){
         return null;
@@ -28,8 +31,9 @@ const NewGroupModal = ({groupModalIsOpen, onModalClose, createGroup, fetchData, 
         createGroup({class_id: classId, day_of_week: Number(dayOfWeek), start_time: startTime, end_time: endTime});
         setClassName("");
         setDayOfWeek("");
-        setStartTime("08:00");
-        setEndTime("09:00");
+        setStartTime(DEFAULT_START);
+        setEndTime(DEFAULT_END);
+        fetchExistingGroups();
         onModalClose();
     }
     
@@ -39,7 +43,7 @@ const NewGroupModal = ({groupModalIsOpen, onModalClose, createGroup, fetchData, 
 
     const getEndTime = (startTime) => {
         const [startHour, startMinute] = startTime.split(":").map(Number);
-        const endHour = (startHour + 1) % 24;
+        const endHour = (startHour + 1) % HOURS_IN_DAY;
         const formattedEndHour = endHour.toString().padStart(2, "0");
         const formattedEndMinutes = startMinute.toString().padStart(2, "0");
         const oneHourAfterStart = `${formattedEndHour}:${formattedEndMinutes}`;
