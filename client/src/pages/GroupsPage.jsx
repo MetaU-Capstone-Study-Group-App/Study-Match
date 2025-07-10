@@ -5,11 +5,15 @@ import Footer from '../components/Footer';
 import CreateGroup from '../components/CreateGroup';
 import NewGroupModal from '../components/NewGroupModal';
 import { useUser } from "../contexts/UserContext";
+import GroupList from '../components/GroupList';
 
 const GroupsPage = () => {
     const [groupModalIsOpen, setGroupModalIsOpen] = useState(false);
     const [classList, setClassList] = useState([]);
     const {user, setUser} = useUser();
+    const [existingGroups, setExistingGroups] = useState([]);
+    const [userExistingGroups, setUserExistingGroups] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
@@ -47,27 +51,59 @@ const GroupsPage = () => {
         setGroupModalIsOpen(false);
     }
 
+    const fetchExistingGroups = async () => {
+        const fetchedExistingGroups = await fetchData("group/existingGroup/", "GET");
+        const fetchedUserExistingGroups = await fetchData("group/userExistingGroup/", "GET");
+        setExistingGroups(fetchedExistingGroups);
+        setUserExistingGroups(fetchedUserExistingGroups);
+    }
+
+    const fetchClasses = async () => {
+        const classData = await fetchData("availability/classes/", "GET");
+        const sortedClassData = classData.sort((a,b) => 
+            a.name.localeCompare(b.name)
+        )
+        setClassList(sortedClassData);
+    }
+
     useEffect(() => {
-        const fetchClasses = async () => {
-            const classData = await fetchData("availability/classes/", "GET");
-            const sortedClassData = classData.sort((a,b) => 
-                a.name.localeCompare(b.name)
-            )
-            setClassList(sortedClassData);
-        }
         fetchClasses();
+        fetchExistingGroups();
+        fetchUsers();
     }, [])
+
+    const getClassName = (classId) => {
+        for (const c of classList){
+            if (c.id === classId){
+                return c.name;
+            }
+        }
+    }
+
+    const fetchUsers = async () => {
+        const users = await fetchData("user/", "GET");
+        setAllUsers(users);
+    }
+
+    const getUserName = (userId) => {
+        for (const user of allUsers){
+            if (user.id === userId){
+                return user.name;
+            }
+        }
+    }
 
     return (
         <div className="groups-page">
             <header className="groups-page-header">
                 <Navbar />
-                <h2>Your Groups</h2>
+                <h2>Your Study Groups</h2>
             </header>
 
             <main className="groups-page-main"> 
                 <CreateGroup setGroupModalIsOpen={setGroupModalIsOpen} /> 
-                <NewGroupModal groupModalIsOpen={groupModalIsOpen} onModalClose={onModalClose} createGroup={createGroup} fetchData={fetchData} classList={classList}/>
+                <NewGroupModal groupModalIsOpen={groupModalIsOpen} onModalClose={onModalClose} createGroup={createGroup} fetchData={fetchData} classList={classList} fetchExistingGroups={fetchExistingGroups}/>
+                <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName}/>
             </main>
 
             <Footer />

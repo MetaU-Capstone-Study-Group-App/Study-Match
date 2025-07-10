@@ -86,11 +86,16 @@ button:focus-visible {
     flex-direction: column;
 }
 
-.home-main, .groups-page-main{
+.home-main {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 25px;
+}
+
+.groups-page-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     flex: 1;
 }
 
@@ -309,7 +314,7 @@ button:focus-visible {
 }
 
 #create-group-button {
-    width: 20%;
+    margin-bottom: 40px;
 }
 
 .new-group-modal {
@@ -394,4 +399,46 @@ button:focus-visible {
     display: flex;
     align-items: flex-start;
     flex-direction: column;
+}
+
+.group-list-container {
+    gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-bottom: 80px;
+}
+
+.group-card {
+    text-align: center;
+    padding: 15px;
+    width: 200px;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid black;
+    box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+    border-radius: 10px;
+    padding-bottom: 30px;
+}
+
+.group-card-buttons {
+    display: flex;
+    justify-content: center;
+    font-size: 12px;
+    gap: 10px;
+}
+
+.group-card:hover {
+    transform: scale(1.03) translateY(-2px);
+}
+
+.group-card-title {
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+}
+
+.group-card-buttons {
+    gap: 20px;
 }
