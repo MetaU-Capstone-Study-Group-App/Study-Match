@@ -15,8 +15,8 @@ const sortBusyTimes = (busyTimes) => {
 }
 
 const getFreeTimes = (busyTimesPerDay, stringToTime) => {
-    const STUDY_GROUPS_START = 8 * 60;
-    const STUDY_GROUPS_END = 20 * 60;
+    const STUDY_GROUPS_START = 0;
+    const STUDY_GROUPS_END = 24 * 60;
     const freeTimes = [];
     let currentEndTime = STUDY_GROUPS_END;
     const mergedOverlapBusyTimes = [];
@@ -97,6 +97,23 @@ const getOneHourFreeTimes = (day, dayOfWeek) => {
     return oneHourFreeTimes;
 }
 
+const splitPreferredTimes = (preferredTimes) => {
+    const oneHourPreferredTimes = [];
+    let currentEnd = preferredTimes.preferred_end_time;
+    while (currentEnd > preferredTimes.preferred_start_time){
+        if (currentEnd - MINUTES_IN_HOUR >= preferredTimes.preferred_start_time){
+            const currentStart = currentEnd - MINUTES_IN_HOUR;
+            oneHourPreferredTimes.push({start_time: currentStart, end_time: currentEnd});
+            currentEnd = currentStart;
+        }
+        else {
+            oneHourPreferredTimes.push({start_time: preferredTimes.preferred_start_time, end_time: currentEnd});
+            break;
+        }
+    }
+    return oneHourPreferredTimes;
+}
+
 const findSharedAvailability = async (usersInEachClass, fetchData, stringToTime) => {
     const sharedUserAvailability = new Map();
     const classIds = [];
@@ -158,7 +175,7 @@ const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvail
     const existingGroups = await fetchData("group/existingGroup/", "GET");
 
     const filteredExistingGroups = existingGroups.map((group) => {
-        return [group.class_id, {
+        return [group.id, group.class_id, {
             day_of_week: group.day_of_week,
             start_time: stringToTime(group.start_time),
             end_time: stringToTime(group.end_time)
@@ -169,8 +186,8 @@ const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvail
         for (const groupsPerClass of c){
             for (const possibleGroup of groupsPerClass){
                 for (const existingGroup of filteredExistingGroups){
-                    if (c[0] == existingGroup[0]){
-                        if (JSON.stringify(possibleGroup[0]) === JSON.stringify(existingGroup[1])){
+                    if (c[0] == existingGroup[1]){
+                        if (JSON.stringify(possibleGroup[0]) === JSON.stringify(existingGroup[2])){
                             existingGroup.users = possibleGroup[1];
                         }
                     }
@@ -181,7 +198,63 @@ const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvail
     return filteredExistingGroups;
 }
 
-const MatchByAvailability = async (fetchData) => {
+const filterByPreferredTime = async (groupsByAvailability, allUsers, fetchData, stringToTime) => {
+    const filteredByTimeGroups = new Map();
+    for (const user of allUsers){
+        let userCount = 0;
+        for (const group of groupsByAvailability){
+            if (group["users"]){
+                for (const usersInGroup of group["users"]){
+                    if (user.id === usersInGroup){
+                        userCount++;
+                    }
+                }
+            }
+        }
+        if (userCount > 1){
+            if (!filteredByTimeGroups.has(user.id)){
+                filteredByTimeGroups.set(user.id, new Array());
+            }
+            const groupsForUser = filteredByTimeGroups.get(user.id);
+            const preferredTimes = await fetchData(`user/preferredTimes/${user.id}`, "GET");
+            const preferredTimesInMins = {
+                preferred_start_time: stringToTime(preferredTimes.preferred_start_time),
+                preferred_end_time: stringToTime(preferredTimes.preferred_end_time)
+            }
+            const splitTimes = splitPreferredTimes(preferredTimesInMins);
+            for (const group of groupsByAvailability){
+                for (const preferredTime of splitTimes){
+                    if (JSON.stringify({start_time: group[2].start_time, end_time: group[2].end_time}) === JSON.stringify(preferredTime)){
+                        if (group["users"]){
+                            for (const userInList of group["users"]){
+                                if (userInList === user.id){
+                                    groupsForUser.push(group);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return filteredByTimeGroups;
+}
+
+const createUserExistingGroups = async (fetchData, filteredByTimeGroups) => {
+    for (const group of filteredByTimeGroups){
+        const user_id = group[0];
+        for (const existingGroup of group[1]){
+            const existing_group_id = existingGroup[0];
+            const newGroupData = {
+                user_id,
+                existing_group_id
+            }
+            const newUserExistingGroup = await fetchData("group/userExistingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
+        }
+    }
+}
+
+const MatchByAvailability = async (fetchData, allUsers) => {
     const usersInEachClass = [];
     
     const stringToTime = (timeString) => {
@@ -200,6 +273,8 @@ const MatchByAvailability = async (fetchData) => {
     }
     const sharedUserAvailability = await findSharedAvailability(usersInEachClass, fetchData, stringToTime);
     const groupsByAvailability = await findGroupsByAvailability(fetchData, stringToTime, sharedUserAvailability);
+    const filteredByTimeGroups = await filterByPreferredTime(groupsByAvailability, allUsers, fetchData, stringToTime);
+    createUserExistingGroups(fetchData, filteredByTimeGroups)
 }
 
 export default MatchByAvailability;

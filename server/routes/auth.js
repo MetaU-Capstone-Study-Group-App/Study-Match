@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 
 // Create an account
 router.post('/signup', async (req, res) => {
-    const {name, username, password} = req.body
+    const {name, username, password, preferred_start_time, preferred_end_time} = req.body
     try {
-        if (!username || !password || !name) {
-            return res.status(400).json({error: "Username, password, and name are required."})
+        if (!username || !password || !name || !preferred_start_time || !preferred_end_time) {
+            return res.status(400).json({error: "Username, password, name, and preferences are required."})
         }
         
         if (password.length < 8) {
@@ -32,7 +32,9 @@ router.post('/signup', async (req, res) => {
             data: {
                 name,
                 username,
-                password: hashedPassword
+                password: hashedPassword,
+                preferred_start_time,
+                preferred_end_time,
             }
         })
 

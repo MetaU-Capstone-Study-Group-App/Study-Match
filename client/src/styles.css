@@ -193,6 +193,23 @@ button:focus-visible {
     border-radius: 5px;
 }
 
+.signup-form-top-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.signup-form-second-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.signup-time-inputs {
+    display: flex;
+    gap: 10px;
+}
+
 .footer {
     display: flex;
     background-color: #068484;
@@ -442,3 +459,15 @@ button:focus-visible {
 .group-card-buttons {
     gap: 20px;
 }
+
+.group-card-users {
+    display: flex;
+    justify-content: center;
+    margin-bottom: auto;
+}
+
+.group-card-members {
+    margin-bottom: 20px;
+}
+
+

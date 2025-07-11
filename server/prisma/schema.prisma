@@ -20,6 +20,8 @@ model User {
   password              String
   profile_picture       Bytes?         
   created_at            DateTime       @default(now())
+  preferred_start_time  String?
+  preferred_end_time    String?
   personality_quiz      Quiz?
   busy_times            BusyTime[] 
   user_classes          UserClass[]

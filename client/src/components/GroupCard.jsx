@@ -6,7 +6,14 @@ const GroupCard = ({className, dayOfWeek, time, users}) => {
             <h3 className="group-card-title">{className}</h3>
             <p className="group-card-day">{dayOfWeek}</p>
             <p className="group-card-time">{time}</p>
-            <p className="group-card-users">Members: {users}</p>
+            <h5 className="group-card-users">Members:</h5>
+            <div className="group-card-members">
+                {users.map((item, index) => {
+                    return (
+                        <p className="group-card-member" key={index}>{item}</p>
+                    )
+                })}
+            </div>
             <div className="group-card-buttons">
                 <button className="buttons">Accept</button>
                 <button className="buttons">Reject</button>

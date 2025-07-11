@@ -69,33 +69,56 @@ const SignupForm = () => {
             </div>
             <h2>Sign Up</h2>
             <form className="signup-form" onSubmit={handleSubmit}>
-                <label htmlFor="name">Name</label>
-                <input
-                    type="text"
-                    className="signup-inputs"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                />
-                <label htmlFor="username">Username</label>
-                <input
-                    type="text"
-                    className="signup-inputs"
-                    id="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                />
-                <label htmlFor="password">Password</label>
-                <input
-                    type="password"
-                    className="signup-inputs"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                />
+                <div className="signup-form-top-section">
+                    <label htmlFor="name">Full Name</label>
+                    <input
+                        type="text"
+                        className="signup-inputs"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                    />
+                    <label htmlFor="username">Username</label>
+                    <input
+                        type="text"
+                        className="signup-inputs"
+                        id="username"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleChange}
+                    />
+                    <label htmlFor="password">Password</label>
+                    <input
+                        type="password"
+                        className="signup-inputs"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="signup-form-second-section"><h4>Study Group Preferences</h4>
+                    <label htmlFor="preferred-time">Preferred Meeting Hours</label>
+                    <div className="signup-time-inputs">
+                        <input
+                            type="time"
+                            className="signup-inputs"
+                            id="preferred-start-time"
+                            name="preferred_start_time"
+                            value={formData.preferred_start_time}
+                            onChange={handleChange}
+                        />
+                        <input
+                            type="time"
+                            className="signup-inputs"
+                            id="preferred-end-time"
+                            name="preferred_end_time"
+                            value={formData.preferred_end_time}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
                 <div className="form-buttons">
                     <button className="buttons" type="submit">Sign Up</button>
                 </div>
