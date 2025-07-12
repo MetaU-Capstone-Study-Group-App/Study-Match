@@ -19,6 +19,16 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName}) => {
         }
     }
 
+    const getGroupMembers = (groupId) => {
+        const groupMembers = [];
+        for (const group of userExistingGroups){
+            if (group.existing_group_id === groupId){
+                groupMembers.push(group.user_id)
+            }
+        }
+        return groupMembers;
+    }
+
     useEffect(() => {
         setUserExistingGroups(data);
     }, [data])
@@ -34,7 +44,11 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName}) => {
                                 const className = getClassName(groupInfo.class_id);
                                 const dayOfWeek = Object.keys(WeekDays)[groupInfo.day_of_week - 1];
                                 const time = groupInfo.start_time + " - " + groupInfo.end_time;
-                                const userNames = getUserName(obj.user_id);
+                                const groupMembers = getGroupMembers(obj.existing_group_id)
+                                let userNames = []
+                                for (const member of groupMembers){
+                                    userNames.push(getUserName(member))
+                                }
                                 return (
                                     <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames}/>
                                 )

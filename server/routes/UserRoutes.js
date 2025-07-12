@@ -33,4 +33,12 @@ router.get('/', async (req, res) => {
     res.json(users);
 })
 
+router.get('/preferredTimes/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const currentUser = await prisma.user.findUnique({
+        where: {id: parseInt(userId)},
+    });
+    res.json({preferred_start_time: currentUser.preferred_start_time, preferred_end_time: currentUser.preferred_end_time});
+})
+
 module.exports = router

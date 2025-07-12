@@ -7,6 +7,7 @@ import EventPopup from "./EventPopup";
 import { useUser } from "../contexts/UserContext";
 import WeekDays from "../data/WeekDays";
 import MatchByAvailability from "../utils/MatchByAvailability";
+import { useNavigate } from "react-router-dom";
 
 const localizer = momentLocalizer(moment);
 const DEFAULT_YEAR = 2025;
@@ -21,6 +22,8 @@ const Calendar = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [eventId, setEventId] = useState();
     const [busyTimes, setBusyTimes] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
+    const navigate = useNavigate();
 
     const eventPropGetter = (event) => {
         const backgroundColor = '#068484';
@@ -128,13 +131,20 @@ const Calendar = () => {
             localizer.format(date, 'dddd', culture),
     }
 
+    const fetchUsers = async () => {
+        const users = await fetchData("user/", "GET");
+        setAllUsers(users);
+    }
+
     useEffect(() => {
         fetchEvents();
+        fetchUsers();
     }, [user])
 
     const matchByAvailability = () => {
         if (busyTimes){
-            MatchByAvailability(fetchData);
+            MatchByAvailability(fetchData, allUsers);
+            navigate("/groups");
         }
     }
 
