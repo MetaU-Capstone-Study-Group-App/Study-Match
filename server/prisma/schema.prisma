@@ -22,6 +22,9 @@ model User {
   created_at            DateTime       @default(now())
   preferred_start_time  String?
   preferred_end_time    String?
+  school                String?
+  address_latitude      Float?
+  address_longitude     Float?
   personality_quiz      Quiz?
   busy_times            BusyTime[] 
   user_classes          UserClass[]
