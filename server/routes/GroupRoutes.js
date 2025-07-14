@@ -29,6 +29,18 @@ router.post('/userExistingGroup', async (req, res) => {
     res.json(newUserExistingGroupData);
 })
 
+router.get('/userExistingGroup/:userId/:groupId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const groupId = parseInt(req.params.groupId)
+    const userExistingGroup = await prisma.userExistingGroup.findFirst({
+        where: {
+            user_id: parseInt(userId),
+            existing_group_id: parseInt(groupId),
+        },
+    });
+    res.json(userExistingGroup);
+})
+
 router.get('/existingGroup', async (req, res) => {
     const existingGroups = await prisma.existingGroup.findMany();
     res.json(existingGroups);

@@ -7,6 +7,7 @@ const SignupForm = () => {
     const [message, setMessage] = useState("")
     const navigate = useNavigate();
     const {user, setUser} = useUser();
+    const [error, setError] = useState("");
 
     const handleChange = (event) => {
         const {name, value} = event.target
@@ -30,8 +31,9 @@ const SignupForm = () => {
             }
             return response;
         }
-        catch {
-            console.log("Error fetching data.")
+        catch (error) {
+            setError("Error. Please try again.");
+            return null;
         }
     }
 
@@ -126,6 +128,9 @@ const SignupForm = () => {
                     <div className={`message ${message.type}`}>
                         {message.text}
                     </div>
+                )}
+                {error && (
+                    <p>{error}</p>
                 )}
             </form>
         </div>

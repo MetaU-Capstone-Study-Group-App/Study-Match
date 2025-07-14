@@ -14,6 +14,8 @@ const GroupsPage = () => {
     const [existingGroups, setExistingGroups] = useState([]);
     const [userExistingGroups, setUserExistingGroups] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
@@ -29,9 +31,17 @@ const GroupsPage = () => {
             const data = await response.json();
             return data;
         }
-        catch {
-            console.log("Error fetching data.")
+        catch (error) {
+            setError("Error. Please try again.");
+            return null;
         }
+    }
+
+    const loadData = async () => {
+        await fetchClasses();
+        await fetchExistingGroups();
+        await fetchUsers();
+        setIsLoading(false);
     }
 
     const addUserToGroup = async (newGroupId) => {
@@ -44,7 +54,8 @@ const GroupsPage = () => {
 
     const createGroup = async (newGroupData) => {
         const newGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
-        addUserToGroup(newGroup.id);
+        await addUserToGroup(newGroup.id);
+        loadData();
     }
 
     const onModalClose = () => {
@@ -67,9 +78,7 @@ const GroupsPage = () => {
     }
 
     useEffect(() => {
-        fetchClasses();
-        fetchExistingGroups();
-        fetchUsers();
+        loadData();
     }, [])
 
     const getClassName = (classId) => {
@@ -103,7 +112,14 @@ const GroupsPage = () => {
             <main className="groups-page-main"> 
                 <CreateGroup setGroupModalIsOpen={setGroupModalIsOpen} /> 
                 <NewGroupModal groupModalIsOpen={groupModalIsOpen} onModalClose={onModalClose} createGroup={createGroup} fetchData={fetchData} classList={classList} fetchExistingGroups={fetchExistingGroups}/>
-                <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName}/>
+                {isLoading ? (
+                    <div>Loading...</div>
+                ) : (
+                    <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName}/>
+                )}
+                {error && (
+                    <p>{error}</p>
+                )}
             </main>
 
             <Footer />

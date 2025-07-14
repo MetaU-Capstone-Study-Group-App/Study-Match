@@ -33,6 +33,12 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName}) => {
         setUserExistingGroups(data);
     }, [data])
 
+    if (!data || !user){
+        return (
+            <div>Loading...</div>
+        )
+    }
+
     return (
         <main>
             <div className="group-list-container">
