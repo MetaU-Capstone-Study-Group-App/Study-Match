@@ -28,8 +28,22 @@ const calculatePairPersonalityScore = async (firstUserId, secondUserId, fetchDat
     return 1 - (difference / MAX_TRAIT_DIFFERENCE);
 }
 
-const CompatibilityScore = async (fetchData, user) => {
-    const personalityScore = await calculatePairPersonalityScore(72, 73, fetchData);
+const calculateLocationDistance = (firstUserCoordinates, secondUserCoordinates) => {
+    const PI_VALUE = Math.PI;
+    const DEGREES_IN_PI_RADIANS = 180;
+    const RADIUS_OF_EARTH_IN_MILES = 3959;
+    const latitudeDistance = (secondUserCoordinates.latitude - firstUserCoordinates.latitude) * PI_VALUE / DEGREES_IN_PI_RADIANS;
+    const longitudeDistance = (secondUserCoordinates.longitude - firstUserCoordinates.longitude) * PI_VALUE / DEGREES_IN_PI_RADIANS;
+    const firstLatitudeInRadians = firstUserCoordinates.latitude * PI_VALUE / DEGREES_IN_PI_RADIANS;
+    const secondLatitudeInRadians = secondUserCoordinates.latitude * PI_VALUE / DEGREES_IN_PI_RADIANS;
+    const a = Math.pow(Math.sin(latitudeDistance / 2), 2) + Math.pow(Math.sin(longitudeDistance / 2), 2) * Math.cos(firstLatitudeInRadians) * Math.cos(secondLatitudeInRadians);
+    const centralAngle = 2 * Math.asin(Math.sqrt(a));
+    return centralAngle * RADIUS_OF_EARTH_IN_MILES;
+}
+
+const calculateLocationScore = (distanceBetweenLocations) => {
+    const MAX_DISTANCE_IN_MILES = 75;
+    return 1 - (distanceBetweenLocations / MAX_DISTANCE_IN_MILES);
 }
 
 export default CompatibilityScore;
