@@ -23,6 +23,7 @@ const Calendar = () => {
     const [eventId, setEventId] = useState();
     const [busyTimes, setBusyTimes] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const eventPropGetter = (event) => {
@@ -48,8 +49,9 @@ const Calendar = () => {
             const data = await response.json();
             return data;
         }
-        catch {
-            console.log("Error fetching data.")
+        catch (error) {
+            setError("Error. Please try again.");
+            return null;
         }
     }
 
@@ -141,11 +143,9 @@ const Calendar = () => {
         fetchUsers();
     }, [user])
 
-    const matchByAvailability = () => {
-        if (busyTimes){
-            MatchByAvailability(fetchData, allUsers);
-            navigate("/groups");
-        }
+    const matchByAvailability = async () => {
+        await MatchByAvailability(fetchData, allUsers);
+        navigate("/groups");
     }
 
     return (
@@ -180,6 +180,9 @@ const Calendar = () => {
                 />
             )}
             <button className="buttons" id='submit-availability-button' onClick={matchByAvailability}>Submit Availability</button>
+            {error && (
+                <p>{error}</p>
+            )}
         </>
     )
 }

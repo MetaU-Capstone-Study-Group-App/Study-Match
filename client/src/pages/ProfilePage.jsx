@@ -9,6 +9,7 @@ const ProfilePage = () => {
     const {user, setUser} = useUser();
     const [uploadedFile, setUploadedFile] = useState(null);
     const navigate = useNavigate();
+    const [error, setError] = useState("");
 
     const handleLogout = async () => {
         await fetch("http://localhost:3000/auth/logout", {method: "POST", credentials: "include"});
@@ -28,8 +29,9 @@ const ProfilePage = () => {
             }
             return response;
         }
-        catch {
-            console.log("Error fetching data.")
+        catch (error) {
+            setError("Error. Please try again.");
+            return null;
         }
     }
 
@@ -90,6 +92,9 @@ const ProfilePage = () => {
                     </>
                 )}
             </div>
+            {error && (
+                <p>{error}</p>
+            )}
         </main>
 
         <Footer />

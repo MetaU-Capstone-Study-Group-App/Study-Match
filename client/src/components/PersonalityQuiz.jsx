@@ -10,6 +10,7 @@ const PersonalityQuiz = () => {
     const [sliderValue, setSliderValue] = useState(1);
     const [currentQuestionDisplayed, setCurrentQuestionDisplayed] = useState(1);
     const navigate = useNavigate();
+    const [error, setError] = useState("");
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
@@ -24,8 +25,9 @@ const PersonalityQuiz = () => {
             }
             return response;
         }
-        catch {
-            console.log("Error fetching data.")
+        catch (error) {
+            setError("Error. Please try again.");
+            return null;
         }
     }
 
@@ -95,6 +97,9 @@ const PersonalityQuiz = () => {
                 </div>
                 <button className="buttons" id="personality-quiz-button" onClick={handleChangeQuestion}>Next Question</button>
             </div>
+            {error && (
+                <p>{error}</p>
+            )}
             <Footer />
         </div>
     )

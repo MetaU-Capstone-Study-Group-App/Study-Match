@@ -44,7 +44,6 @@ router.post('/signup', async (req, res) => {
 
         res.json({id: req.session.userId, username: newUser.username, name: newUser.name})
     } catch (error) {
-        console.error(error)
         res.status(500).json({error: "Not able to create an account."})
     }
 })
@@ -77,7 +76,6 @@ router.post('/login', async (req, res) => {
 
         res.json({id: req.session.userId, username: user.username, name: user.name})
     } catch (error) {
-        console.error(error)
         res.status(500).json({error: "Not able to login."})
     }
 })
@@ -96,7 +94,6 @@ router.get('/me', async (req, res) => {
 
         res.json({id: req.session.userId, username: user.username, name: user.name})
     } catch (error) {
-        console.error(error);
         res.status(500).json({error: "Error fetching user session data"})
     }
 })
