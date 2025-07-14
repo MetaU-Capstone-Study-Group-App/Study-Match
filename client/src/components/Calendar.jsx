@@ -7,6 +7,7 @@ import EventPopup from "./EventPopup";
 import { useUser } from "../contexts/UserContext";
 import WeekDays from "../data/WeekDays";
 import MatchByAvailability from "../utils/MatchByAvailability";
+import CompatibilityScore from "../utils/CompatibilityScore";
 import { useNavigate } from "react-router-dom";
 
 const localizer = momentLocalizer(moment);
@@ -145,6 +146,7 @@ const Calendar = () => {
 
     const matchByAvailability = async () => {
         await MatchByAvailability(fetchData, allUsers);
+        CompatibilityScore(fetchData, user);
         navigate("/groups");
     }
 
