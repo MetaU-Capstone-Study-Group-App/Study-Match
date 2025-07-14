@@ -32,4 +32,12 @@ router.post('/responses', async (req, res) => {
     res.json(newResponseData);
 })
 
+router.get('/responses/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const userResponses = await prisma.quizResponse.findMany({
+        where: {user_id: parseInt(userId)},
+    });
+    res.json(userResponses);
+})
+
 module.exports = router
