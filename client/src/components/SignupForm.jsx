@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
+import AutocompleteAddress from "./AutocompleteAddress";
 
 const SignupForm = () => {
-    const [formData, setFormData] = useState({username: "", password: "",})
+    const [formData, setFormData] = useState({})
     const [message, setMessage] = useState("")
     const navigate = useNavigate();
     const {user, setUser} = useUser();
@@ -62,6 +63,14 @@ const SignupForm = () => {
         }
     }
 
+    const addAddressCoordinates = (latitude, longitude) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            ["latitude"]: latitude,
+            ["longitude"]: longitude
+        }))
+    }
+
     return (
         <div className="signup">
             <div className="navbar">
@@ -99,6 +108,17 @@ const SignupForm = () => {
                         value={formData.password}
                         onChange={handleChange}
                     />
+                    <label htmlFor="school">College/University</label>
+                    <input
+                        type="text"
+                        className="signup-inputs"
+                        id="school"
+                        name="school"
+                        value={formData.school}
+                        onChange={handleChange}
+                    />
+                    <label htmlFor="address">Address</label>
+                    <AutocompleteAddress addAddressCoordinates={addAddressCoordinates}/>
                 </div>
                 <div className="signup-form-second-section"><h4>Study Group Preferences</h4>
                     <label htmlFor="preferred-time">Preferred Meeting Hours</label>
