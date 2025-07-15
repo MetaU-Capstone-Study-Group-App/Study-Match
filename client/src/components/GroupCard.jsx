@@ -1,5 +1,6 @@
 import '../styles.css'
 
+// Contains the information for an individual study group
 const GroupCard = ({className, dayOfWeek, time, users}) => {
     return (
         <div className="group-card">

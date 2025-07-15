@@ -1,5 +1,6 @@
 import '../styles.css'
 
+// Opens the New Group Modal when clicked
 const CreateGroup = ({setGroupModalIsOpen}) => {
     const handleCreateGroup = () => {
         setGroupModalIsOpen(true);

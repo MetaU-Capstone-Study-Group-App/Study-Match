@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { GOOGLE_MAPS_API_KEY } from "../utils/apiConfig";
 
+// Address input on the Sign Up Form using Google Maps API
 const AutocompleteAddress = ({addAddressCoordinates}) => {
     const inputRef = useRef();
     const [input, setInput] = useState("");

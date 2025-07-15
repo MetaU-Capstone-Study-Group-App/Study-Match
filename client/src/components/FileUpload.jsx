@@ -1,5 +1,6 @@
 import { useRef } from "react"
 
+// Upload user profile picture
 const FileUpload = ({handleFileInputChange}) => {
     const fileInput = useRef(null);
 

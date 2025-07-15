@@ -2,6 +2,7 @@ import { useState } from "react";
 import '../styles.css'
 import WeekDays from "../data/WeekDays";
 
+// Allows users to create a new study group
 const NewGroupModal = ({groupModalIsOpen, onModalClose, createGroup, fetchData, classList, fetchExistingGroups}) => {
     const TIME_INPUT_TYPE = "time";
     const DEFAULT_START = "08:00";

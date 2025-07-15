@@ -3,6 +3,7 @@ import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import AutocompleteAddress from "./AutocompleteAddress";
 
+// Allows users to create an account
 const SignupForm = () => {
     const [formData, setFormData] = useState({})
     const [message, setMessage] = useState("")

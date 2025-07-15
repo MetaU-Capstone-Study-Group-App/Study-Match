@@ -5,6 +5,7 @@ import '../styles.css'
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
+// Displayed before a user logs into their account or creates an account
 const InitialPage = () => {
     const navigate = useNavigate();
 

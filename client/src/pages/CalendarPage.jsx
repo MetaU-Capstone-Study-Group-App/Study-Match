@@ -1,6 +1,7 @@
 import Footer from "../components/Footer";
 import Calendar from "../components/Calendar";
 
+// Allows users to input their availability/classes
 const CalendarPage = () => {
     return (
         <div className="calendar-page-container">
