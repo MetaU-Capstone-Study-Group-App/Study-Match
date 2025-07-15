@@ -9,6 +9,8 @@ const SignupForm = () => {
     const navigate = useNavigate();
     const {user, setUser} = useUser();
     const [error, setError] = useState("");
+    const [goalOptions, setGoalOptions] = useState([]);
+    const [selectedGoals, setSelectedGoals] = useState([]);
 
     const handleChange = (event) => {
         const {name, value} = event.target
@@ -30,7 +32,8 @@ const SignupForm = () => {
             if (!response.ok){
                 throw new Error('Not able to fetch data.')
             }
-            return response;
+            const data = await response.json();
+            return data;
         }
         catch (error) {
             setError("Error. Please try again.");
@@ -45,19 +48,25 @@ const SignupForm = () => {
         const newQuiz = await fetchData("quiz/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newQuizData));
     }
 
+    const createUserGoals = async (userId) => {
+        for (const goal of selectedGoals){
+            const newGoalData = {
+                user_id: userId,
+                goal_id: parseInt(goal)
+            }
+            const newUserGoal = await fetchData("user/goals", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGoalData));
+        }
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault(); 
         try {
-            const response = await fetchData("auth/signup", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(formData))
-            const data = await response.json()
-            if (response.ok) {
-                setMessage({type: "success", text: "Signup successful!"})
-                setUser(data); 
-                createPersonalityQuiz(data.id);
-                navigate("/personalityQuiz");
-            } else {
-                setMessage({type: "error", text: data.error || "Signup failed."})
-            }
+            const data = await fetchData("auth/signup", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(formData))
+            setMessage({type: "success", text: "Signup successful!"})
+            setUser(data); 
+            createPersonalityQuiz(data.id);
+            createUserGoals(data.id);
+            navigate("/personalityQuiz");
         } catch (error) {
             setMessage({type: "error", text: "Network error. Please try again."})
         }
@@ -70,6 +79,15 @@ const SignupForm = () => {
             ["longitude"]: longitude
         }))
     }
+
+    const fetchGoals = async () => {
+        const goals = await fetchData("user/goals", "GET");
+        setGoalOptions(goals);
+    }
+
+    useEffect(() => {
+        fetchGoals();
+    }, [])
 
     return (
         <div className="signup">
@@ -117,6 +135,31 @@ const SignupForm = () => {
                         value={formData.school}
                         onChange={handleChange}
                     />
+                    <label htmlFor="class-standing">Class Standing</label>
+                    <select name="class_standing" id="class-standing" className="signup-inputs" value={formData.class_standing} onChange={handleChange}>
+                        <option disabled selected>Select an option</option>
+                        <option value="freshman">Freshman</option>
+                        <option value="sophomore">Sophomore</option>
+                        <option value="junior">Junior</option>
+                        <option value="senior">Senior</option>
+                    </select>
+                    <label htmlFor="goals">Study Group Goals</label>
+                    <select
+                        className="signup-inputs"
+                        value={selectedGoals}
+                        multiple={true}
+                        onChange={(e) => {
+                            const goals = Array.from(e.target.options);
+                            const selectedOptions = goals.filter((goal) => goal.selected).map((goal) => goal.value);
+                            setSelectedGoals(selectedOptions);
+                        }}
+                        required
+                    >
+                        <option value="" disabled>Select all that apply</option>
+                        {goalOptions.map((goal) => (
+                            <option value={goal.id} key={goal.id}>{goal.goal}</option> 
+                        ))}
+                    </select>
                     <label htmlFor="address">Address</label>
                     <AutocompleteAddress addAddressCoordinates={addAddressCoordinates}/>
                 </div>

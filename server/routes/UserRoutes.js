@@ -49,4 +49,36 @@ router.get('/address/:userId', async (req, res) => {
     res.json({latitude: currentUser.address_latitude, longitude: currentUser.address_longitude});
 })
 
+router.get('/schoolInfo/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const currentUser = await prisma.user.findUnique({
+        where: {id: parseInt(userId)},
+    });
+    res.json({class_standing: currentUser.class_standing, school: currentUser.school});
+})
+
+router.get('/goals', async (req, res) => {
+    const goals = await prisma.goalOption.findMany();
+    res.json(goals);
+})
+
+router.post('/goals', async (req, res) => {
+    const {user_id, goal_id} = req.body
+    const newUserGoal = await prisma.userGoal.create({
+        data: {
+            user_id,
+            goal_id
+        }
+    })
+    res.json(newUserGoal);
+})
+
+router.get('/userGoals/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const currentUser = await prisma.userGoal.findMany({
+        where: {user_id: parseInt(userId)},
+    });
+    res.json(currentUser);
+})
+
 module.exports = router

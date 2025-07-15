@@ -1,3 +1,5 @@
+import SchoolStanding from "../data/SchoolStanding";
+
 const calculateIndividualPersonalityScore = async (userId, fetchData) => {
     const quizResponses = await fetchData(`quiz/responses/${userId}`, "GET");
     const personalityTraitScores = new Map();
@@ -44,6 +46,43 @@ const calculateLocationDistance = (firstUserCoordinates, secondUserCoordinates) 
 const calculateLocationScore = (distanceBetweenLocations) => {
     const MAX_DISTANCE_IN_MILES = 75;
     return 1 - (distanceBetweenLocations / MAX_DISTANCE_IN_MILES);
+}
+
+const calculateClassStandingScore = (firstSchoolInfo, secondSchoolInfo) => {
+    const NUM_OF_CLASS_STANDINGS = 4;
+    const standingDifference = Math.abs(SchoolStanding[secondSchoolInfo.class_standing] - SchoolStanding[firstSchoolInfo.class_standing]);
+    return 1 - (standingDifference / NUM_OF_CLASS_STANDINGS);
+}
+
+const calculateSchoolScore = (firstSchoolInfo, secondSchoolInfo) => {
+    const firstUserSchool = firstSchoolInfo.school.toLowerCase().replace(/\s/g, '');
+    const secondUserSchool = secondSchoolInfo.school.toLowerCase().replace(/\s/g, '');
+    if (firstUserSchool === secondUserSchool){
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+const calculateGoalsScore = (firstUserGoals, secondUserGoals) => {
+    const firstUserGoalIds = [];
+    for (const goal of firstUserGoals){
+        firstUserGoalIds.push(goal.goal_id)
+    }
+    const secondUserGoalIds = [];
+    for (const goal of secondUserGoals){
+        secondUserGoalIds.push(goal.goal_id)
+    }
+    const firstUserSet = new Set(firstUserGoalIds);
+    const secondUserSet = new Set(secondUserGoalIds);
+    const unionSet = firstUserSet.union(secondUserSet);
+    const intersectionSet = firstUserSet.intersection(secondUserSet);
+    return intersectionSet.size / unionSet.size;
+}
+
+const CompatibilityScore = async (fetchData, user) => {
+    
 }
 
 export default CompatibilityScore;
