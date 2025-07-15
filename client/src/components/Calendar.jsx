@@ -15,6 +15,7 @@ const DEFAULT_YEAR = 2025;
 const DEFAULT_MONTH = 5;
 const DEFAULT_DAY = 1;
 
+// Calendar component that takes in user availability using React Big Calendar and Moment.js
 const Calendar = () => {
     const {user, setUser} = useUser();
     const [events, setEvents] = useState([]);

@@ -1,3 +1,4 @@
+// Questions relating to Big Five Personality traits that are used in the Personality Quiz
 const PersonalityQuestions = [
     {
         id: 1,

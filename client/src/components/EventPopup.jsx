@@ -8,6 +8,7 @@ const DEFAULT_YEAR = 2025;
 const DEFAULT_MONTH = 5;
 const END_OF_TIME_FORMAT_LENGTH = 5;
 
+// Individual event component used to display classes/events in the Calendar component
 const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData, user}) => {
     const [title, setTitle] = useState("");
     const [start, setStart] = useState("");

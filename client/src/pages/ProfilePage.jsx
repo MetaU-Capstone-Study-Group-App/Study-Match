@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import FileUpload from '../components/FileUpload';
 import Footer from '../components/Footer';
 
+// Displays profile information for a specific user
 const ProfilePage = () => {
     const {user, setUser} = useUser();
     const [uploadedFile, setUploadedFile] = useState(null);

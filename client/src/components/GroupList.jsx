@@ -3,6 +3,7 @@ import '../styles.css'
 import WeekDays from '../data/WeekDays'
 import { useEffect, useState } from 'react'
 
+// Displays all of a user's study groups in a grid format
 const GroupList = ({data, user, existingGroups, getClassName, getUserName}) => {
     const GENERIC_DATE = `2025-07-01T`;
     const [userExistingGroups, setUserExistingGroups] = useState([]);

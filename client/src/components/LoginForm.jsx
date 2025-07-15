@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext';
 import '../styles.css'
 
+// Allows users to login with username and password
 const LoginForm = () => {
     const [formData, setFormData] = useState({username: "", password: ""});
     const [message, setMessage] = useState("");

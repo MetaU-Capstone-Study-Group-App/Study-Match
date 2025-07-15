@@ -1,5 +1,6 @@
 import SchoolStanding from "../data/SchoolStanding";
 
+// Calculates average score for each Big Five Personality Trait using personality quiz results
 const calculateIndividualPersonalityScore = async (userId, fetchData) => {
     const quizResponses = await fetchData(`quiz/responses/${userId}`, "GET");
     const personalityTraitScores = new Map();
@@ -17,6 +18,7 @@ const calculateIndividualPersonalityScore = async (userId, fetchData) => {
     return personalityTraitScores;
 }
 
+// Calculates personality compatibility score between two users using mean absolute deviation (1 = perfectly compatible, 0 = not compatible)
 const calculatePairPersonalityScore = async (firstUserId, secondUserId, fetchData) => {
     const firstUserScores = await calculateIndividualPersonalityScore(firstUserId, fetchData);
     const secondUserScores = await calculateIndividualPersonalityScore(secondUserId, fetchData);
@@ -30,6 +32,7 @@ const calculatePairPersonalityScore = async (firstUserId, secondUserId, fetchDat
     return 1 - (difference / MAX_TRAIT_DIFFERENCE);
 }
 
+// Calculates distance (in miles) between two addresses using their latitude and longitude coordinates and the Haversine formula
 const calculateLocationDistance = (firstUserCoordinates, secondUserCoordinates) => {
     const PI_VALUE = Math.PI;
     const DEGREES_IN_PI_RADIANS = 180;
@@ -43,17 +46,20 @@ const calculateLocationDistance = (firstUserCoordinates, secondUserCoordinates) 
     return centralAngle * RADIUS_OF_EARTH_IN_MILES;
 }
 
+// Calculates location compatibility score between two users using the distance between their addresses and the max reasonable distance a user can travel (75 miles)
 const calculateLocationScore = (distanceBetweenLocations) => {
     const MAX_DISTANCE_IN_MILES = 75;
     return 1 - (distanceBetweenLocations / MAX_DISTANCE_IN_MILES);
 }
 
+// Uses mean absolute deviation of two class standings to calculate class standing compatibility score
 const calculateClassStandingScore = (firstSchoolInfo, secondSchoolInfo) => {
     const NUM_OF_CLASS_STANDINGS = 4;
     const standingDifference = Math.abs(SchoolStanding[secondSchoolInfo.class_standing] - SchoolStanding[firstSchoolInfo.class_standing]);
     return 1 - (standingDifference / NUM_OF_CLASS_STANDINGS);
 }
 
+// Returns 1 if users attend the same school and 0 otherwise
 const calculateSchoolScore = (firstSchoolInfo, secondSchoolInfo) => {
     const firstUserSchool = firstSchoolInfo.school.toLowerCase().replace(/\s/g, '');
     const secondUserSchool = secondSchoolInfo.school.toLowerCase().replace(/\s/g, '');
@@ -65,6 +71,7 @@ const calculateSchoolScore = (firstSchoolInfo, secondSchoolInfo) => {
     }
 }
 
+// Divides the intersection of two sets of goals by their union to calculate goals compatibility score
 const calculateGoalsScore = (firstUserGoals, secondUserGoals) => {
     const firstUserGoalIds = [];
     for (const goal of firstUserGoals){

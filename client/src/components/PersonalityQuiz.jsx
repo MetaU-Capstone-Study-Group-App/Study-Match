@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 
+// Quiz with 10 questions relating to Big Five Personality traits and a slider from 1-5 as the response for each question
 const PersonalityQuiz = () => {
     const {user, setUser} = useUser();
     const [sliderValue, setSliderValue] = useState(1);

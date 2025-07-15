@@ -14,6 +14,7 @@ const sortBusyTimes = (busyTimes) => {
     return busyTimesPerDay;
 }
 
+// Calculates all time slots during which a user is free
 const getFreeTimes = (busyTimesPerDay, stringToTime) => {
     const STUDY_GROUPS_START = 0;
     const STUDY_GROUPS_END = 24 * 60;
@@ -78,6 +79,7 @@ const getFreeTimes = (busyTimesPerDay, stringToTime) => {
     return freeTimes;
 }
 
+// Splits free time slots into individual one hour time slots
 const getOneHourFreeTimes = (day, dayOfWeek) => {
     const oneHourFreeTimes = [];
     for (const freeTime of day){
@@ -97,6 +99,7 @@ const getOneHourFreeTimes = (day, dayOfWeek) => {
     return oneHourFreeTimes;
 }
 
+// Splits a user's preferred time slot into individual one hour time slots
 const splitPreferredTimes = (preferredTimes) => {
     const oneHourPreferredTimes = [];
     let currentEnd = preferredTimes.preferred_end_time;
@@ -114,6 +117,7 @@ const splitPreferredTimes = (preferredTimes) => {
     return oneHourPreferredTimes;
 }
 
+// Returns all one hour time slots where users are taking the same class and are all free during that time
 const findSharedAvailability = async (usersInEachClass, fetchData, stringToTime) => {
     const sharedUserAvailability = new Map();
     const classIds = [];
@@ -171,6 +175,7 @@ const findSharedAvailability = async (usersInEachClass, fetchData, stringToTime)
     return finalSharedUserAvailability;
 }
 
+// Creates study groups where users are taking the same class and are all free during that specific time
 const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvailability) => {
     const existingGroups = await fetchData("group/existingGroup/", "GET");
 
@@ -198,6 +203,8 @@ const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvail
     return filteredExistingGroups;
 }
 
+// Filters possible study groups to only include those within a user's preferred time slot
+// If there are no existing groups during a user's preferred time slot, the other possible study groups where the user is free will be displayed
 const filterByPreferredTime = async (groupsByAvailability, allUsers, fetchData, stringToTime) => {
     const filteredByTimeGroups = new Map();
     for (const user of allUsers){
@@ -251,6 +258,7 @@ const filterByPreferredTime = async (groupsByAvailability, allUsers, fetchData, 
     return filteredByTimeGroups;
 }
 
+// Saves study groups in the database after they are created
 const createUserExistingGroups = async (fetchData, filteredByTimeGroups) => {
     for (const group of filteredByTimeGroups){
         const user_id = group[0];
@@ -268,6 +276,7 @@ const createUserExistingGroups = async (fetchData, filteredByTimeGroups) => {
     }
 }
 
+// Matches users into study groups based on the classes they're taking, availability, and preferred times
 const MatchByAvailability = async (fetchData, allUsers) => {
     const usersInEachClass = [];
     

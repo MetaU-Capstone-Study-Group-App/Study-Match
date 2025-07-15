@@ -7,6 +7,7 @@ import NewGroupModal from '../components/NewGroupModal';
 import { useUser } from "../contexts/UserContext";
 import GroupList from '../components/GroupList';
 
+// Displays all of the study groups a user is matched into
 const GroupsPage = () => {
     const [groupModalIsOpen, setGroupModalIsOpen] = useState(false);
     const [classList, setClassList] = useState([]);
