@@ -2,11 +2,13 @@ import GroupCard from './GroupCard'
 import '../styles.css'
 import WeekDays from '../data/WeekDays'
 import { useEffect, useState } from 'react'
+import CompatibilityScore from '../utils/CompatibilityScore'
 
 // Displays all of a user's study groups in a grid format
-const GroupList = ({data, user, existingGroups, getClassName, getUserName}) => {
+const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetchData}) => {
     const GENERIC_DATE = `2025-07-01T`;
     const [userExistingGroups, setUserExistingGroups] = useState([]);
+    const [groupScores, setGroupScores] = useState(0);
 
     const getExistingGroupInfo = (groupId) => {
         for (const group of existingGroups){
@@ -30,9 +32,44 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName}) => {
         return groupMembers;
     }
 
+    const calculateGroupCompatibilityScore = (compatibilityScores) => {
+        let totalScore = 0;
+        for (const score of compatibilityScores){
+            totalScore += parseFloat(score);
+        }
+        return totalScore / compatibilityScores.length;
+    }
+
+    const calculateAllGroupScores = async () => {
+        const compatibilityScorePromises = [];
+        const compatibilityScores = {};
+        const existingGroupIds = [...new Set(userExistingGroups.map((obj) => obj.existing_group_id))];
+        for (const groupId of existingGroupIds){
+            compatibilityScorePromises.length = 0;
+            const groupMembers = getGroupMembers(groupId);
+            for (const member of groupMembers){
+                if (member !== user.id && groupMembers.length > 1){
+                    compatibilityScorePromises.push(CompatibilityScore(user.id, member, fetchData));
+                }
+                else if (groupMembers.length === 1){
+                    compatibilityScorePromises.push(1);
+                }
+            }
+            const finalScores = await Promise.all(compatibilityScorePromises);
+            compatibilityScores[groupId] = calculateGroupCompatibilityScore(finalScores);
+        }
+        setGroupScores(compatibilityScores);
+    }
+
     useEffect(() => {
         setUserExistingGroups(data);
     }, [data])
+
+    useEffect(() => {
+        if (user){
+            calculateAllGroupScores();
+        }
+    }, [userExistingGroups, user])
 
     if (!data || !user){
         return (
@@ -56,8 +93,9 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName}) => {
                                 for (const member of groupMembers){
                                     userNames.push(getUserName(member))
                                 }
+                                const groupScore = groupScores[obj.existing_group_id] ? groupScores[obj.existing_group_id] : null;
                                 return (
-                                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames}/>
+                                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore}/>
                                 )
                             }
                         }

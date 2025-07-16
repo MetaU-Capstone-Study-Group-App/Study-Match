@@ -116,7 +116,7 @@ const GroupsPage = () => {
                 {isLoading ? (
                     <div>Loading...</div>
                 ) : (
-                    <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName}/>
+                    <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName} fetchData={fetchData}/>
                 )}
                 {error && (
                     <p>{error}</p>
