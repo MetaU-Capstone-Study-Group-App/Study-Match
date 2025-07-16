@@ -1,4 +1,5 @@
 import SchoolStanding from "../data/SchoolStanding";
+import ScoreWeights from "../data/ScoreWeights";
 
 // Calculates average score for each Big Five Personality Trait using personality quiz results
 const calculateIndividualPersonalityScore = async (userId, fetchData) => {
@@ -33,7 +34,9 @@ const calculatePairPersonalityScore = async (firstUserId, secondUserId, fetchDat
 }
 
 // Calculates distance (in miles) between two addresses using their latitude and longitude coordinates and the Haversine formula
-const calculateLocationDistance = (firstUserCoordinates, secondUserCoordinates) => {
+const calculateLocationDistance = async (firstUserId, secondUserId, fetchData) => {
+    const firstUserCoordinates = await fetchData(`user/address/${firstUserId}`, "GET");
+    const secondUserCoordinates = await fetchData(`user/address/${secondUserId}`, "GET");
     const PI_VALUE = Math.PI;
     const DEGREES_IN_PI_RADIANS = 180;
     const RADIUS_OF_EARTH_IN_MILES = 3959;
@@ -47,7 +50,8 @@ const calculateLocationDistance = (firstUserCoordinates, secondUserCoordinates) 
 }
 
 // Calculates location compatibility score between two users using the distance between their addresses and the max reasonable distance a user can travel (75 miles)
-const calculateLocationScore = (distanceBetweenLocations) => {
+const calculateLocationScore = async (firstUserId, secondUserId, fetchData) => {
+    const distanceBetweenLocations = await calculateLocationDistance(firstUserId, secondUserId, fetchData);
     const MAX_DISTANCE_IN_MILES = 75;
     return 1 - (distanceBetweenLocations / MAX_DISTANCE_IN_MILES);
 }
@@ -72,7 +76,9 @@ const calculateSchoolScore = (firstSchoolInfo, secondSchoolInfo) => {
 }
 
 // Divides the intersection of two sets of goals by their union to calculate goals compatibility score
-const calculateGoalsScore = (firstUserGoals, secondUserGoals) => {
+const calculateGoalsScore = async (firstUserId, secondUserId, fetchData) => {
+    const firstUserGoals = await fetchData(`user/userGoals/${firstUserId}`, "GET");
+    const secondUserGoals = await fetchData(`user/userGoals/${secondUserId}`, "GET");
     const firstUserGoalIds = [];
     for (const goal of firstUserGoals){
         firstUserGoalIds.push(goal.goal_id)
@@ -88,8 +94,27 @@ const calculateGoalsScore = (firstUserGoals, secondUserGoals) => {
     return intersectionSet.size / unionSet.size;
 }
 
-const CompatibilityScore = async (fetchData, user) => {
-    
+// Uses the five metrics above and their respective weights to calculate overall compatibility score
+const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fetchData) => {
+    const personalityScore = await calculatePairPersonalityScore(firstUserId, secondUserId, fetchData);
+    const locationScore = await calculateLocationScore(firstUserId, secondUserId, fetchData); 
+    const firstUserSchoolInfo = await fetchData(`user/schoolInfo/${firstUserId}`, "GET");
+    const secondUserSchoolInfo = await fetchData(`user/schoolInfo/${secondUserId}`, "GET");
+    const classStandingScore = calculateClassStandingScore(firstUserSchoolInfo, secondUserSchoolInfo);
+    const schoolScore = calculateSchoolScore(firstUserSchoolInfo, secondUserSchoolInfo);
+    const goalsScore = await calculateGoalsScore(firstUserId, secondUserId, fetchData);
+    return (
+        (personalityScore * ScoreWeights["personality"]) + 
+        (locationScore * ScoreWeights["location"]) + 
+        (classStandingScore * ScoreWeights["class_standing"]) + 
+        (schoolScore * ScoreWeights["school"]) + 
+        (goalsScore * ScoreWeights["goals"])
+    );
+}
+
+const CompatibilityScore = async (firstUserId, secondUserId, fetchData) => {
+    const overallScore = await calculateOverallCompatibilityScore(firstUserId, secondUserId, fetchData);
+    return overallScore.toFixed(2);
 }
 
 export default CompatibilityScore;

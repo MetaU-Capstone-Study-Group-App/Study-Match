@@ -1,7 +1,7 @@
 import '../styles.css'
 
 // Contains the information for an individual study group
-const GroupCard = ({className, dayOfWeek, time, users}) => {
+const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore}) => {
     return (
         <div className="group-card">
             <h3 className="group-card-title">{className}</h3>
@@ -15,6 +15,7 @@ const GroupCard = ({className, dayOfWeek, time, users}) => {
                     )
                 })}
             </div>
+            <p className="group-compatibility">Group Compatibility Score: {groupCompatibilityScore}</p>
             <div className="group-card-buttons">
                 <button className="buttons">Accept</button>
                 <button className="buttons">Reject</button>
