@@ -56,7 +56,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
                 }
             }
             const finalScores = await Promise.all(compatibilityScorePromises);
-            compatibilityScores[groupId] = calculateGroupCompatibilityScore(finalScores);
+            compatibilityScores[groupId] = calculateGroupCompatibilityScore(finalScores).toFixed(2);
         }
         setGroupScores(compatibilityScores);
     }
