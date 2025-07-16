@@ -68,7 +68,7 @@ const calculateLocationScore = async (firstUserId, secondUserId, fetchData) => {
 
 // Uses mean absolute deviation of two class standings to calculate class standing compatibility score
 const calculateClassStandingScore = (firstSchoolInfo, secondSchoolInfo) => {
-    if (firstSchoolInfo.class_standing && firstSchoolInfo.school && secondSchoolInfo.class_standing && secondSchoolInfo.school){
+    if (firstSchoolInfo.class_standing && secondSchoolInfo.class_standing){
         const NUM_OF_CLASS_STANDINGS = 4;
         const standingDifference = Math.abs(SchoolStanding[secondSchoolInfo.class_standing] - SchoolStanding[firstSchoolInfo.class_standing]);
         return 1 - (standingDifference / NUM_OF_CLASS_STANDINGS);
@@ -80,7 +80,7 @@ const calculateClassStandingScore = (firstSchoolInfo, secondSchoolInfo) => {
 
 // Returns 1 if users attend the same school and 0 otherwise
 const calculateSchoolScore = (firstSchoolInfo, secondSchoolInfo) => {
-    if (firstSchoolInfo.class_standing && firstSchoolInfo.school && secondSchoolInfo.class_standing && secondSchoolInfo.school){
+    if (firstSchoolInfo.school && secondSchoolInfo.school){
         const firstUserSchool = firstSchoolInfo.school.toLowerCase().replace(/\s/g, '');
         const secondUserSchool = secondSchoolInfo.school.toLowerCase().replace(/\s/g, '');
         if (firstUserSchool === secondUserSchool){
@@ -122,28 +122,34 @@ const calculateGoalsScore = async (firstUserId, secondUserId, fetchData) => {
 // Uses the five metrics above and their respective weights to calculate overall compatibility score
 const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fetchData) => {
     const scores = [];
+    const NUM_OF_METRICS = 5;
     const personalityScore = await calculatePairPersonalityScore(firstUserId, secondUserId, fetchData);
-    scores.push(personalityScore * ScoreWeights["personality"]);
     const locationScore = await calculateLocationScore(firstUserId, secondUserId, fetchData);
-    if (locationScore){
-        scores.push(locationScore * ScoreWeights["location"]);
-    } 
     const firstUserSchoolInfo = await fetchData(`user/schoolInfo/${firstUserId}`, "GET");
     const secondUserSchoolInfo = await fetchData(`user/schoolInfo/${secondUserId}`, "GET");
     const classStandingScore = calculateClassStandingScore(firstUserSchoolInfo, secondUserSchoolInfo);
-    if (classStandingScore){
-        scores.push(classStandingScore * ScoreWeights["class_standing"]);
-    }
     const schoolScore = calculateSchoolScore(firstUserSchoolInfo, secondUserSchoolInfo);
-    if (schoolScore){
-        scores.push(schoolScore * ScoreWeights["school"]);
-    }
     const goalsScore = await calculateGoalsScore(firstUserId, secondUserId, fetchData);
-    if (goalsScore){
-        scores.push(goalsScore * ScoreWeights["goals"]);
+    const METRICS = [personalityScore, locationScore, classStandingScore, schoolScore, goalsScore];
+    const STRING_METRICS = ["personalityScore", "locationScore", "classStandingScore", "schoolScore", "goalsScore"];
+    let sumOfExistingWeights = 0;
+    for (let i = 0; i < METRICS.length; i++){
+        if (METRICS[i] || METRICS[i] === 0){
+            scores.push({score_weight: ScoreWeights[STRING_METRICS[i]], score_value: METRICS[i] * ScoreWeights[STRING_METRICS[i]]});
+            sumOfExistingWeights += ScoreWeights[STRING_METRICS[i]];
+        }
     }
-    const overallScore = scores.reduce((a, b) => {
-        return a + b
+    if (scores.length !== NUM_OF_METRICS){
+        for (const s of scores){
+            const newWeight = s.score_weight + (1 - sumOfExistingWeights) / scores.length;
+            s.score_value = (s.score_value / s.score_weight) * newWeight;
+        }
+    }
+    const filteredScores = scores.map((score) => ({
+        score: score.score_value
+    }));
+    const overallScore = filteredScores.reduce((a, b) => {
+        return a + b.score
     }, 0);
     return overallScore;
 }
