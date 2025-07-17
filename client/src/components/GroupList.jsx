@@ -9,6 +9,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
     const GENERIC_DATE = `2025-07-01T`;
     const [userExistingGroups, setUserExistingGroups] = useState([]);
     const [groupScores, setGroupScores] = useState(0);
+    let previousClasses = [];
 
     const getExistingGroupInfo = (groupId) => {
         for (const group of existingGroups){
@@ -77,15 +78,31 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
         )
     }
 
+    const filteredUserGroups = userExistingGroups.filter((obj) => obj.user_id == user.id);
+    const sortedByCompatibilityGroups = filteredUserGroups.sort((a,b) => {
+        return groupScores[b.existing_group_id] - groupScores[a.existing_group_id];
+    })
+
     return (
         <main>
             <div className="group-list-container">
                 {
-                    userExistingGroups.map(obj => {
+                    sortedByCompatibilityGroups.map(obj => {
                         if (user) {
                             if (obj.user_id == user.id){
                                 const groupInfo = getExistingGroupInfo(obj.existing_group_id);
                                 const className = getClassName(groupInfo.class_id);
+                                let recommendedCard = false;
+                                let previousClassCount = 0;
+                                previousClasses.map((c) => {
+                                    if (className === c){
+                                        previousClassCount++;
+                                    }
+                                })
+                                if (previousClassCount === 0){
+                                    recommendedCard = true;
+                                }
+                                previousClasses.push(className);
                                 const dayOfWeek = Object.keys(WeekDays)[groupInfo.day_of_week - 1];
                                 const time = groupInfo.start_time + " - " + groupInfo.end_time;
                                 const groupMembers = getGroupMembers(obj.existing_group_id)
@@ -95,7 +112,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
                                 }
                                 const groupScore = groupScores[obj.existing_group_id] ? groupScores[obj.existing_group_id] : null;
                                 return (
-                                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore}/>
+                                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} recommended={recommendedCard}/>
                                 )
                             }
                         }

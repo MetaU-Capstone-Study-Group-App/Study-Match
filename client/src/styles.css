@@ -440,6 +440,16 @@ button:focus-visible {
     padding-bottom: 30px;
 }
 
+.recommended-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    font-weight: 600;
+    background-color: #ececec;
+}
+
 .group-card-buttons {
     display: flex;
     justify-content: center;
@@ -449,6 +459,7 @@ button:focus-visible {
 
 .group-card:hover {
     transform: scale(1.03) translateY(-2px);
+    cursor: pointer;
 }
 
 .group-card-title {
@@ -470,4 +481,26 @@ button:focus-visible {
     margin-bottom: 20px;
 }
 
+.pill-component {
+    border-radius: 8px;
+    font-size: 0.8em;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.25s;
+    padding: 2px;
+    margin-bottom: 20px;
+}
+
+#pill-component-green {
+    background-color: #adebb3;
+}
+
+#pill-component-yellow {
+    background-color: #ffee8c;
+}
+
+#pill-component-red {
+    background-color: #ff7f7f;
+}
 
