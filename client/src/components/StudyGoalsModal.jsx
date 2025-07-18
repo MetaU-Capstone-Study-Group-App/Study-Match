@@ -35,10 +35,10 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className}) => {
                 <div className="new-group-modal-close-button">
                     <span className="close" onClick={handleModalClose}>&times;</span>
                 </div>
-                <h3>Generate Study Goals For Your Group</h3>
+                <h3>Generate Study Goals for {className}</h3>
                 <form onSubmit={handleNewGoalsSubmit} className="new-group-modal-form">
-                    <label htmlFor="resources-input">Input class resources here:</label>
-                    <input type="text" value={inputValue} onChange={handleInputChange}></input>
+                    <label htmlFor="resources-input">Input Class Resources:</label>
+                    <textarea value={inputValue} rows={5} onChange={handleInputChange} placeholder="Please input class resources like notes, syllabi, flashcards, etc."></textarea>
                     <div className="new-group-modal-buttons">
                         <button type="submit" className="new-group-modal-submit">Submit</button>
                     </div>
@@ -47,10 +47,7 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className}) => {
                     <h4>Main Study Goals:</h4>
                     {
                         !loading && mainStudyGoals === "" && 
-                        <div>
-                            <div>There are no available study goals for this group yet.</div>
-                            <div>Please input class resources like notes, syllabi, flashcards, etc.</div>
-                        </div>
+                        <div>There are no available study goals for this group yet.</div>
                     }
                     {loading && 
                         <LoadingIndicator loading={loading} />

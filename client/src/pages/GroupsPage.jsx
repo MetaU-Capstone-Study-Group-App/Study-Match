@@ -17,6 +17,7 @@ const GroupsPage = () => {
     const [allUsers, setAllUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const [currentStatus, setCurrentStatus] = useState({});
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
@@ -80,7 +81,7 @@ const GroupsPage = () => {
 
     useEffect(() => {
         loadData();
-    }, [])
+    }, [currentStatus])
 
     const getClassName = (classId) => {
         for (const c of classList){
@@ -103,6 +104,14 @@ const GroupsPage = () => {
         }
     }
 
+    const handleUpdateGroupStatus = async (groupId, updatedStatus) => {
+        const newStatus = {
+            status: updatedStatus
+        }
+        const updatedGroup = await fetchData(`group/userExistingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newStatus));
+        setCurrentStatus({groupId, updatedStatus});
+    }
+
     return (
         <div className="groups-page">
             <header className="groups-page-header">
@@ -116,7 +125,7 @@ const GroupsPage = () => {
                 {isLoading ? (
                     <div>Loading...</div>
                 ) : (
-                    <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName} fetchData={fetchData}/>
+                    <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName} fetchData={fetchData} handleUpdateGroupStatus={handleUpdateGroupStatus} currentStatus={currentStatus}/>
                 )}
                 {error && (
                     <p>{error}</p>
