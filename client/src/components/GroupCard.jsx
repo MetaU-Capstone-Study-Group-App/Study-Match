@@ -32,7 +32,7 @@ const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, 
                 <button className="buttons">Reject</button>
             </div>
             <CreateStudyGoals setStudyGoalsModalIsOpen={setStudyGoalsModalIsOpen}/>
-            <StudyGoalsModal studyGoalsModalIsOpen={studyGoalsModalIsOpen} onModalClose={onModalClose}/>
+            <StudyGoalsModal studyGoalsModalIsOpen={studyGoalsModalIsOpen} onModalClose={onModalClose} className={className}/>
         </div>
     )
 }
