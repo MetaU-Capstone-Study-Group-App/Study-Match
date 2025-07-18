@@ -29,6 +29,14 @@ router.post('/userExistingGroup', async (req, res) => {
     res.json(newUserExistingGroupData);
 })
 
+router.get('/userExistingGroup/recommend/:groupId', async (req, res) => {
+    const groupId = parseInt(req.params.groupId)
+    const isRecommended = await prisma.userExistingGroup.findUnique({
+        where: {id: parseInt(groupId)},
+    });
+    res.json(isRecommended.recommended);
+})
+
 router.get('/userExistingGroup/:userId/:groupId', async (req, res) => {
     const userId = parseInt(req.params.userId)
     const groupId = parseInt(req.params.groupId)
@@ -49,6 +57,29 @@ router.get('/existingGroup', async (req, res) => {
 router.get('/userExistingGroup', async (req, res) => {
     const userExistingGroups = await prisma.userExistingGroup.findMany();
     res.json(userExistingGroups);
+})
+
+router.put('/userExistingGroup/recommend/:groupId', async (req, res) => {
+    const groupId = parseInt(req.params.groupId);
+    const updatedGroupData = await prisma.userExistingGroup.update({
+        where: {id: parseInt(groupId)},
+        data: {
+            recommended: true
+        }
+    })
+    res.json(updatedGroupData);
+})
+
+router.put('/userExistingGroup/:groupId', async (req, res) => {
+    const groupId = parseInt(req.params.groupId);
+    const {status} = req.body;
+    const updatedGroupData = await prisma.userExistingGroup.update({
+        where: {id: parseInt(groupId)},
+        data: {
+            status
+        }
+    })
+    res.json(updatedGroupData);
 })
 
 module.exports = router

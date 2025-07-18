@@ -331,7 +331,7 @@ button:focus-visible {
 }
 
 #create-group-button {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .new-group-modal {
@@ -377,7 +377,7 @@ button:focus-visible {
     flex-direction: column;
 }
 
-.new-group-modal-form input {
+.new-group-modal-form input, .new-group-modal-form textarea {
     padding: 15px;
 }
 
@@ -419,11 +419,15 @@ button:focus-visible {
 }
 
 .group-list-container {
-    gap: 15px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     padding-bottom: 80px;
+    flex-direction: column;
+}
+
+.group-list-section {
+    display: flex;
 }
 
 .group-card, .hover-group-card {
@@ -438,6 +442,7 @@ button:focus-visible {
     box-shadow: 0 12px 20px rgba(0,0,0,0.15);
     border-radius: 10px;
     padding-bottom: 30px;
+    gap: 5px;
 }
 
 .recommended-text {
