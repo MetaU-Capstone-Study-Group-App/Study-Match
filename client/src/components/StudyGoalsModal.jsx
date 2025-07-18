@@ -1,7 +1,12 @@
 import { useState } from "react";
+import GoalsGenerator from "./GoalsGenerator";
+import LoadingIndicator from "./LoadingIndicator";
+import ReactMarkdown from "react-markdown";
 
-const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose}) => {
+const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className}) => {
     const [inputValue, setInputValue] = useState("");
+    const [mainStudyGoals, setMainStudyGoals] = useState("");
+    const [loading, setLoading] = useState(false);
 
     if (!studyGoalsModalIsOpen){
         return null;
@@ -16,9 +21,12 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose}) => {
     }
 
     const handleNewGoalsSubmit = async (event) => {
+        setLoading(true);
         event.preventDefault();
         setInputValue("");
-        onModalClose();
+        const mainGoals = await GoalsGenerator(className, inputValue);
+        setMainStudyGoals(mainGoals);
+        setLoading(false);
     }
 
     return (
@@ -35,6 +43,22 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose}) => {
                         <button type="submit" className="new-group-modal-submit">Submit</button>
                     </div>
                 </form>
+                <div className="study-goals-section">
+                    <h4>Main Study Goals:</h4>
+                    {
+                        !loading && mainStudyGoals === "" && 
+                        <div>
+                            <div>There are no available study goals for this group yet.</div>
+                            <div>Please input class resources like notes, syllabi, flashcards, etc.</div>
+                        </div>
+                    }
+                    {loading && 
+                        <LoadingIndicator loading={loading} />
+                    }
+                    <div className="generated-study-goals">
+                        <ReactMarkdown>{mainStudyGoals}</ReactMarkdown>
+                    </div>
+                </div>
             </div>
         </div>
     );
