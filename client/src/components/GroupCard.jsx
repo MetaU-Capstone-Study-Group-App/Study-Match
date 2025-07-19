@@ -5,7 +5,7 @@ import CreateStudyGoals from './CreateStudyGoals'
 import StudyGoalsModal from './StudyGoalsModal'
 
 // Contains the information for an individual study group
-const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, isCardRecommended, handleUpdateGroupStatus, groupId}) => {
+const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, isCardRecommended, handleUpdateGroupStatus, groupId, recommendationsChangedAt}) => {
     const [studyGoalsModalIsOpen, setStudyGoalsModalIsOpen] = useState(false);
     const [recommended, setRecommended] = useState();
 
@@ -28,7 +28,7 @@ const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, 
         }).then(() => {
             setRecommended(recommendedStatus);
         })
-    }, [])
+    }, [recommendationsChangedAt])
 
     return (
         <div className={studyGoalsModalIsOpen ? "group-card" : "hover-group-card"}>

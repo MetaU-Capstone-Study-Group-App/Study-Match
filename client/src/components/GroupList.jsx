@@ -11,7 +11,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
     const [groupScores, setGroupScores] = useState({});
     const [statusGroups, setStatusGroups] = useState([]);
     const groupsByStatus = [];
-    let previousClasses = [];
+    const [recommendationsChangedAt, setRecommendationsChangedAt] = useState(Date.now());
     const POSSIBLE_STATUS = ["available", "accepted", "rejected"];
 
     const getExistingGroupInfo = (groupId) => {
@@ -36,6 +36,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
         return groupMembers;
     }
 
+    // Calculates the average of all individual compatibility scores between users in a specific group
     const calculateGroupCompatibilityScore = (compatibilityScores) => {
         let totalScore = 0;
         for (const score of compatibilityScores){
@@ -44,6 +45,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
         return totalScore / compatibilityScores.length;
     }
 
+    // Calculates compatibility scores between the user and all other group members
     const calculateAllGroupScores = async () => {
         const compatibilityScorePromises = [];
         const compatibilityScores = {};
@@ -65,6 +67,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
         setGroupScores(compatibilityScores);
     }
 
+    // Separates groups into available, accepted, and rejected
     const groupByStatus = async () => {
         const filteredUserGroups = userExistingGroups.filter((obj) => obj.user_id == user.id);
         for (const group of filteredUserGroups){
@@ -83,36 +86,42 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
 
     const handleRecommend = async (groupId) => {
         const recommendedGroup = await fetchData(`group/userExistingGroup/recommend/${groupId}/`, "PUT");
+        setRecommendationsChangedAt(Date.now());
     }
 
-    const recommendGroups = async () => {
-        let alreadyRecommended = false;
-        if (userExistingGroups.length !== 0){
-            userExistingGroups.map((obj) => {
-                if (obj.recommended){
-                    alreadyRecommended = true;
-                }
+    const sortUserGroups = () => {
+        if (Object.keys(groupScores).length > 0){
+            const sortedUserGroups = userExistingGroups.sort((a,b) => {
+                return groupScores[b.existing_group_id] - groupScores[a.existing_group_id];
             })
-            if (!alreadyRecommended){
-                userExistingGroups.map((obj) => {
-                    if (user) {
-                        if (obj.user_id == user.id){
-                            const groupInfo = getExistingGroupInfo(obj.existing_group_id);
-                            const className = getClassName(groupInfo.class_id);
-                            let previousClassCount = 0;
-                            previousClasses.map((c) => {
-                                if (className === c){
-                                    previousClassCount++;
-                                }
-                            })
-                            if (previousClassCount === 0){
-                                handleRecommend(obj.id);
-                            }
+            setUserExistingGroups(sortedUserGroups);
+            return sortedUserGroups;
+        }
+    }
+
+    // Recommends the group with the highest group compatibility score for each class
+    const recommendGroups = async () => {
+        const previousClasses = [];
+        const alreadyRecommended = userExistingGroups.some(
+            obj => obj.recommended && obj.user_id === user.id
+        )
+        if (alreadyRecommended){
+            return;
+        }
+        else if (userExistingGroups.length !== 0){
+            const sortedUserGroups = sortUserGroups();
+            sortedUserGroups?.map((obj) => {
+                if (user) {
+                    if (obj.user_id == user.id){
+                        const groupInfo = getExistingGroupInfo(obj.existing_group_id);
+                        const className = getClassName(groupInfo.class_id);
+                        if (!previousClasses.includes(className)){
+                            handleRecommend(obj.id);
                             previousClasses.push(className);
                         }
                     }
-                })
-            }
+                }
+            }) 
         }
     }
 
@@ -137,12 +146,15 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
 
     useEffect(() => {
         loadGroupScores();
-        recommendGroups();
     }, [userExistingGroups, user])
 
     useEffect(() => {
         loadGroupsByStatus();
     }, [groupScores, currentStatus])
+
+    useEffect(() => {
+        recommendGroups();
+    }, [statusGroups])
 
     if (!data || !user){
         return (
@@ -150,6 +162,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
         )
     }
 
+    // Renders the Group Card for an individual study group
     const displayGroupCard = (obj) => {
         if (user) {
             if (obj.user_id == user.id){
@@ -164,7 +177,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
                 }
                 const groupScore = groupScores[obj.existing_group_id] ? groupScores[obj.existing_group_id] : null;
                 return (
-                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id}/>
+                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id} recommendationsChangedAt={recommendationsChangedAt}/>
                 )
             }
         }
