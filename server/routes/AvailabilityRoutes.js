@@ -4,16 +4,6 @@ const { PrismaClient } = require('@prisma/client')
 const router = express.Router()
 const prisma = new PrismaClient();
 
-router.post('/', async (req, res) => {
-    const {id} = req.body
-    const newBusyTimeData = await prisma.busyTimes.create({
-        data: {
-            id,
-        }
-    })
-    res.json(newBusyTimeData);
-})
-
 router.post('/busyTime', async (req, res) => {
     const {id, user_id, day_of_week, start_time, end_time, class_name} = req.body
     const newBusyTimeData = await prisma.busyTime.create({

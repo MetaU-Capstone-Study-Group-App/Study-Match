@@ -428,6 +428,9 @@ button:focus-visible {
 
 .group-list-section {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-bottom: 80px;
 }
 
 .group-card, .hover-group-card {

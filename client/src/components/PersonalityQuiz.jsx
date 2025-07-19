@@ -48,16 +48,8 @@ const PersonalityQuiz = () => {
         }
         const newResponse = await fetchData("quiz/responses/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newResponseData));
         if (currentObject.id >= PersonalityQuestions.length){
-            createBusyTimes();
             navigate('/calendar');
         }
-    }
-
-    const createBusyTimes = async () => {
-        const newBusyTimesData = {
-            id: user.id,
-        }
-        const newBusyTimes = await fetchData("availability/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newBusyTimesData));
     }
 
     const handleSliderChange = (event) => {
