@@ -81,4 +81,12 @@ router.get('/userGoals/:userId', async (req, res) => {
     res.json(currentUser);
 })
 
+router.get('/info/:name', async (req, res) => {
+    const name = req.params.name
+    const currentUser = await prisma.user.findFirst({
+        where: {name: name},
+    });
+    res.json(currentUser);
+})
+
 module.exports = router

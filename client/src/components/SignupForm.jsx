@@ -2,6 +2,9 @@ import { useState, useEffect } from "react"
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import AutocompleteAddress from "./AutocompleteAddress";
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
+import '../styles.css'
 
 // Allows users to create an account
 const SignupForm = () => {
@@ -12,6 +15,7 @@ const SignupForm = () => {
     const [error, setError] = useState("");
     const [goalOptions, setGoalOptions] = useState([]);
     const [selectedGoals, setSelectedGoals] = useState([]);
+    const [phoneNumber, setPhoneNumber] = useState("");
 
     const handleChange = (event) => {
         const {name, value} = event.target
@@ -100,69 +104,104 @@ const SignupForm = () => {
             <h2>Sign Up</h2>
             <form className="signup-form" onSubmit={handleSubmit}>
                 <div className="signup-form-top-section">
-                    <label htmlFor="name">Full Name</label>
-                    <input
-                        type="text"
-                        className="signup-inputs"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="username">Username</label>
-                    <input
-                        type="text"
-                        className="signup-inputs"
-                        id="username"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        className="signup-inputs"
-                        id="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="school">College/University</label>
-                    <input
-                        type="text"
-                        className="signup-inputs"
-                        id="school"
-                        name="school"
-                        value={formData.school}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="class-standing">Class Standing</label>
-                    <select name="class_standing" id="class-standing" className="signup-inputs" value={formData.class_standing} onChange={handleChange}>
-                        <option disabled selected>Select an option</option>
-                        <option value="freshman">Freshman</option>
-                        <option value="sophomore">Sophomore</option>
-                        <option value="junior">Junior</option>
-                        <option value="senior">Senior</option>
-                    </select>
-                    <label htmlFor="goals">Study Group Goals</label>
-                    <select
-                        className="signup-inputs"
-                        value={selectedGoals}
-                        multiple={true}
-                        onChange={(e) => {
-                            const goals = Array.from(e.target.options);
-                            const selectedOptions = goals.filter((goal) => goal.selected).map((goal) => goal.value);
-                            setSelectedGoals(selectedOptions);
-                        }}
-                        required
-                    >
-                        <option value="" disabled>Select all that apply</option>
-                        {goalOptions.map((goal) => (
-                            <option value={goal.id} key={goal.id}>{goal.goal}</option> 
-                        ))}
-                    </select>
-                    <label htmlFor="address">Address</label>
-                    <AutocompleteAddress addAddressCoordinates={addAddressCoordinates}/>
+                    <div className="signup-form-row">
+                        <label htmlFor="name">Full Name
+                            <input
+                                type="text"
+                                className="signup-inputs"
+                                id="name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <label htmlFor="username">Username
+                            <input
+                                type="text"
+                                className="signup-inputs"
+                                id="username"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <label htmlFor="password">Password
+                            <input
+                                type="password"
+                                className="signup-inputs"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                            />
+                        </label>
+                    </div>
+                    <div className="signup-form-row">
+                        <label htmlFor="email">Email Address
+                            <input
+                                type="email"
+                                className="signup-inputs"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <label htmlFor="phone_number">Phone Number
+                            <input
+                                type="tel"
+                                className="signup-inputs"
+                                id="phone_number"
+                                name="phone_number"
+                                value={formData.phone_number}
+                                pattern="[0-9]{10}"
+                                maxLength="10"
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <label htmlFor="school">College/University
+                            <input
+                                type="text"
+                                className="signup-inputs"
+                                id="school"
+                                name="school"
+                                value={formData.school}
+                                onChange={handleChange}
+                            />
+                        </label>
+                    </div>
+                    <div className="signup-form-row">
+                        <label htmlFor="class-standing">Class Standing
+                            <select name="class_standing" id="class-standing" className="signup-inputs" value={formData.class_standing} onChange={handleChange}>
+                                <option disabled selected>Select an option</option>
+                                <option value="freshman">Freshman</option>
+                                <option value="sophomore">Sophomore</option>
+                                <option value="junior">Junior</option>
+                                <option value="senior">Senior</option>
+                            </select>
+                        </label>
+                        <label htmlFor="goals">Study Group Goals
+                            <select
+                                className="signup-inputs"
+                                value={selectedGoals}
+                                multiple={true}
+                                onChange={(e) => {
+                                    const goals = Array.from(e.target.options);
+                                    const selectedOptions = goals.filter((goal) => goal.selected).map((goal) => goal.value);
+                                    setSelectedGoals(selectedOptions);
+                                }}
+                                required
+                            >
+                                <option value="" disabled>Select all that apply</option>
+                                {goalOptions.map((goal) => (
+                                    <option value={goal.id} key={goal.id}>{goal.goal}</option> 
+                                ))}
+                            </select>
+                        </label>
+                        <label htmlFor="address">Address
+                            <AutocompleteAddress addAddressCoordinates={addAddressCoordinates}/>
+                        </label>
+                </div>
                 </div>
                 <div className="signup-form-second-section"><h4>Study Group Preferences</h4>
                     <label htmlFor="preferred-time">Preferred Meeting Hours</label>

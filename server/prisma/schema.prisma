@@ -26,6 +26,8 @@ model User {
   address_latitude      Float?
   address_longitude     Float?
   class_standing        String?
+  email                 String?
+  phone_number          String?
   personality_quiz      Quiz?
   busy_times            BusyTime[] 
   user_classes          UserClass[]

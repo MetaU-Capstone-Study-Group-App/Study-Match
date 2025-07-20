@@ -29,7 +29,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
     const getGroupMembers = (groupId) => {
         const groupMembers = [];
         for (const group of userExistingGroups){
-            if (group.existing_group_id === groupId){
+            if (group.existing_group_id === groupId && (group.status === POSSIBLE_STATUS[1] || group.user_id === user.id)){
                 groupMembers.push(group.user_id)
             }
         }
@@ -172,7 +172,12 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
                 const time = groupInfo.start_time + " - " + groupInfo.end_time;
                 const groupMembers = getGroupMembers(obj.existing_group_id)
                 let userNames = []
-                for (const member of groupMembers){
+                memberLoop: for (const member of groupMembers){
+                    for (const g of userExistingGroups){
+                        if (g.status === "rejected" && member === g.user_id && obj.existing_group_id === g.existing_group_id){
+                            continue memberLoop;
+                        }
+                    }
                     userNames.push(getUserName(member))
                 }
                 const groupScore = groupScores[obj.existing_group_id] ? groupScores[obj.existing_group_id] : null;
@@ -187,10 +192,13 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
         <main>
             <div className="group-list-container">
                 {POSSIBLE_STATUS.map((status) => {
+                    if (!statusGroups || !statusGroups[status] || statusGroups[status].length === 0){
+                        return null;
+                    }
                     return (
                         <div key={status}>
                             <h3>{status.charAt(0).toLocaleUpperCase() + status.slice(1)} Groups</h3>
-                            <div className="group-list-section">
+                            <div className="group-list-section" id={status}>
                                 {
                                     statusGroups && statusGroups[status] &&
                                     statusGroups[status].map(obj => {
