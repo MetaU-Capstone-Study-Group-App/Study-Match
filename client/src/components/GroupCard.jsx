@@ -5,7 +5,7 @@ import CreateStudyGoals from './CreateStudyGoals'
 import StudyGoalsModal from './StudyGoalsModal'
 
 // Contains the information for an individual study group
-const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, isCardRecommended, handleUpdateGroupStatus, groupId, recommendationsChangedAt}) => {
+const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, isCardRecommended, handleUpdateGroupStatus, groupId, recommendationsChangedAt, fetchData, existingId}) => {
     const [studyGoalsModalIsOpen, setStudyGoalsModalIsOpen] = useState(false);
     const [recommended, setRecommended] = useState();
 
@@ -50,7 +50,7 @@ const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, 
                 <button className="buttons" onClick={handleRejectGroup}>Reject</button>
             </div>
             <CreateStudyGoals setStudyGoalsModalIsOpen={setStudyGoalsModalIsOpen}/>
-            <StudyGoalsModal studyGoalsModalIsOpen={studyGoalsModalIsOpen} onModalClose={onModalClose} className={className}/>
+            <StudyGoalsModal studyGoalsModalIsOpen={studyGoalsModalIsOpen} onModalClose={onModalClose} className={className} fetchData={fetchData} groupId={existingId}/>
         </div>
     )
 }

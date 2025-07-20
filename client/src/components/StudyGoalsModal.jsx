@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GoalsGenerator from "./GoalsGenerator";
 import LoadingIndicator from "./LoadingIndicator";
 import ReactMarkdown from "react-markdown";
 
-const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className}) => {
+// Generates five main study goals for the group using Gemini API and resources inputted by the group members
+const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className, fetchData, groupId}) => {
     const [inputValue, setInputValue] = useState("");
     const [mainStudyGoals, setMainStudyGoals] = useState("");
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (studyGoalsModalIsOpen){
+            displayStudyGoals();
+        }
+    }, [studyGoalsModalIsOpen])
 
     if (!studyGoalsModalIsOpen){
         return null;
@@ -20,13 +27,29 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className}) => {
         onModalClose();
     }
 
+    // Generates main study goals using class name, resources inputted by the user, and previous goals generated for the group (if any)
     const handleNewGoalsSubmit = async (event) => {
         setLoading(true);
         event.preventDefault();
         setInputValue("");
-        const mainGoals = await GoalsGenerator(className, inputValue);
-        setMainStudyGoals(mainGoals);
+        let mainGoals = "";
+        const existingStudyGoals = await fetchData(`group/existingGroup/${groupId}/`, "GET");
+        mainGoals = await GoalsGenerator(className, inputValue, existingStudyGoals);
+        const newStudyGoals = {
+            study_goals: mainGoals
+        }
+        const savedStudyGoals = await fetchData(`group/existingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newStudyGoals));
+        setMainStudyGoals(savedStudyGoals);
         setLoading(false);
+    }
+
+    // Displays the 5 main study goals generated for the group
+    const displayStudyGoals = async () => {
+        const existingStudyGoals = await fetchData(`group/existingGroup/${groupId}/`, "GET");
+        if (!existingStudyGoals){
+            return;
+        }
+        setMainStudyGoals(existingStudyGoals);
     }
 
     return (
