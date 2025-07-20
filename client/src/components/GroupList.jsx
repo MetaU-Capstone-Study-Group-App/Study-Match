@@ -177,7 +177,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
                 }
                 const groupScore = groupScores[obj.existing_group_id] ? groupScores[obj.existing_group_id] : null;
                 return (
-                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id} recommendationsChangedAt={recommendationsChangedAt}/>
+                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id} recommendationsChangedAt={recommendationsChangedAt} fetchData={fetchData} existingId={obj.existing_group_id}/>
                 )
             }
         }

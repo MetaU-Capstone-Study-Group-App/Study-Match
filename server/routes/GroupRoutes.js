@@ -59,6 +59,31 @@ router.get('/userExistingGroup', async (req, res) => {
     res.json(userExistingGroups);
 })
 
+router.put('/existingGroup/:groupId', async (req, res) => {
+    const groupId = parseInt(req.params.groupId);
+    const {study_goals} = req.body;
+    const updatedGroupData = await prisma.existingGroup.update({
+        where: {id: parseInt(groupId)},
+        data: {
+            study_goals
+        }
+    })
+    res.json(study_goals);
+})
+
+router.get('/existingGroup/:groupId', async (req, res) => {
+    const groupId = parseInt(req.params.groupId)
+    const existingStudyGoals = await prisma.existingGroup.findUnique({
+        where: {
+            id: parseInt(groupId),
+        },
+    });
+    if (!existingStudyGoals.study_goals){
+        res.json(null);
+    }
+    res.json(existingStudyGoals.study_goals);
+})
+
 router.put('/userExistingGroup/recommend/:groupId', async (req, res) => {
     const groupId = parseInt(req.params.groupId);
     const updatedGroupData = await prisma.userExistingGroup.update({

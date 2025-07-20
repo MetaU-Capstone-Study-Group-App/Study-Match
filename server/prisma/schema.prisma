@@ -91,6 +91,7 @@ model ExistingGroup {
   day_of_week           Int
   start_time            String
   end_time              String
+  study_goals           String?
   user_existing_groups  UserExistingGroup[] 
 
   @@map("existingGroups")
