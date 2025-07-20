@@ -193,10 +193,16 @@ button:focus-visible {
     border-radius: 5px;
 }
 
+.signup-inputs {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
 .signup-form-top-section {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 40px;
 }
 
 .signup-form-second-section {
@@ -208,6 +214,23 @@ button:focus-visible {
 .signup-time-inputs {
     display: flex;
     gap: 10px;
+}
+
+.signup-form-row {
+    display: flex;
+    flex-direction: row;
+    gap: 110px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.signup-form-row label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
 }
 
 .footer {
@@ -436,7 +459,7 @@ button:focus-visible {
 .group-card, .hover-group-card {
     text-align: center;
     padding: 15px;
-    width: 200px;
+    width: 300px;
     margin: 20px;
     display: flex;
     flex-direction: column;
@@ -487,6 +510,9 @@ button:focus-visible {
 
 .group-card-members {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .pill-component {
@@ -529,4 +555,25 @@ button:focus-visible {
     margin-right: 40px;
     margin-bottom: 30px;
     text-align: left;
+}
+
+#rejected {
+    background-color: #ececec;
+    width: 100vw;
+}
+
+.member-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid black;
+    padding: 15px;
+    border-radius: 10px;
+    min-width: 200px;
+}
+
+.member-card-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }

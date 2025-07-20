@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react'
 import Pill from './Pill'
 import CreateStudyGoals from './CreateStudyGoals'
 import StudyGoalsModal from './StudyGoalsModal'
+import MemberCard from './MemberCard'
 
 // Contains the information for an individual study group
 const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, isCardRecommended, handleUpdateGroupStatus, groupId, recommendationsChangedAt, fetchData, existingId}) => {
     const [studyGoalsModalIsOpen, setStudyGoalsModalIsOpen] = useState(false);
     const [recommended, setRecommended] = useState();
+    const [userInformation, setUserInformation] = useState([]);
 
     const onModalClose = () => {
         setStudyGoalsModalIsOpen(false);
@@ -20,6 +22,22 @@ const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, 
     const handleRejectGroup = () => {
         handleUpdateGroupStatus(groupId, "rejected");
     }
+
+    const getUsersInfo = async () => {
+        const userInfo = [];
+        for (const user of users){
+            if (!userInfo[user]){
+                userInfo[user] = [];
+            }
+            const info = await fetchData(`user/info/${user}`, "GET");
+            userInfo[user].push(info);
+        }
+        setUserInformation(userInfo);
+    }
+
+    useEffect(() => {
+        getUsersInfo();
+    }, [])
 
     useEffect(() => {
         let recommendedStatus = false;
@@ -39,15 +57,19 @@ const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, 
             <h5 className="group-card-users">Members:</h5>
             <div className="group-card-members">
                 {users.map((item, index) => {
-                    return (
-                        <div className="group-card-member" key={index}>{item}</div>
-                    )
+                    if (userInformation[item]){
+                        return (
+                            <MemberCard 
+                                key={index} name={userInformation[item][0].name} email={userInformation[item][0].email} phoneNumber={userInformation[item][0].phone_number} profilePicture={userInformation[item][0].profile_picture} fetchData={fetchData} id={userInformation[item][0].id}
+                            />
+                        )
+                    }
                 })}
             </div>
             {groupCompatibilityScore !== null && <Pill groupScore={groupCompatibilityScore}/>}
             <div className="group-card-buttons">
-                <button className="buttons" onClick={handleAcceptGroup}>Accept</button>
-                <button className="buttons" onClick={handleRejectGroup}>Reject</button>
+                <button className="buttons" onClick={handleAcceptGroup} id="accept-button">Accept</button>
+                <button className="buttons" onClick={handleRejectGroup} id="reject-button">Reject</button>
             </div>
             <CreateStudyGoals setStudyGoalsModalIsOpen={setStudyGoalsModalIsOpen}/>
             <StudyGoalsModal studyGoalsModalIsOpen={studyGoalsModalIsOpen} onModalClose={onModalClose} className={className} fetchData={fetchData} groupId={existingId}/>
