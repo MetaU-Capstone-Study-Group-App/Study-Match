@@ -4,9 +4,10 @@ import Pill from './Pill'
 import CreateStudyGoals from './CreateStudyGoals'
 import StudyGoalsModal from './StudyGoalsModal'
 import MemberCard from './MemberCard'
+import Tooltip from './Tooltip'
 
 // Contains the information for an individual study group
-const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, isCardRecommended, handleUpdateGroupStatus, groupId, recommendationsChangedAt, fetchData, existingId}) => {
+const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, isCardRecommended, handleUpdateGroupStatus, groupId, recommendationsChangedAt, fetchData, existingId, status}) => {
     const [studyGoalsModalIsOpen, setStudyGoalsModalIsOpen] = useState(false);
     const [recommended, setRecommended] = useState();
     const [userInformation, setUserInformation] = useState([]);
@@ -68,8 +69,20 @@ const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, 
             </div>
             {groupCompatibilityScore !== null && <Pill groupScore={groupCompatibilityScore}/>}
             <div className="group-card-buttons">
-                <button className="buttons" onClick={handleAcceptGroup} id="accept-button">Accept</button>
-                <button className="buttons" onClick={handleRejectGroup} id="reject-button">Reject</button>
+                {status === "accepted" ? (
+                    <Tooltip text="This group is already accepted.">
+                        <button className="buttons" onClick={handleAcceptGroup} id="accept-button" disabled={status === "accepted"}>Accept</button>
+                    </Tooltip>
+                ) : (
+                    <button className="buttons" onClick={handleAcceptGroup} id="accept-button" disabled={status === "accepted"}>Accept</button>
+                )}
+                {status === "rejected" ? (
+                    <Tooltip text="This group is already rejected.">
+                        <button className="buttons" onClick={handleRejectGroup} id="reject-button" disabled={status === "rejected"}>Reject</button>
+                    </Tooltip>
+                ) : (
+                    <button className="buttons" onClick={handleRejectGroup} id="reject-button" disabled={status === "rejected"}>Reject</button>
+                )}
             </div>
             <CreateStudyGoals setStudyGoalsModalIsOpen={setStudyGoalsModalIsOpen}/>
             <StudyGoalsModal studyGoalsModalIsOpen={studyGoalsModalIsOpen} onModalClose={onModalClose} className={className} fetchData={fetchData} groupId={existingId}/>

@@ -99,13 +99,14 @@ button:focus-visible {
     flex: 1;
 }
 
-.profile-page-main, .groups-page-main{
+.groups-page-main, .profile-page-main{
     display: flex;
     margin: 25px;
     flex: 1;
     flex-direction: column;
     margin-left: 150px;
     margin-right: 150px;
+    justify-content: center;
 }
 
 .profile-info-section {
@@ -133,11 +134,16 @@ button:focus-visible {
 
 .profile-right {
     display: flex;
-    flex-direction: column;
     margin: 20px;
     padding: 30px;
-    gap: 20px;
+    gap: 200px;
     text-align: left;
+}
+
+.profile-right-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
 .profile-buttons {
@@ -216,6 +222,15 @@ button:focus-visible {
     gap: 10px;
 }
 
+.signup-time-input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
 .signup-form-row {
     display: flex;
     flex-direction: row;
@@ -224,12 +239,17 @@ button:focus-visible {
     justify-content: space-between;
 }
 
-.signup-form-row label {
+.signup-form-row label, .signup-form-row div {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 5px;
     align-items: center;
+    justify-content: center;
+}
+
+#study-goals-header {
+    display: flex;
     justify-content: center;
 }
 
@@ -252,7 +272,16 @@ button:focus-visible {
     margin-right: 70px;
 }
 
-.navbar-left {
+.empty-navbar {
+    display: flex;
+    margin: 20px;
+    margin-left: 70px;
+    margin-right: 70px;
+    justify-content: flex-start;
+    margin-right: auto;
+}
+
+.navbar-left, .empty-navbar-left {
     font-size: 10px;
     font-weight: 500;
 }
@@ -459,7 +488,7 @@ button:focus-visible {
 .group-card, .hover-group-card {
     text-align: center;
     padding: 15px;
-    width: 300px;
+    width: 350px;
     margin: 20px;
     display: flex;
     flex-direction: column;
@@ -576,4 +605,55 @@ button:focus-visible {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.tooltip-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.tooltip {
+    width: 300px;
+    font-size: 12px;
+    font-weight: 400;
+    text-align: center;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid black;
+    position: absolute;
+    transition: all 0.3s ease;
+    top: -40px;
+    opacity: 0;
+    background-color: white;
+}
+
+.tooltip.open {
+    transform: translateY(-30px);
+    opacity: 1;
+}
+
+.arrow {
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 12px solid white;
+    position: absolute;
+    bottom: -12px;
+    left: calc(50% - 12px);
+}
+
+#info-button {
+    border-radius: 50%;
+    font-size: 8px;
+}
+
+.loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
