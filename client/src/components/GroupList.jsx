@@ -3,6 +3,7 @@ import '../styles.css'
 import WeekDays from '../data/WeekDays'
 import { useEffect, useState } from 'react'
 import CompatibilityScore from '../utils/CompatibilityScore'
+import LoadingIndicator from './LoadingIndicator'
 
 // Displays all of a user's study groups in a grid format
 const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetchData, handleUpdateGroupStatus, currentStatus}) => {
@@ -13,6 +14,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
     const groupsByStatus = [];
     const [recommendationsChangedAt, setRecommendationsChangedAt] = useState(Date.now());
     const POSSIBLE_STATUS = ["available", "accepted", "rejected"];
+    const [isLoading, setIsLoading] = useState(true);
 
     const getExistingGroupInfo = (groupId) => {
         for (const group of existingGroups){
@@ -47,6 +49,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
 
     // Calculates compatibility scores between the user and all other group members
     const calculateAllGroupScores = async () => {
+        setIsLoading(true);
         const compatibilityScorePromises = [];
         const compatibilityScores = {};
         const existingGroupIds = [...new Set(userExistingGroups.map((obj) => obj.existing_group_id))];
@@ -65,6 +68,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
             compatibilityScores[groupId] = calculateGroupCompatibilityScore(finalScores).toFixed(2);
         }
         setGroupScores(compatibilityScores);
+        setIsLoading(false);
     }
 
     // Separates groups into available, accepted, and rejected
@@ -158,7 +162,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
 
     if (!data || !user){
         return (
-            <div>Loading...</div>
+            <LoadingIndicator loading={isLoading} className="loading-spinner"/>
         )
     }
 
@@ -182,7 +186,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
                 }
                 const groupScore = groupScores[obj.existing_group_id] ? groupScores[obj.existing_group_id] : null;
                 return (
-                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id} recommendationsChangedAt={recommendationsChangedAt} fetchData={fetchData} existingId={obj.existing_group_id}/>
+                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id} recommendationsChangedAt={recommendationsChangedAt} fetchData={fetchData} existingId={obj.existing_group_id} status={obj.status}/>
                 )
             }
         }
@@ -190,26 +194,30 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
 
     return (
         <main>
-            <div className="group-list-container">
-                {POSSIBLE_STATUS.map((status) => {
-                    if (!statusGroups || !statusGroups[status] || statusGroups[status].length === 0){
-                        return null;
-                    }
-                    return (
-                        <div key={status}>
-                            <h3>{status.charAt(0).toLocaleUpperCase() + status.slice(1)} Groups</h3>
-                            <div className="group-list-section" id={status}>
-                                {
-                                    statusGroups && statusGroups[status] &&
-                                    statusGroups[status].map(obj => {
-                                        return displayGroupCard(obj)
-                                    })
-                                }
-                            </div>
-                        </div> 
-                    )
-                })}
-            </div>
+            {isLoading ? (
+                <LoadingIndicator loading={isLoading} className="loading-spinner"/>
+            ) : (
+                <div className="group-list-container">
+                    {POSSIBLE_STATUS.map((status) => {
+                        if (!statusGroups || !statusGroups[status] || statusGroups[status].length === 0){
+                            return null;
+                        }
+                        return (
+                            <div key={status}>
+                                <h3>{status.charAt(0).toLocaleUpperCase() + status.slice(1)} Groups</h3>
+                                <div className="group-list-section" id={status}>
+                                    {
+                                        statusGroups && statusGroups[status] &&
+                                        statusGroups[status].map(obj => {
+                                            return displayGroupCard(obj)
+                                        })
+                                    }
+                                </div>
+                            </div> 
+                        )
+                    })}
+                </div>
+            )}
         </main>
     )
 }
