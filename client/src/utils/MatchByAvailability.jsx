@@ -246,8 +246,9 @@ const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvail
                             end_time: minutesToTimeString(end_time)
                         }
                         const newExistingGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
-                        newExistingGroup.start_time = stringToTime(newExistingGroup.start_time);
-                        newExistingGroup.end_time = stringToTime(newExistingGroup.end_time);
+                        if (!newExistingGroup.users){
+                            newExistingGroup.users = [splitGroup];
+                        }
                         existingGroups.push(newExistingGroup);
                         matchedExistingGroups.push(newExistingGroup);
                     }
