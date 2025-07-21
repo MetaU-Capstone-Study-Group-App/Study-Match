@@ -1,6 +1,8 @@
 const MINUTES_IN_HOUR = 60;
 const DAYS_IN_WEEK = 7;
+const MAX_USERS_PER_GROUP = 4;
 
+// Sorts times during which a user is busy by day
 const sortBusyTimes = (busyTimes) => {
     const busyTimesPerDay = [];
 
@@ -12,6 +14,20 @@ const sortBusyTimes = (busyTimes) => {
         busyTimesPerDay[day_of_week].push(busyTime);
     }
     return busyTimesPerDay;
+}
+
+// Converts time in minutes to a string in military time (EX: 840 -> "14:00")
+const minutesToTimeString = (mins) => {
+    const date = new Date();
+    date.setHours(0);
+    date.setMinutes(mins);
+    date.setSeconds(0);
+    const timeString = date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23'
+    })
+    return timeString;
 }
 
 // Calculates all time slots during which a user is free
@@ -175,32 +191,72 @@ const findSharedAvailability = async (usersInEachClass, fetchData, stringToTime)
     return finalSharedUserAvailability;
 }
 
-// Creates study groups where users are taking the same class and are all free during that specific time
+// Divides users into groups of four
+const splitUsers = (usersArray) => {
+    const newUserGroups = [];
+    for (let i = 0; i < usersArray?.length; i += MAX_USERS_PER_GROUP){
+        newUserGroups.push(usersArray.slice(i, i + MAX_USERS_PER_GROUP));
+    }
+    return newUserGroups;
+}
+
+// Creates study groups where users are taking the same class, are all free during that specific time, and have a max of 4 users
 const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvailability) => {
     const existingGroups = await fetchData("group/existingGroup/", "GET");
+    const filteredExistingGroupsMap = new Map();
 
     const filteredExistingGroups = existingGroups.map((group) => {
-        return [group.id, group.class_id, {
-            day_of_week: group.day_of_week,
-            start_time: stringToTime(group.start_time),
-            end_time: stringToTime(group.end_time)
-        }]
+        const groupKey = `${group.class_id}-${group.day_of_week}-${stringToTime(group.start_time)}-${stringToTime(group.end_time)}`;
+        if (!filteredExistingGroupsMap.has(groupKey)){
+            filteredExistingGroupsMap.set(groupKey, []);
+        }
+        filteredExistingGroupsMap.get(groupKey).push(group);
     })
 
     for (const c of sharedUserAvailability){
-        for (const groupsPerClass of c){
-            for (const possibleGroup of groupsPerClass){
-                for (const existingGroup of filteredExistingGroups){
-                    if (c[0] == existingGroup[1]){
-                        if (JSON.stringify(possibleGroup[0]) === JSON.stringify(existingGroup[2])){
-                            existingGroup.users = possibleGroup[1];
+        const classId = c[0];
+        const classAvailabilityMap = c[1];
+        for (const [timeSlot, usersArray] of classAvailabilityMap.entries()){
+            const {day_of_week, start_time, end_time} = timeSlot;
+            const groupKey = `${classId}-${day_of_week}-${start_time}-${end_time}`;
+            const matchedExistingGroups = filteredExistingGroupsMap.get(groupKey);
+            let usersRemaining = [...usersArray];
+            if (matchedExistingGroups && usersArray.length !== 0){
+                for (const group of matchedExistingGroups){
+                    if (!group.users){
+                        group.users = [];
+                    }
+                    const availableGroupSpace = MAX_USERS_PER_GROUP - group.users.length;
+                    if (availableGroupSpace > 0){
+                        const usersToAdd = usersRemaining.splice(0, availableGroupSpace);
+                        group.users.push(usersToAdd);
+                    }
+                    if (usersRemaining.length === 0){
+                        break;
+                    }
+                }
+                if (usersRemaining.length > 0){
+                    const groupsOfFour = splitUsers(usersRemaining);
+                    for (const splitGroup of groupsOfFour){
+                        const {day_of_week, start_time, end_time} = timeSlot;
+                        const newGroupData = {
+                            class_id: parseInt(classId),
+                            day_of_week,
+                            start_time: minutesToTimeString(start_time),
+                            end_time: minutesToTimeString(end_time)
                         }
+                        const newExistingGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
+                        if (!newExistingGroup.users){
+                            newExistingGroup.users = [splitGroup];
+                        }
+                        existingGroups.push(newExistingGroup);
+                        matchedExistingGroups.push(newExistingGroup);
                     }
                 }
             }
         }
     }
-    return filteredExistingGroups;
+    return filteredExistingGroupsMap;
 }
 
 // Filters possible study groups to only include those within a user's preferred time slot
@@ -209,11 +265,15 @@ const filterByPreferredTime = async (groupsByAvailability, allUsers, fetchData, 
     const filteredByTimeGroups = new Map();
     for (const user of allUsers){
         let userCount = 0;
-        for (const group of groupsByAvailability){
-            if (group["users"]){
-                for (const usersInGroup of group["users"]){
-                    if (user.id === usersInGroup){
-                        userCount++;
+        for (const groups of groupsByAvailability){
+            for (const group of groups[1]){
+                if (group["users"]){
+                    for (const users of group["users"]){
+                        for (const usersInGroup of users){
+                            if (user.id === usersInGroup){
+                                userCount++;
+                            }
+                        }
                     }
                 }
             }
@@ -229,13 +289,15 @@ const filterByPreferredTime = async (groupsByAvailability, allUsers, fetchData, 
                 preferred_end_time: stringToTime(preferredTimes.preferred_end_time)
             }
             const splitTimes = splitPreferredTimes(preferredTimesInMins);
-            for (const group of groupsByAvailability){
-                for (const preferredTime of splitTimes){
-                    if (JSON.stringify({start_time: group[2].start_time, end_time: group[2].end_time}) === JSON.stringify(preferredTime)){
-                        if (group["users"]){
-                            for (const userInList of group["users"]){
-                                if (userInList === user.id){
-                                    groupsForUser.push(group);
+            for (const groups of groupsByAvailability){
+                for (const group of groups[1]){
+                    for (const preferredTime of splitTimes){
+                        if (JSON.stringify({start_time: stringToTime(group.start_time), end_time: stringToTime(group.end_time)}) === JSON.stringify(preferredTime)){
+                            if (group["users"]){
+                                for (const userInList of group["users"][0]){
+                                    if (userInList === user.id){
+                                        groupsForUser.push(group);
+                                    }
                                 }
                             }
                         }
@@ -244,11 +306,24 @@ const filterByPreferredTime = async (groupsByAvailability, allUsers, fetchData, 
             }
         }
         if (groupsForUser.length === 0){
-            for (const group of groupsByAvailability){
-                if (group["users"]){
-                    for (const userInList of group["users"]){
-                        if (userInList === user.id){
-                            groupsForUser.push(group);
+            for (const groups of groupsByAvailability.values()){
+                if (groups.length === 1){
+                    if (groups.users){
+                        for (const userInList of groups.users){
+                            if (userInList === user.id){
+                                groupsForUser.push(groups);
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (const existingGroup of groups){
+                        if (existingGroup["users"]){
+                            for (const userInList of existingGroup["users"]){
+                                if (userInList === user.id){
+                                    groupsForUser.push(existingGroup);
+                                }
+                            }
                         }
                     }
                 }
@@ -263,12 +338,11 @@ const createUserExistingGroups = async (fetchData, filteredByTimeGroups) => {
     for (const group of filteredByTimeGroups){
         const user_id = group[0];
         for (const existingGroup of group[1]){
-            const existing_group_id = existingGroup[0];
-            const groupExists = await fetchData(`group/userExistingGroup/${user_id}/${existing_group_id}`, "GET");
+            const groupExists = await fetchData(`group/userExistingGroup/${user_id}/${existingGroup.id}`, "GET");
             if (!groupExists){
                 const newGroupData = {
                     user_id,
-                    existing_group_id
+                    existing_group_id: existingGroup.id
                 }
                 const newUserExistingGroup = await fetchData("group/userExistingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
             }
@@ -281,6 +355,7 @@ const MatchByAvailability = async (fetchData, allUsers) => {
     const usersInEachClass = [];
     
     const stringToTime = (timeString) => {
+        timeString = String(timeString);
         const [hours, minutes] = timeString.split(":").map(Number);
         return hours * MINUTES_IN_HOUR + minutes;
     }
