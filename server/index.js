@@ -11,8 +11,6 @@ const session = require('express-session')
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const { PrismaClient } = require('@prisma/client')
 
-app.set('trust proxy', true)
-
 const origins = [
     'http://localhost:5173',
     'https://study-match-mm3y.onrender.com'
@@ -38,7 +36,7 @@ app.use(
         store: new PrismaSessionStore(
         new PrismaClient(),
         {
-            checkPeriod: 2 * 60, 
+            checkPeriod: 2 * 60 * 1000, 
             dbRecordIdIsSessionId: true,
             dbRecordIdFunction: undefined,
         }

@@ -1,8 +1,97 @@
 {
-  "hash": "d7beb481",
-  "configHash": "d9310cc3",
+  "hash": "5aabae6b",
+  "configHash": "5091534e",
   "lockfileHash": "c8dec142",
-  "browserHash": "4361954c",
-  "optimized": {},
-  "chunks": {}
+  "browserHash": "a9fc9335",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "edc54796",
+      "needsInterop": true
+    },
+    "react-dom": {
+      "src": "../../node_modules/react-dom/index.js",
+      "file": "react-dom.js",
+      "fileHash": "866f2777",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "cd63c385",
+      "needsInterop": true
+    },
+    "react/jsx-runtime": {
+      "src": "../../node_modules/react/jsx-runtime.js",
+      "file": "react_jsx-runtime.js",
+      "fileHash": "7ca325a7",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "6d96e410",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "f5ac1f6a",
+      "needsInterop": false
+    },
+    "react-phone-number-input": {
+      "src": "../../node_modules/react-phone-number-input/min/index.js",
+      "file": "react-phone-number-input.js",
+      "fileHash": "b6b722b6",
+      "needsInterop": false
+    },
+    "react-big-calendar": {
+      "src": "../../node_modules/react-big-calendar/dist/react-big-calendar.esm.js",
+      "file": "react-big-calendar.js",
+      "fileHash": "c25c142e",
+      "needsInterop": false
+    },
+    "moment": {
+      "src": "../../node_modules/moment/dist/moment.js",
+      "file": "moment.js",
+      "fileHash": "1f754071",
+      "needsInterop": false
+    },
+    "react-markdown": {
+      "src": "../../node_modules/react-markdown/index.js",
+      "file": "react-markdown.js",
+      "fileHash": "48c188ba",
+      "needsInterop": false
+    },
+    "react-spinners": {
+      "src": "../../node_modules/react-spinners/esm/index.js",
+      "file": "react-spinners.js",
+      "fileHash": "40843216",
+      "needsInterop": false
+    },
+    "@google/genai": {
+      "src": "../../node_modules/@google/genai/dist/web/index.mjs",
+      "file": "@google_genai.js",
+      "fileHash": "7e9b630b",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-V5QMNLKU": {
+      "file": "chunk-V5QMNLKU.js"
+    },
+    "chunk-PULDY6UA": {
+      "file": "chunk-PULDY6UA.js"
+    },
+    "chunk-3LWRMNZ7": {
+      "file": "chunk-3LWRMNZ7.js"
+    },
+    "chunk-W5VMUIAY": {
+      "file": "chunk-W5VMUIAY.js"
+    },
+    "chunk-2TUXWMP5": {
+      "file": "chunk-2TUXWMP5.js"
+    }
+  }
 }
