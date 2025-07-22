@@ -13,7 +13,7 @@ const PersonalityQuiz = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
 
-    const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
+    const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
             const response = await fetch(`http://localhost:3000/${endpoint}`, {
                 method: method,
@@ -46,7 +46,7 @@ const PersonalityQuiz = () => {
             question_trait: currentObject.trait,
             response: sliderValue
         }
-        const newResponse = await fetchData("quiz/responses/", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(newResponseData));
+        const newResponse = await fetchData("quiz/responses/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newResponseData));
         if (currentObject.id >= PersonalityQuestions.length){
             navigate('/calendar');
         }

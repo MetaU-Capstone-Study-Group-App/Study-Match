@@ -1,6 +1,5 @@
 import '../styles.css'
 import { useEffect, useState } from 'react';
-import DefaultProfilePic from "/src/images/profile-pic.png";
 
 const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id}) => {
     const [uploadedProfilePic, setUploadedProfilePic] = useState(null);
@@ -19,7 +18,7 @@ const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id}) =
 
     return (
         <div className="member-card">
-            <img src={uploadedProfilePic ? uploadedProfilePic : DefaultProfilePic} alt={name} className="profile-pic" width="70" height="70"/>
+            <img src={uploadedProfilePic ? uploadedProfilePic : "src/images/profile-pic.png"} alt={name} className="profile-pic" width="70" height="70"/>
             <div className="member-card-info">
                 <div className="member-card-name">{name}</div>
                 <div className="member-card-email">{email}</div>
