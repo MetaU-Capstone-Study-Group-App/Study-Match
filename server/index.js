@@ -9,6 +9,7 @@ const availabilityRoutes = require('./routes/AvailabilityRoutes.js')
 const groupRoutes = require('./routes/GroupRoutes.js')
 const session = require('express-session')
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
+const { PrismaClient } = require('@prisma/client')
 
 const origins = [
     'http://localhost:5173',
