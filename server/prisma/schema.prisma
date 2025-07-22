@@ -28,6 +28,11 @@ model User {
   class_standing        String?
   email                 String?
   phone_number          String?
+  personality_weight    Float           @default(0.2)
+  location_weight       Float           @default(0.4)
+  goals_weight          Float           @default(0.2)
+  school_weight         Float           @default(0.1)
+  class_standing_weight Float           @default(0.1)
   personality_quiz      Quiz?
   busy_times            BusyTime[] 
   user_classes          UserClass[]
