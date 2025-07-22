@@ -11,13 +11,14 @@ import LoginForm from './components/LoginForm.jsx'
 import WithAuth from './components/WithAuth.jsx'
 import PersonalityQuiz from './components/PersonalityQuiz.jsx'
 import CalendarPage from './pages/CalendarPage.jsx'
+import { API_URL } from './utils/apiConfig.js'
 
 const App = () => {
   const {user, setUser} = useUser();
   const ProtectedHome = WithAuth(Home);
 
   useEffect(() => {
-    fetch("http://localhost:3000/auth/me", {credentials: "include"})
+    fetch(`${API_URL}/auth/me`, {credentials: "include"})
       .then((response) => response.json())
       .then((data) => {
         if (data.id) {
