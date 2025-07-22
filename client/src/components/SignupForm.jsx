@@ -206,7 +206,82 @@ const SignupForm = () => {
                         </label>
                     </div>
                 </div>
-                <div className="signup-form-second-section"><h4>Study Group Preferences</h4>
+                <div className="signup-form-second-section"><h4>Compatibility Score Weights</h4>
+                    <label htmlFor="score-weights">Please input the weight for each variable, with decimals closer to 1 indicating higher importance. All five weights must add up to 1.</label>
+                    <div className="signup-weight-inputs">
+                        <div className="signup-weight-input">
+                            <label htmlFor="personality_weight">Personality Weight
+                                <input
+                                    type="number"
+                                    min="0.00"
+                                    step="0.01"
+                                    className="signup-inputs"
+                                    id="personality_weight"
+                                    name="personality_weight"
+                                    value={formData.personality_weight}
+                                    onChange={handleChange}
+                                />
+                            </label>
+                        </div>
+                        <div className="signup-weight-input">
+                            <label htmlFor="location_weight">Location Weight
+                                <input
+                                    type="number"
+                                    min="0.00"
+                                    step="0.01"
+                                    className="signup-inputs"
+                                    id="location_weight"
+                                    name="location_weight"
+                                    value={formData.location_weight}
+                                    onChange={handleChange}
+                                />
+                            </label>
+                        </div>
+                        <div className="signup-weight-input">
+                            <label htmlFor="goals_weight">Goals Weight
+                                <input
+                                    type="number"
+                                    min="0.00"
+                                    step="0.01"
+                                    className="signup-inputs"
+                                    id="goals_weight"
+                                    name="goals_weight"
+                                    value={formData.goals_weight}
+                                    onChange={handleChange}
+                                />
+                            </label>
+                        </div>
+                        <div className="signup-weight-input">
+                            <label htmlFor="school_weight">School Weight
+                                <input
+                                    type="number"
+                                    min="0.00"
+                                    step="0.01"
+                                    className="signup-inputs"
+                                    id="school_weight"
+                                    name="school_weight"
+                                    value={formData.school_weight}
+                                    onChange={handleChange}
+                                />
+                            </label>
+                        </div>
+                        <div className="signup-weight-input">
+                            <label htmlFor="class_standing_weight">Class Standing Weight
+                                <input
+                                    type="number"
+                                    min="0.00"
+                                    step="0.01"
+                                    className="signup-inputs"
+                                    id="class_standing_weight"
+                                    name="class_standing_weight"
+                                    value={formData.class_standing_weight}
+                                    onChange={handleChange}
+                                />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div className="signup-form-third-section"><h4>Study Group Preferences</h4>
                     <label htmlFor="preferred-time">Preferred Meeting Hours</label>
                     <div className="signup-time-inputs">
                         <div className="signup-time-input">
