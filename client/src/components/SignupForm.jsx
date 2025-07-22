@@ -3,10 +3,8 @@ import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import AutocompleteAddress from "./AutocompleteAddress";
 import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 import '../styles.css'
-import Tooltip from "./Tooltip";
-import EmptyNavBar from "./EmptyNavBar";
-import { API_URL } from "../utils/apiConfig";
 
 // Allows users to create an account
 const SignupForm = () => {
@@ -98,7 +96,11 @@ const SignupForm = () => {
 
     return (
         <div className="signup">
-            <EmptyNavBar />
+            <div className="navbar">
+                <div className="navbar-left">
+                    <h1>Study Match</h1>
+                </div>
+            </div>
             <h2>Sign Up</h2>
             <form className="signup-form" onSubmit={handleSubmit}>
                 <div className="signup-form-top-section">
@@ -178,13 +180,7 @@ const SignupForm = () => {
                                 <option value="senior">Senior</option>
                             </select>
                         </label>
-                        <div>
-                            <section id="study-goals-header">
-                                <label htmlFor="goals" id="study-goals-label">Study Goals</label>
-                                <Tooltip text="Press the Command or Control key to select multiple goals.">
-                                    <button className="buttons" id="info-button">i</button>
-                                </Tooltip>
-                            </section>
+                        <label htmlFor="goals">Study Group Goals
                             <select
                                 className="signup-inputs"
                                 value={selectedGoals}
@@ -201,37 +197,31 @@ const SignupForm = () => {
                                     <option value={goal.id} key={goal.id}>{goal.goal}</option> 
                                 ))}
                             </select>
-                        </div>
+                        </label>
                         <label htmlFor="address">Address
                             <AutocompleteAddress addAddressCoordinates={addAddressCoordinates}/>
                         </label>
-                    </div>
+                </div>
                 </div>
                 <div className="signup-form-second-section"><h4>Study Group Preferences</h4>
                     <label htmlFor="preferred-time">Preferred Meeting Hours</label>
                     <div className="signup-time-inputs">
-                        <div className="signup-time-input">
-                            <label>Preferred Start Time</label>
-                            <input
-                                type="time"
-                                className="signup-inputs"
-                                id="preferred-start-time"
-                                name="preferred_start_time"
-                                value={formData.preferred_start_time}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="signup-time-input">
-                            <label>Preferred End Time</label>
-                            <input
-                                type="time"
-                                className="signup-inputs"
-                                id="preferred-end-time"
-                                name="preferred_end_time"
-                                value={formData.preferred_end_time}
-                                onChange={handleChange}
-                            />
-                        </div>
+                        <input
+                            type="time"
+                            className="signup-inputs"
+                            id="preferred-start-time"
+                            name="preferred_start_time"
+                            value={formData.preferred_start_time}
+                            onChange={handleChange}
+                        />
+                        <input
+                            type="time"
+                            className="signup-inputs"
+                            id="preferred-end-time"
+                            name="preferred_end_time"
+                            value={formData.preferred_end_time}
+                            onChange={handleChange}
+                        />
                     </div>
                 </div>
                 <div className="form-buttons">

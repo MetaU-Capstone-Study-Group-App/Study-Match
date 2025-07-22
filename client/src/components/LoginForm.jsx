@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext';
 import '../styles.css'
-import EmptyNavBar from "./EmptyNavBar";
 
 // Allows users to login with username and password
 const LoginForm = () => {
@@ -45,7 +44,11 @@ const LoginForm = () => {
 
     return (
         <div className="login">
-            <EmptyNavBar />
+            <div className="navbar">
+                <div className="navbar-left">
+                    <h1>Study Match</h1>
+                </div>
+            </div>
             <h2>Login</h2>
             <form onSubmit={handleLoginSubmit} className="login-form">
                 <label className="login-labels">

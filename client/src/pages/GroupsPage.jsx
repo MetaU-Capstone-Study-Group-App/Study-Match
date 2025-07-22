@@ -6,8 +6,6 @@ import CreateGroup from '../components/CreateGroup';
 import NewGroupModal from '../components/NewGroupModal';
 import { useUser } from "../contexts/UserContext";
 import GroupList from '../components/GroupList';
-import LoadingIndicator from '../components/LoadingIndicator';
-import { API_URL } from '../utils/apiConfig';
 
 // Displays all of the study groups a user is matched into
 const GroupsPage = () => {
@@ -57,8 +55,7 @@ const GroupsPage = () => {
     }
 
     const createGroup = async (newGroupData) => {
-        setIsLoading(true);
-        const newGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(newGroupData));
+        const newGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
         await addUserToGroup(newGroup.id);
         loadData();
     }
@@ -123,14 +120,12 @@ const GroupsPage = () => {
             </header>
 
             <main className="groups-page-main"> 
+                <CreateGroup setGroupModalIsOpen={setGroupModalIsOpen} /> 
+                <NewGroupModal groupModalIsOpen={groupModalIsOpen} onModalClose={onModalClose} createGroup={createGroup} fetchData={fetchData} classList={classList} fetchExistingGroups={fetchExistingGroups}/>
                 {isLoading ? (
-                    <LoadingIndicator loading={isLoading} />
+                    <div>Loading...</div>
                 ) : (
-                    <div>
-                        <CreateGroup setGroupModalIsOpen={setGroupModalIsOpen} /> 
-                        <NewGroupModal groupModalIsOpen={groupModalIsOpen} onModalClose={onModalClose} createGroup={createGroup} fetchData={fetchData} classList={classList} fetchExistingGroups={fetchExistingGroups}/>
-                        <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName} fetchData={fetchData} handleUpdateGroupStatus={handleUpdateGroupStatus} currentStatus={currentStatus}/>
-                    </div>
+                    <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName} fetchData={fetchData} handleUpdateGroupStatus={handleUpdateGroupStatus} currentStatus={currentStatus}/>
                 )}
                 {error && (
                     <p>{error}</p>
