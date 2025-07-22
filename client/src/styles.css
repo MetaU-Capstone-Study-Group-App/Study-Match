@@ -90,6 +90,16 @@ button:focus-visible {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    flex: 1;
+    background-color: #ececec;
+}
+
+.home-slogan-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .groups-page-main {

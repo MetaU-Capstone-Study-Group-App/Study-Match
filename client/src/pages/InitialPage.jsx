@@ -4,6 +4,8 @@ import { useUser } from '../contexts/UserContext';
 import '../styles.css'
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import HomeSlogan from "../components/HomeSlogan";
+import Home from "./Home";
 
 // Displayed before a user logs into their account or creates an account
 const InitialPage = () => {
@@ -29,10 +31,10 @@ const InitialPage = () => {
                     <button className='navbar-groups-button' onClick={handleNavigateSignUpPage}>Sign Up</button>
                 </div>
             </div>
-            <h2>The study group that fits you.</h2>
         </header>
 
         <main className="home-main">
+            <HomeSlogan />
         </main>
 
         <Footer />
