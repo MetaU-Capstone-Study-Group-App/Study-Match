@@ -4,6 +4,7 @@ import '../styles.css'
 import Footer from "./Footer";
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../utils/apiConfig";
 
 // Quiz with 10 questions relating to Big Five Personality traits and a slider from 1-5 as the response for each question
 const PersonalityQuiz = () => {
@@ -15,7 +16,7 @@ const PersonalityQuiz = () => {
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
         try {
-            const response = await fetch(`http://localhost:3000/${endpoint}`, {
+            const response = await fetch(`${API_URL}/${endpoint}`, {
                 method: method,
                 headers: headers,
                 credentials: credentials,
