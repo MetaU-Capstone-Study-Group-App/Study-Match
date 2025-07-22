@@ -50,6 +50,6 @@ app.use('/quiz', quizRoutes)
 app.use('/availability', availabilityRoutes)
 app.use('/group', groupRoutes)
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on http://localhost:${PORT}`)
 })
