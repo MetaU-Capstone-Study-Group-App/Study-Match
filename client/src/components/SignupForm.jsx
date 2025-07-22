@@ -6,7 +6,6 @@ import 'react-phone-number-input/style.css'
 import '../styles.css'
 import Tooltip from "./Tooltip";
 import EmptyNavBar from "./EmptyNavBar";
-import { API_URL } from "../utils/apiConfig";
 
 // Allows users to create an account
 const SignupForm = () => {
@@ -28,9 +27,9 @@ const SignupForm = () => {
         }))
     }
 
-    const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
+    const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
-            const response = await fetch(`${API_URL}/${endpoint}`, {
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
                 method: method,
                 headers: headers,
                 credentials: credentials,
@@ -52,7 +51,7 @@ const SignupForm = () => {
         const newQuizData = {
             id: dataId,
         }
-        const newQuiz = await fetchData("quiz/", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(newQuizData));
+        const newQuiz = await fetchData("quiz/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newQuizData));
     }
 
     const createUserGoals = async (userId) => {
@@ -61,7 +60,7 @@ const SignupForm = () => {
                 user_id: userId,
                 goal_id: parseInt(goal)
             }
-            const newUserGoal = await fetchData("user/goals", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(newGoalData));
+            const newUserGoal = await fetchData("user/goals", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGoalData));
         }
     }
 

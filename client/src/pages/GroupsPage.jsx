@@ -7,7 +7,6 @@ import NewGroupModal from '../components/NewGroupModal';
 import { useUser } from "../contexts/UserContext";
 import GroupList from '../components/GroupList';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { API_URL } from '../utils/apiConfig';
 
 // Displays all of the study groups a user is matched into
 const GroupsPage = () => {
@@ -21,9 +20,9 @@ const GroupsPage = () => {
     const [error, setError] = useState("");
     const [currentStatus, setCurrentStatus] = useState({});
 
-    const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
+    const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
-            const response = await fetch(`${API_URL}/${endpoint}`, {
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
                 method: method,
                 headers: headers,
                 credentials: credentials,
@@ -53,12 +52,12 @@ const GroupsPage = () => {
             user_id: user.id,
             existing_group_id: newGroupId
         }
-        const newUserExistingGroup = await fetchData("group/userExistingGroup/", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(newUserExistingGroupData));
+        const newUserExistingGroup = await fetchData("group/userExistingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newUserExistingGroupData));
     }
 
     const createGroup = async (newGroupData) => {
         setIsLoading(true);
-        const newGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(newGroupData));
+        const newGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
         await addUserToGroup(newGroup.id);
         loadData();
     }
@@ -111,7 +110,7 @@ const GroupsPage = () => {
         const newStatus = {
             status: updatedStatus
         }
-        const updatedGroup = await fetchData(`group/userExistingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "include", JSON.stringify(newStatus));
+        const updatedGroup = await fetchData(`group/userExistingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newStatus));
         setCurrentStatus({groupId, updatedStatus});
     }
 

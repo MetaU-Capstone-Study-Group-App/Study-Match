@@ -95,6 +95,13 @@ button:focus-visible {
     background-color: #ececec;
 }
 
+.home-slogan-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .groups-page-main {
     display: flex;
     justify-content: center;
@@ -659,11 +666,4 @@ button:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.home-slogan-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
 }

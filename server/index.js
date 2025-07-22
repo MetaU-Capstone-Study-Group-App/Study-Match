@@ -8,43 +8,20 @@ const quizRoutes = require('./routes/QuizRoutes.js')
 const availabilityRoutes = require('./routes/AvailabilityRoutes.js')
 const groupRoutes = require('./routes/GroupRoutes.js')
 const session = require('express-session')
-const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
-const { PrismaClient } = require('@prisma/client')
-
-app.set('trust proxy', true)
-
-const origins = [
-    'http://localhost:5173',
-    'https://study-match-mm3y.onrender.com'
-];
 
 app.use(cors({
-    origin: origins, 
+    origin: 'http://localhost:5173', 
     credentials: true
 }))
 
 app.use(express.json())
 
-app.use(
-    session({
-        cookie: {
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            secure: true,
-            sameSite: 'none',
-        },
-        secret: 'study-match',
-        resave: false,
-        saveUninitialized: false,
-        store: new PrismaSessionStore(
-        new PrismaClient(),
-        {
-            checkPeriod: 2 * 60, 
-            dbRecordIdIsSessionId: true,
-            dbRecordIdFunction: undefined,
-        }
-        )
-    })
-);
+app.use(session({
+    secret: 'study-match', 
+    resave: false,
+    saveUninitialized: false,
+    cookie: {secure: false, httpOnly: true, maxAge: 1000 * 60 * 60} 
+}))
 
 app.use('/auth', authRoutes)
 app.use('/user', userRoutes)
@@ -52,6 +29,6 @@ app.use('/quiz', quizRoutes)
 app.use('/availability', availabilityRoutes)
 app.use('/group', groupRoutes)
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
 })

@@ -245,7 +245,7 @@ const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvail
                             start_time: minutesToTimeString(start_time),
                             end_time: minutesToTimeString(end_time)
                         }
-                        const newExistingGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(newGroupData));
+                        const newExistingGroup = await fetchData("group/existingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
                         if (!newExistingGroup.users){
                             newExistingGroup.users = [splitGroup];
                         }
@@ -344,7 +344,7 @@ const createUserExistingGroups = async (fetchData, filteredByTimeGroups) => {
                     user_id,
                     existing_group_id: existingGroup.id
                 }
-                const newUserExistingGroup = await fetchData("group/userExistingGroup/", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(newGroupData));
+                const newUserExistingGroup = await fetchData("group/userExistingGroup/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newGroupData));
             }
         }
     }

@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext';
-import { API_URL } from "../utils/apiConfig";
 
 // Handles user authentication
 const WithAuth = (WrappedComponent) => {
@@ -11,7 +10,7 @@ const WithAuth = (WrappedComponent) => {
 
         useEffect(() => {
             if (!user) {
-                fetch(`${API_URL}/auth/me`, {credentials: "include"})
+                fetch("http://localhost:3000/auth/me", {credentials: "include"})
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.id) { 

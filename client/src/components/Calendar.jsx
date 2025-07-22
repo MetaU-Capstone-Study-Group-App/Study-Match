@@ -9,7 +9,6 @@ import WeekDays from "../data/WeekDays";
 import MatchByAvailability from "../utils/MatchByAvailability";
 import CompatibilityScore from "../utils/CompatibilityScore";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../utils/apiConfig";
 
 const localizer = momentLocalizer(moment);
 const DEFAULT_YEAR = 2025;
@@ -38,9 +37,9 @@ const Calendar = () => {
         }
     }
 
-    const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
+    const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
-            const response = await fetch(`${API_URL}/${endpoint}`, {
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
                 method: method,
                 headers: headers,
                 credentials: credentials,
@@ -101,13 +100,13 @@ const Calendar = () => {
             end_time: eventData.end.toLocaleTimeString('en-US', { hour12: false }),
             class_name: eventData.title
         }
-        const newBusyTime = await fetchData(busyTimeEndpoint, busyTimeMethod, {"Content-Type": "application/json"}, "include", JSON.stringify(newBusyTimeData));
+        const newBusyTime = await fetchData(busyTimeEndpoint, busyTimeMethod, {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newBusyTimeData));
         setEventId(newBusyTime.id);
     }
 
     const fetchEvents = async () => {
         if (user){
-            const userEvents = await fetchData(`availability/busyTime/${user.id}`, "GET", {"Content-Type": "application/json"}, "include");
+            const userEvents = await fetchData(`availability/busyTime/${user.id}`, "GET", {"Content-Type": "application/json"});
             setBusyTimes(userEvents);
             const formattedEvents = userEvents.map(e => {
                 const dayOfWeek = e.day_of_week;
