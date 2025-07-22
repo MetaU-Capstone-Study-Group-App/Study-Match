@@ -31,8 +31,8 @@ app.use(
             sameSite: 'none',
         },
         secret: 'study-match',
-        resave: true,
-        saveUninitialized: true,
+        resave: false,
+        saveUninitialized: false,
         store: new PrismaSessionStore(
         new PrismaClient(),
         {
