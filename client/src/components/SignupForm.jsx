@@ -6,7 +6,6 @@ import 'react-phone-number-input/style.css'
 import '../styles.css'
 import Tooltip from "./Tooltip";
 import EmptyNavBar from "./EmptyNavBar";
-import { API_URL } from "../utils/apiConfig";
 
 // Allows users to create an account
 const SignupForm = () => {
@@ -30,7 +29,7 @@ const SignupForm = () => {
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
         try {
-            const response = await fetch(`${API_URL}/${endpoint}`, {
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
                 method: method,
                 headers: headers,
                 credentials: credentials,

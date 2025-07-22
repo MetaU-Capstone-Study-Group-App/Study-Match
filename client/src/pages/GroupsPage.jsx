@@ -7,7 +7,6 @@ import NewGroupModal from '../components/NewGroupModal';
 import { useUser } from "../contexts/UserContext";
 import GroupList from '../components/GroupList';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { API_URL } from '../utils/apiConfig';
 
 // Displays all of the study groups a user is matched into
 const GroupsPage = () => {
@@ -23,7 +22,7 @@ const GroupsPage = () => {
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
         try {
-            const response = await fetch(`${API_URL}/${endpoint}`, {
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
                 method: method,
                 headers: headers,
                 credentials: credentials,

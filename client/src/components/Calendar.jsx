@@ -9,7 +9,6 @@ import WeekDays from "../data/WeekDays";
 import MatchByAvailability from "../utils/MatchByAvailability";
 import CompatibilityScore from "../utils/CompatibilityScore";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../utils/apiConfig";
 
 const localizer = momentLocalizer(moment);
 const DEFAULT_YEAR = 2025;
@@ -40,7 +39,7 @@ const Calendar = () => {
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
         try {
-            const response = await fetch(`${API_URL}/${endpoint}`, {
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
                 method: method,
                 headers: headers,
                 credentials: credentials,

@@ -6,7 +6,6 @@ import FileUpload from '../components/FileUpload';
 import Footer from '../components/Footer';
 import LoadingIndicator from '../components/LoadingIndicator';
 import DefaultProfilePic from "/src/images/profile-pic.png";
-import { API_URL } from '../utils/apiConfig';
 
 // Displays profile information for a specific user
 const ProfilePage = () => {
@@ -18,7 +17,7 @@ const ProfilePage = () => {
     const [userInfo, setUserInfo] = useState({});
 
     const handleLogout = async () => {
-        await fetch(`${API_URL}/auth/logout`, {method: "POST", credentials: "include"});
+        await fetch("http://localhost:3000/auth/logout", {method: "POST", credentials: "include"});
         setUser(null); 
         navigate("/");
     };
@@ -26,7 +25,7 @@ const ProfilePage = () => {
     const fetchData = async (endpoint, method = "GET", credentials = "include", body = null) => {
         try {
             setIsLoading(true);
-            const response = await fetch(`${API_URL}/${endpoint}`, {
+            const response = await fetch(`http://localhost:3000/${endpoint}`, {
                 method: method,
                 credentials: credentials,
                 body: body,
