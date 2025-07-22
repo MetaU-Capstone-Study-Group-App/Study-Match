@@ -9,8 +9,13 @@ const availabilityRoutes = require('./routes/AvailabilityRoutes.js')
 const groupRoutes = require('./routes/GroupRoutes.js')
 const session = require('express-session')
 
+const origins = [
+    'http://localhost:5173',
+    'https://study-match-mm3y.onrender.com'
+];
+
 app.use(cors({
-    origin: 'http://localhost:5173', 
+    origin: origins, 
     credentials: true
 }))
 
