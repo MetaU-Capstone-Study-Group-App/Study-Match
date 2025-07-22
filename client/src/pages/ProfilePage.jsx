@@ -22,7 +22,7 @@ const ProfilePage = () => {
         navigate("/");
     };
 
-    const fetchData = async (endpoint, method = "GET", credentials = "same-origin", body = null) => {
+    const fetchData = async (endpoint, method = "GET", credentials = "include", body = null) => {
         try {
             setIsLoading(true);
             const response = await fetch(`http://localhost:3000/${endpoint}`, {
