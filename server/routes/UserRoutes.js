@@ -89,4 +89,18 @@ router.get('/info/:name', async (req, res) => {
     res.json(currentUser);
 })
 
+router.get('/weights/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const currentUser = await prisma.user.findUnique({
+        where: {id: parseInt(userId)},
+    });
+    res.json({
+        personality_weight: currentUser.personality_weight, 
+        location_weight: currentUser.location_weight, 
+        goals_weight: currentUser.goals_weight, 
+        school_weight: currentUser.school_weight, 
+        class_standing_weight: currentUser.class_standing_weight
+    });
+})
+
 module.exports = router
