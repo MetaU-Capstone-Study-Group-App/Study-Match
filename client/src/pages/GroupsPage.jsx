@@ -7,6 +7,7 @@ import NewGroupModal from '../components/NewGroupModal';
 import { useUser } from "../contexts/UserContext";
 import GroupList from '../components/GroupList';
 import LoadingIndicator from '../components/LoadingIndicator';
+import ScoreWeights from '../data/ScoreWeights';
 
 // Displays all of the study groups a user is matched into
 const GroupsPage = () => {
@@ -19,6 +20,7 @@ const GroupsPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     const [currentStatus, setCurrentStatus] = useState({});
+    const [scoreWeights, setScoreWeights] = useState({});
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
         try {
@@ -81,9 +83,20 @@ const GroupsPage = () => {
         setClassList(sortedClassData);
     }
 
+    const fetchWeights = async () => {
+        const weights = await ScoreWeights(fetchData, user.id);
+        setScoreWeights(weights);
+    }
+
     useEffect(() => {
         loadData();
     }, [currentStatus])
+
+    useEffect(() => {
+        if (user){
+            fetchWeights();
+        }
+    }, [user])
 
     const getClassName = (classId) => {
         for (const c of classList){
@@ -128,7 +141,7 @@ const GroupsPage = () => {
                     <div>
                         <CreateGroup setGroupModalIsOpen={setGroupModalIsOpen} /> 
                         <NewGroupModal groupModalIsOpen={groupModalIsOpen} onModalClose={onModalClose} createGroup={createGroup} fetchData={fetchData} classList={classList} fetchExistingGroups={fetchExistingGroups}/>
-                        <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName} fetchData={fetchData} handleUpdateGroupStatus={handleUpdateGroupStatus} currentStatus={currentStatus}/>
+                        <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName} fetchData={fetchData} handleUpdateGroupStatus={handleUpdateGroupStatus} currentStatus={currentStatus} scoreWeights={scoreWeights}/>
                     </div>
                 )}
                 {error && (

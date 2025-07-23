@@ -6,7 +6,7 @@ import CompatibilityScore from '../utils/CompatibilityScore'
 import LoadingIndicator from './LoadingIndicator'
 
 // Displays all of a user's study groups in a grid format
-const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetchData, handleUpdateGroupStatus, currentStatus}) => {
+const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetchData, handleUpdateGroupStatus, currentStatus, scoreWeights}) => {
     const GENERIC_DATE = `2025-07-01T`;
     const [userExistingGroups, setUserExistingGroups] = useState([]);
     const [groupScores, setGroupScores] = useState({});
@@ -58,7 +58,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
             const groupMembers = getGroupMembers(groupId);
             for (const member of groupMembers){
                 if (member !== user.id && groupMembers.length > 1){
-                    compatibilityScorePromises.push(CompatibilityScore(user.id, member, fetchData));
+                    compatibilityScorePromises.push(CompatibilityScore(user.id, member, fetchData, scoreWeights));
                 }
                 else if (groupMembers.length === 1){
                     compatibilityScorePromises.push(1);

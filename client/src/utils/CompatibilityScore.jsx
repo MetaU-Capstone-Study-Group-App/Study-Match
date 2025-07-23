@@ -1,5 +1,4 @@
 import SchoolStanding from "../data/SchoolStanding";
-import ScoreWeights from "../data/ScoreWeights";
 
 // Calculates average score for each Big Five Personality Trait using personality quiz results
 const calculateIndividualPersonalityScore = async (userId, fetchData) => {
@@ -120,7 +119,7 @@ const calculateGoalsScore = async (firstUserId, secondUserId, fetchData) => {
 }
 
 // Uses the five metrics above and their respective weights to calculate overall compatibility score
-const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fetchData) => {
+const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fetchData, scoreWeights) => {
     const scores = [];
     const NUM_OF_METRICS = 5;
     const personalityScore = await calculatePairPersonalityScore(firstUserId, secondUserId, fetchData);
@@ -135,8 +134,8 @@ const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fet
     let sumOfExistingWeights = 0;
     for (let i = 0; i < METRICS.length; i++){
         if (METRICS[i] || METRICS[i] === 0){
-            scores.push({score_weight: ScoreWeights[STRING_METRICS[i]], score_value: METRICS[i] * ScoreWeights[STRING_METRICS[i]]});
-            sumOfExistingWeights += ScoreWeights[STRING_METRICS[i]];
+            scores.push({score_weight: scoreWeights[STRING_METRICS[i]], score_value: METRICS[i] * scoreWeights[STRING_METRICS[i]]});
+            sumOfExistingWeights += scoreWeights[STRING_METRICS[i]];
         }
     }
     if (scores.length !== NUM_OF_METRICS){
@@ -154,8 +153,8 @@ const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fet
     return overallScore;
 }
 
-const CompatibilityScore = async (firstUserId, secondUserId, fetchData) => {
-    const overallScore = await calculateOverallCompatibilityScore(firstUserId, secondUserId, fetchData);
+const CompatibilityScore = async (firstUserId, secondUserId, fetchData, scoreWeights) => {
+    const overallScore = await calculateOverallCompatibilityScore(firstUserId, secondUserId, fetchData, scoreWeights);
     return overallScore.toFixed(2);
 }
 
