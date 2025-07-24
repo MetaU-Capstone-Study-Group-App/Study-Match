@@ -147,9 +147,22 @@ const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fet
     const filteredScores = scores.map((score) => ({
         score: score.score_value
     }));
-    const overallScore = filteredScores.reduce((a, b) => {
+    let overallScore = filteredScores.reduce((a, b) => {
         return a + b.score
     }, 0);
+    const userFavorites = await fetchData(`user/favorite/${firstUserId}`, "GET");
+    const memberInUserFavorites = userFavorites.filter(userFavorite => userFavorite.favorite_user === secondUserId);
+    const memberFavorites = await fetchData(`user/favorite/${secondUserId}`, "GET");
+    const userInMemberFavorites = memberFavorites.filter(memberFavorite => memberFavorite.favorite_user === firstUserId);
+    if (memberInUserFavorites.length !== 0 && userInMemberFavorites.length !== 0){
+        overallScore += 0.1;
+    }
+    else if (memberInUserFavorites.length !== 0){
+        overallScore += 0.07;
+    }
+    else if (userInMemberFavorites.length !== 0){
+        overallScore += 0.05;
+    }
     return overallScore;
 }
 

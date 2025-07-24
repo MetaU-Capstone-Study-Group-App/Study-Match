@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react';
 import EmptyStar from '/src/images/empty-star.png'
 import YellowStar from '/src/images/yellow-star.png'
 
-const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id, user}) => {
+const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id, user, handleFavorited}) => {
     const [uploadedProfilePic, setUploadedProfilePic] = useState(null);
     const [isFavorited, setIsFavorited] = useState(false);
-    const [existingFavorites, setExistingFavorites] = useState([]);
     const [favoritedSpecificUser, setFavoritedSpecificUser] = useState([]);
 
     const fetchProfilePicture = async () => {
@@ -17,7 +16,6 @@ const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id, us
 
     const handleDisplayFavorites = async () => {
         const favorites = await fetchData(`user/favorite/${user.id}`, "GET");
-        setExistingFavorites(favorites);
         if (favorites && favorites.length !== 0){
             const specificUserFavorites = favorites.filter(userFavorite => userFavorite.favorite_user === id);
             setFavoritedSpecificUser(specificUserFavorites);
@@ -46,6 +44,7 @@ const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id, us
             }
             setIsFavorited(true);
         }
+        handleFavorited();
     }
 
     useEffect(() => {
@@ -69,7 +68,7 @@ const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id, us
                 <div className="member-card-phone-number">{phoneNumber}</div>
             </div>
             <div className="member-card-info-favorite">
-                <img src={isFavorited ? YellowStar : EmptyStar} width="20" height="20" onClick={handleFavorite} className="favorite-button"/>
+                {user.id !== id && <img src={isFavorited ? YellowStar : EmptyStar} width="20" height="20" onClick={handleFavorite} className="favorite-button"/>}
             </div>
         </div>
     )
