@@ -222,6 +222,20 @@ const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvail
             const matchedExistingGroups = filteredExistingGroupsMap.get(groupKey);
             let usersRemaining = [...usersArray];
             if (matchedExistingGroups && usersArray.length !== 0){
+                for (const possibleUser of usersRemaining){
+                    const preferredTimes = await fetchData(`user/preferredTimes/${possibleUser}`, "GET");
+                    let userRemovedCount = 0
+                    for (const matchedGroup of [...matchedExistingGroups]){
+                        if (stringToTime(matchedGroup.end_time) <= stringToTime(preferredTimes.preferred_start_time) || stringToTime(matchedGroup.start_time) >= stringToTime(preferredTimes.preferred_end_time)){
+                            usersRemaining = usersRemaining.filter(user => user !== possibleUser);
+                            userRemovedCount++;
+                        }
+                    }
+                    if (userRemovedCount === filteredExistingGroupsMap.size){
+                        usersRemaining.push(possibleUser);
+                        usersRemaining.sort((a,b) => a - b);
+                    }
+                }
                 for (const group of matchedExistingGroups){
                     if (!group.users){
                         group.users = [];

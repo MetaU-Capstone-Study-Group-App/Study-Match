@@ -15,6 +15,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
     const [recommendationsChangedAt, setRecommendationsChangedAt] = useState(Date.now());
     const POSSIBLE_STATUS = ["available", "accepted", "rejected"];
     const [isLoading, setIsLoading] = useState(true);
+    const [wasFavorited, setWasFavorited] = useState(false);
 
     const getExistingGroupInfo = (groupId) => {
         for (const group of existingGroups){
@@ -131,6 +132,10 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
         return isRecommended;
     }
 
+    const handleFavorited = () => {
+        setWasFavorited(prev => !prev);
+    }
+
     useEffect(() => {
         setUserExistingGroups(data);
     }, [data])
@@ -147,7 +152,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
 
     useEffect(() => {
         loadGroupScores();
-    }, [userExistingGroups, user])
+    }, [userExistingGroups, user, wasFavorited])
 
     useEffect(() => {
         loadGroupsByStatus();
@@ -183,7 +188,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
                 }
                 const groupScore = groupScores[obj.existing_group_id] ? groupScores[obj.existing_group_id] : null;
                 return (
-                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id} recommendationsChangedAt={recommendationsChangedAt} fetchData={fetchData} existingId={obj.existing_group_id} status={obj.status} user={user}/>
+                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id} recommendationsChangedAt={recommendationsChangedAt} fetchData={fetchData} existingId={obj.existing_group_id} status={obj.status} user={user} handleFavorited={handleFavorited}/>
                 )
             }
         }
