@@ -123,7 +123,7 @@ const GroupsPage = () => {
         const newStatus = {
             status: updatedStatus
         }
-        const updatedGroup = await fetchData(`group/userExistingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newStatus));
+        const updatedGroup = await fetchData(`group/userExistingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "include", JSON.stringify(newStatus));
         setCurrentStatus({groupId, updatedStatus});
     }
 

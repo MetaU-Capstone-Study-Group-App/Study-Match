@@ -103,4 +103,33 @@ router.get('/weights/:userId', async (req, res) => {
     });
 })
 
+router.post('/favorite', async (req, res) => {
+    const {logged_in_user, favorite_user} = req.body
+    const newUserFavorite = await prisma.userFavorite.create({
+        data: {
+            logged_in_user,
+            favorite_user
+        }
+    })
+    res.json(newUserFavorite);
+})
+
+router.get('/favorite/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const favoriteUsers = await prisma.userFavorite.findMany({
+        where: {logged_in_user: parseInt(userId)},
+    });
+    res.json(favoriteUsers);
+})
+
+router.delete('/favorite/:favoriteId', async (req, res) => {
+    const {favoriteId} = req.params
+    const deletedUserFavorite = await prisma.userFavorite.delete({
+        where: { 
+            id: parseInt(favoriteId)
+        }
+    })
+    res.json(deletedUserFavorite)
+})
+
 module.exports = router

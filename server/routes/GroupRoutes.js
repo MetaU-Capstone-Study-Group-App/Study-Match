@@ -86,10 +86,11 @@ router.get('/existingGroup/:groupId', async (req, res) => {
 
 router.put('/userExistingGroup/recommend/:groupId', async (req, res) => {
     const groupId = parseInt(req.params.groupId);
+    const {recommend_status} = req.body;
     const updatedGroupData = await prisma.userExistingGroup.update({
         where: {id: parseInt(groupId)},
         data: {
-            recommended: true
+            recommended: recommend_status
         }
     })
     res.json(updatedGroupData);
