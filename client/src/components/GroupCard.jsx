@@ -7,7 +7,7 @@ import MemberCard from './MemberCard'
 import Tooltip from './Tooltip'
 
 // Contains the information for an individual study group
-const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, isCardRecommended, handleUpdateGroupStatus, groupId, recommendationsChangedAt, fetchData, existingId, status}) => {
+const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, isCardRecommended, handleUpdateGroupStatus, groupId, recommendationsChangedAt, fetchData, existingId, status, user}) => {
     const [studyGoalsModalIsOpen, setStudyGoalsModalIsOpen] = useState(false);
     const [recommended, setRecommended] = useState();
     const [userInformation, setUserInformation] = useState([]);
@@ -61,7 +61,7 @@ const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, 
                     if (userInformation[item]){
                         return (
                             <MemberCard 
-                                key={index} name={userInformation[item][0].name} email={userInformation[item][0].email} phoneNumber={userInformation[item][0].phone_number} profilePicture={userInformation[item][0].profile_picture} fetchData={fetchData} id={userInformation[item][0].id}
+                                key={index} name={userInformation[item][0].name} email={userInformation[item][0].email} phoneNumber={userInformation[item][0].phone_number} profilePicture={userInformation[item][0].profile_picture} fetchData={fetchData} id={userInformation[item][0].id} user={user}
                             />
                         )
                     }

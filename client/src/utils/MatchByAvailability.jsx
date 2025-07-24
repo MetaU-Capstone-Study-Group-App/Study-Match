@@ -308,10 +308,10 @@ const filterByPreferredTime = async (groupsByAvailability, allUsers, fetchData, 
         if (groupsForUser.length === 0){
             for (const groups of groupsByAvailability.values()){
                 if (groups.length === 1){
-                    if (groups.users){
-                        for (const userInList of groups.users){
+                    if (groups[0].users){
+                        for (const userInList of groups[0].users[0]){
                             if (userInList === user.id){
-                                groupsForUser.push(groups);
+                                groupsForUser.push(groups[0]);
                             }
                         }
                     }
@@ -319,7 +319,7 @@ const filterByPreferredTime = async (groupsByAvailability, allUsers, fetchData, 
                 else {
                     for (const existingGroup of groups){
                         if (existingGroup["users"]){
-                            for (const userInList of existingGroup["users"]){
+                            for (const userInList of existingGroup["users"][0]){
                                 if (userInList === user.id){
                                     groupsForUser.push(existingGroup);
                                 }

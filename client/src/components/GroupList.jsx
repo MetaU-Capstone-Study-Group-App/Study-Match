@@ -88,8 +88,8 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
         setStatusGroups(groupsByStatus);
     }
 
-    const handleRecommend = async (groupId) => {
-        const recommendedGroup = await fetchData(`group/userExistingGroup/recommend/${groupId}/`, "PUT");
+    const handleRecommend = async (groupId, recommendStatus) => {
+        const recommendedGroup = await fetchData(`group/userExistingGroup/recommend/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "include", JSON.stringify({recommend_status: recommendStatus}));
         setRecommendationsChangedAt(Date.now());
     }
 
@@ -106,13 +106,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
     // Recommends the group with the highest group compatibility score for each class
     const recommendGroups = async () => {
         const previousClasses = [];
-        const alreadyRecommended = userExistingGroups.some(
-            obj => obj.recommended && obj.user_id === user.id
-        )
-        if (alreadyRecommended){
-            return;
-        }
-        else if (userExistingGroups.length !== 0){
+        if (userExistingGroups.length !== 0){
             const sortedUserGroups = sortUserGroups();
             sortedUserGroups?.map((obj) => {
                 if (user) {
@@ -120,8 +114,11 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
                         const groupInfo = getExistingGroupInfo(obj.existing_group_id);
                         const className = getClassName(groupInfo.class_id);
                         if (!previousClasses.includes(className)){
-                            handleRecommend(obj.id);
+                            handleRecommend(obj.id, true);
                             previousClasses.push(className);
+                        }
+                        else {
+                            handleRecommend(obj.id, false);
                         }
                     }
                 }
@@ -186,7 +183,7 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
                 }
                 const groupScore = groupScores[obj.existing_group_id] ? groupScores[obj.existing_group_id] : null;
                 return (
-                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id} recommendationsChangedAt={recommendationsChangedAt} fetchData={fetchData} existingId={obj.existing_group_id} status={obj.status}/>
+                    <GroupCard key={obj.id} className={className} dayOfWeek={dayOfWeek} time={time} users={userNames} groupCompatibilityScore={groupScore} isCardRecommended={isCardRecommended} handleUpdateGroupStatus={handleUpdateGroupStatus} groupId={obj.id} recommendationsChangedAt={recommendationsChangedAt} fetchData={fetchData} existingId={obj.existing_group_id} status={obj.status} user={user}/>
                 )
             }
         }
