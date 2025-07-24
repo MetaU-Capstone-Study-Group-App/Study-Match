@@ -15,6 +15,10 @@ import CalendarPage from './pages/CalendarPage.jsx'
 const App = () => {
   const {user, setUser} = useUser();
   const ProtectedHome = WithAuth(Home);
+  const ProtectedGroupsPage = WithAuth(GroupsPage);
+  const ProtectedProfilePage = WithAuth(ProfilePage);
+  const ProtectedPersonalityQuiz = WithAuth(PersonalityQuiz);
+  const ProtectedCalendarPage = WithAuth(CalendarPage);
 
   useEffect(() => {
     fetch("http://localhost:3000/auth/me", {credentials: "include"})
@@ -30,10 +34,10 @@ const App = () => {
     <Routes>
         <Route path="/" element={<InitialPage />} />
         <Route path='/home' element={<ProtectedHome />}/>
-        <Route path='/groups' element={<GroupsPage />}/>
-        <Route path='/profile' element={<ProfilePage />}/>
-        <Route path='/personalityQuiz' element={<PersonalityQuiz />}/>
-        <Route path='/calendar' element={<CalendarPage />}/>
+        <Route path='/groups' element={<ProtectedGroupsPage />}/>
+        <Route path='/profile' element={<ProtectedProfilePage />}/>
+        <Route path='/personalityQuiz' element={<ProtectedPersonalityQuiz />}/>
+        <Route path='/calendar' element={<ProtectedCalendarPage />}/>
         <Route path="/auth/signup" element={<SignupForm />} />
         <Route path="/auth/login" element={<LoginForm />} />
     </Routes>
