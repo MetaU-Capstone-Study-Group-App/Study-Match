@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import GoalsGenerator from "./GoalsGenerator";
 import LoadingIndicator from "./LoadingIndicator";
 import ReactMarkdown from "react-markdown";
+import GenAIGuardrail from "./GenAIGuardrail";
 
 // Generates five main study goals for the group using Gemini API and resources inputted by the group members
 const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className, fetchData, groupId}) => {
@@ -35,8 +36,9 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className, fetchD
         let mainGoals = "";
         const existingStudyGoals = await fetchData(`group/existingGroup/${groupId}/`, "GET");
         mainGoals = await GoalsGenerator(className, inputValue, existingStudyGoals);
+        const goalsAfterGuardrail = await GenAIGuardrail(mainGoals);
         const newStudyGoals = {
-            study_goals: mainGoals
+            study_goals: goalsAfterGuardrail
         }
         const savedStudyGoals = await fetchData(`group/existingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newStudyGoals));
         setMainStudyGoals(savedStudyGoals);
