@@ -201,9 +201,9 @@ const splitUsers = (usersArray) => {
 }
 
 // Checks if a group falls within a user's preferred time range
-const isPreferredMatch = (group, preferredTimes, stringToTime) => {
-    const endTime = stringToTime(group.end_time);
-    const startTime = stringToTime(group.start_time);
+const isPreferredMatch = (groupStartTime, groupEndTime, preferredTimes, stringToTime) => {
+    const endTime = stringToTime(groupEndTime);
+    const startTime = stringToTime(groupStartTime);
     const preferredEnd = stringToTime(preferredTimes.preferred_end_time);
     const preferredStart = stringToTime(preferredTimes.preferred_start_time);
     return !(endTime <= preferredStart || startTime >= preferredEnd)
@@ -212,14 +212,19 @@ const isPreferredMatch = (group, preferredTimes, stringToTime) => {
 // Checks if there exists at least one group that falls during the user's preferred time range
 const checkPreferredMatchExists = (preferredTimes, filteredExistingGroupsMap, stringToTime) => {
     let hasPreferredMatch = false;
-    for (const existingGroups of filteredExistingGroupsMap.values()){
-        for (const existingGroup of existingGroups){
-            if (isPreferredMatch(existingGroup, preferredTimes, stringToTime)){
-                hasPreferredMatch = true;
-                break;
-            }
+    const existingGroupsSet = new Set(filteredExistingGroupsMap.values().map((existingGroups) => existingGroups.map(existingGroup => `${existingGroup.start_time}-${existingGroup.end_time}`)));
+    const existingGroupsArray = new Array([...existingGroupsSet]);
+    const preferredGroups = existingGroupsArray.map((existingGroup) => existingGroup.map(group => {
+        const groupTimes = group[0].split('-');
+        const groupStartTime = groupTimes[0];
+        const groupEndTime = groupTimes[1];
+        if (isPreferredMatch(groupStartTime, groupEndTime, preferredTimes, stringToTime)){
+            hasPreferredMatch = true;
+            return (
+                hasPreferredMatch
+            )
         }
-    }
+    }))
     return hasPreferredMatch;
 }
 
