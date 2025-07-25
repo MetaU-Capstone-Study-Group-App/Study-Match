@@ -35,14 +35,14 @@ const SignupForm = () => {
                 credentials: credentials,
                 body: body,
             });
-            if (!response.ok){
-                throw new Error('Not able to fetch data.')
-            }
             const data = await response.json();
+            if (!response.ok){
+                throw new Error(data.error || 'Not able to fetch data.')
+            }
             return data;
         }
         catch (error) {
-            setError("Error. Please try again.");
+            setError(error.message);
             return null;
         }
     }
@@ -74,7 +74,7 @@ const SignupForm = () => {
             createUserGoals(data.id);
             navigate("/personalityQuiz");
         } catch (error) {
-            setMessage({type: "error", text: "Network error. Please try again."})
+            setMessage({type: "error", text: "Error. Please try again."})
         }
     }
 
@@ -110,6 +110,7 @@ const SignupForm = () => {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
+                                required
                             />
                         </label>
                         <label htmlFor="username">Username
@@ -120,6 +121,7 @@ const SignupForm = () => {
                                 name="username"
                                 value={formData.username}
                                 onChange={handleChange}
+                                required
                             />
                         </label>
                         <label htmlFor="password">Password
@@ -130,6 +132,7 @@ const SignupForm = () => {
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
+                                required
                             />
                         </label>
                     </div>
@@ -142,6 +145,7 @@ const SignupForm = () => {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
+                                required
                             />
                         </label>
                         <label htmlFor="phone_number">Phone Number
@@ -154,6 +158,7 @@ const SignupForm = () => {
                                 pattern="[0-9]{10}"
                                 maxLength="10"
                                 onChange={handleChange}
+                                required
                             />
                         </label>
                         <label htmlFor="school">College/University
@@ -193,7 +198,6 @@ const SignupForm = () => {
                                     const selectedOptions = goals.filter((goal) => goal.selected).map((goal) => goal.value);
                                     setSelectedGoals(selectedOptions);
                                 }}
-                                required
                             >
                                 <option value="" disabled>Select all that apply</option>
                                 {goalOptions.map((goal) => (
@@ -293,6 +297,7 @@ const SignupForm = () => {
                                 name="preferred_start_time"
                                 value={formData.preferred_start_time}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
                         <div className="signup-time-input">
@@ -304,6 +309,7 @@ const SignupForm = () => {
                                 name="preferred_end_time"
                                 value={formData.preferred_end_time}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
                     </div>

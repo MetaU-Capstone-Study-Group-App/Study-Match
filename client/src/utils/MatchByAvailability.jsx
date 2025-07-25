@@ -200,6 +200,15 @@ const splitUsers = (usersArray) => {
     return newUserGroups;
 }
 
+// Checks if a group falls within a user's preferred time range
+const isPreferredMatch = (group, preferredTimes, stringToTime) => {
+    const endTime = stringToTime(group.end_time);
+    const startTime = stringToTime(group.start_time);
+    const preferredEnd = stringToTime(preferredTimes.preferred_end_time);
+    const preferredStart = stringToTime(preferredTimes.preferred_start_time);
+    return !(endTime <= preferredStart || startTime >= preferredEnd)
+}
+
 // Creates study groups where users are taking the same class, are all free during that specific time, and have a max of 4 users
 const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvailability) => {
     const existingGroups = await fetchData("group/existingGroup/", "GET");
@@ -223,15 +232,23 @@ const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvail
             let usersRemaining = [...usersArray];
             if (matchedExistingGroups && usersArray.length !== 0){
                 for (const possibleUser of usersRemaining){
+                    let hasPreferredMatch = false;
                     const preferredTimes = await fetchData(`user/preferredTimes/${possibleUser}`, "GET");
                     let userRemovedCount = 0
+                    for (const existingGroups of filteredExistingGroupsMap.values()){
+                        for (const existingGroup of existingGroups){
+                            if(isPreferredMatch(existingGroup, preferredTimes, stringToTime)){
+                                hasPreferredMatch = true;
+                            }
+                        }
+                    }
                     for (const matchedGroup of [...matchedExistingGroups]){
                         if (stringToTime(matchedGroup.end_time) <= stringToTime(preferredTimes.preferred_start_time) || stringToTime(matchedGroup.start_time) >= stringToTime(preferredTimes.preferred_end_time)){
                             usersRemaining = usersRemaining.filter(user => user !== possibleUser);
                             userRemovedCount++;
                         }
                     }
-                    if (userRemovedCount === filteredExistingGroupsMap.size){
+                    if (!hasPreferredMatch){
                         usersRemaining.push(possibleUser);
                         usersRemaining.sort((a,b) => a - b);
                     }
