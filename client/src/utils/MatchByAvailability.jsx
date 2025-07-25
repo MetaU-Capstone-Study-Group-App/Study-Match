@@ -209,6 +209,20 @@ const isPreferredMatch = (group, preferredTimes, stringToTime) => {
     return !(endTime <= preferredStart || startTime >= preferredEnd)
 }
 
+// Checks if there exists at least one group that falls during the user's preferred time range
+const checkPreferredMatchExists = (preferredTimes, filteredExistingGroupsMap, stringToTime) => {
+    let hasPreferredMatch = false;
+    for (const existingGroups of filteredExistingGroupsMap.values()){
+        for (const existingGroup of existingGroups){
+            if (isPreferredMatch(existingGroup, preferredTimes, stringToTime)){
+                hasPreferredMatch = true;
+                break;
+            }
+        }
+    }
+    return hasPreferredMatch;
+}
+
 // Creates study groups where users are taking the same class, are all free during that specific time, and have a max of 4 users
 const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvailability) => {
     const existingGroups = await fetchData("group/existingGroup/", "GET");
@@ -232,27 +246,18 @@ const findGroupsByAvailability = async (fetchData, stringToTime, sharedUserAvail
             let usersRemaining = [...usersArray];
             if (matchedExistingGroups && usersArray.length !== 0){
                 for (const possibleUser of usersRemaining){
-                    let hasPreferredMatch = false;
                     const preferredTimes = await fetchData(`user/preferredTimes/${possibleUser}`, "GET");
-                    let userRemovedCount = 0
-                    for (const existingGroups of filteredExistingGroupsMap.values()){
-                        for (const existingGroup of existingGroups){
-                            if(isPreferredMatch(existingGroup, preferredTimes, stringToTime)){
-                                hasPreferredMatch = true;
-                            }
-                        }
-                    }
+                    const hasPreferredMatch = checkPreferredMatchExists(preferredTimes, filteredExistingGroupsMap, stringToTime);
                     for (const matchedGroup of [...matchedExistingGroups]){
                         if (stringToTime(matchedGroup.end_time) <= stringToTime(preferredTimes.preferred_start_time) || stringToTime(matchedGroup.start_time) >= stringToTime(preferredTimes.preferred_end_time)){
                             usersRemaining = usersRemaining.filter(user => user !== possibleUser);
-                            userRemovedCount++;
                         }
                     }
                     if (!hasPreferredMatch){
                         usersRemaining.push(possibleUser);
-                        usersRemaining.sort((a,b) => a - b);
                     }
                 }
+                usersRemaining.sort((a,b) => a - b);
                 for (const group of matchedExistingGroups){
                     if (!group.users){
                         group.users = [];
