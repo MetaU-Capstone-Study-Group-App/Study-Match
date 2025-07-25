@@ -9,7 +9,7 @@ router.post('/signup', async (req, res) => {
     const {name, username, password, preferred_start_time, preferred_end_time, school, latitude, longitude, class_standing, email, phone_number, personality_weight, location_weight, goals_weight, school_weight, class_standing_weight} = req.body
     try {
         if (!username || !password || !name || !preferred_start_time || !preferred_end_time || !email || !phone_number) {
-            return res.status(400).json({error: "All input fields are required."})
+            return res.status(400).json({error: "All marked input fields are required."})
         }
         
         if (password.length < 8) {
@@ -28,6 +28,21 @@ router.post('/signup', async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
+        const weights = {
+            personality_weight: parseFloat(personality_weight) || 0.2,
+            school_weight: parseFloat(school_weight) || 0.1,
+            class_standing_weight: parseFloat(class_standing_weight) || 0.1,
+            goals_weight: parseFloat(goals_weight) || 0.2,
+            location_weight: parseFloat(location_weight) || 0.4
+        }
+
+        const sumOfWeights = Object.values(weights).reduce((a,b) => a + b, 0);
+        if (sumOfWeights !== 1.0){
+            for (const i in weights){
+                weights[i] = weights[i] / sumOfWeights;
+            }
+        }
+
         const newUser = await prisma.user.create({
             data: {
                 name,
@@ -41,11 +56,7 @@ router.post('/signup', async (req, res) => {
                 class_standing,
                 email,
                 phone_number,
-                personality_weight: parseFloat(personality_weight),
-                school_weight: parseFloat(school_weight),
-                class_standing_weight: parseFloat(class_standing_weight),
-                goals_weight: parseFloat(goals_weight),
-                location_weight: parseFloat(location_weight)
+                ...weights
             }
         })
 

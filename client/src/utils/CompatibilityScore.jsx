@@ -2,20 +2,22 @@ import SchoolStanding from "../data/SchoolStanding";
 
 // Calculates average score for each Big Five Personality Trait using personality quiz results
 const calculateIndividualPersonalityScore = async (userId, fetchData) => {
-    const quizResponses = await fetchData(`quiz/responses/${userId}`, "GET");
-    const personalityTraitScores = new Map();
-    for (const response of quizResponses){
-        if (!personalityTraitScores.has(response.question_trait)){
-            personalityTraitScores.set(response.question_trait, new Array());
+    if (fetchData){
+        const quizResponses = await fetchData(`quiz/responses/${userId}`, "GET");
+        const personalityTraitScores = new Map();
+        for (const response of quizResponses){
+            if (!personalityTraitScores.has(response.question_trait)){
+                personalityTraitScores.set(response.question_trait, new Array());
+            }
+            const personalityTrait = personalityTraitScores.get(response.question_trait);
+            personalityTrait.push(response.response);
         }
-        const personalityTrait = personalityTraitScores.get(response.question_trait);
-        personalityTrait.push(response.response);
+        for (const [trait, scores] of personalityTraitScores.entries()){
+            const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+            personalityTraitScores.set(trait, averageScore);
+        }
+        return personalityTraitScores;
     }
-    for (const [trait, scores] of personalityTraitScores.entries()){
-        const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
-        personalityTraitScores.set(trait, averageScore);
-    }
-    return personalityTraitScores;
 }
 
 // Calculates personality compatibility score between two users using mean absolute deviation (1 = perfectly compatible, 0 = not compatible)
@@ -122,6 +124,9 @@ const calculateGoalsScore = async (firstUserId, secondUserId, fetchData) => {
 const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fetchData, scoreWeights) => {
     const scores = [];
     const NUM_OF_METRICS = 5;
+    const STRING_METRICS = ["personalityScore", "locationScore", "classStandingScore", "schoolScore", "goalsScore"];
+    let sumOfExistingWeights = 0;
+
     const personalityScore = await calculatePairPersonalityScore(firstUserId, secondUserId, fetchData);
     const locationScore = await calculateLocationScore(firstUserId, secondUserId, fetchData);
     const firstUserSchoolInfo = await fetchData(`user/schoolInfo/${firstUserId}`, "GET");
@@ -130,8 +135,7 @@ const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fet
     const schoolScore = calculateSchoolScore(firstUserSchoolInfo, secondUserSchoolInfo);
     const goalsScore = await calculateGoalsScore(firstUserId, secondUserId, fetchData);
     const METRICS = [personalityScore, locationScore, classStandingScore, schoolScore, goalsScore];
-    const STRING_METRICS = ["personalityScore", "locationScore", "classStandingScore", "schoolScore", "goalsScore"];
-    let sumOfExistingWeights = 0;
+
     for (let i = 0; i < METRICS.length; i++){
         if (METRICS[i] || METRICS[i] === 0){
             scores.push({score_weight: scoreWeights[STRING_METRICS[i]], score_value: METRICS[i] * scoreWeights[STRING_METRICS[i]]});
@@ -150,10 +154,12 @@ const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fet
     let overallScore = filteredScores.reduce((a, b) => {
         return a + b.score
     }, 0);
+
     const userFavorites = await fetchData(`user/favorite/${firstUserId}`, "GET");
     const memberInUserFavorites = userFavorites.filter(userFavorite => userFavorite.favorite_user === secondUserId);
     const memberFavorites = await fetchData(`user/favorite/${secondUserId}`, "GET");
     const userInMemberFavorites = memberFavorites.filter(memberFavorite => memberFavorite.favorite_user === firstUserId);
+
     if (memberInUserFavorites.length !== 0 && userInMemberFavorites.length !== 0){
         overallScore += 0.1;
     }
@@ -163,6 +169,7 @@ const calculateOverallCompatibilityScore = async (firstUserId, secondUserId, fet
     else if (userInMemberFavorites.length !== 0){
         overallScore += 0.05;
     }
+
     return overallScore;
 }
 
