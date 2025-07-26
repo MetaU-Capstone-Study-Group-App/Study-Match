@@ -6,6 +6,7 @@ import 'react-phone-number-input/style.css'
 import '../styles.css'
 import Tooltip from "./Tooltip";
 import EmptyNavBar from "./EmptyNavBar";
+import LoadingIndicator from "./LoadingIndicator";
 
 // Allows users to create an account
 const SignupForm = () => {
@@ -17,6 +18,7 @@ const SignupForm = () => {
     const [goalOptions, setGoalOptions] = useState([]);
     const [selectedGoals, setSelectedGoals] = useState([]);
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (event) => {
         const {name, value} = event.target
@@ -65,15 +67,18 @@ const SignupForm = () => {
     }
 
     const handleSubmit = async (event) => {
-        event.preventDefault(); 
+        event.preventDefault();
+        setIsLoading(true); 
         try {
             const data = await fetchData("auth/signup", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(formData))
             setMessage({type: "success", text: "Signup successful!"})
             setUser(data); 
             createPersonalityQuiz(data.id);
             createUserGoals(data.id);
+            setIsLoading(false);
             navigate("/personalityQuiz");
         } catch (error) {
+            setIsLoading(false);
             setMessage({type: "error", text: "Error. Please try again."})
         }
     }
@@ -316,6 +321,11 @@ const SignupForm = () => {
                 </div>
                 <div className="form-buttons">
                     <button className="buttons" type="submit">Sign Up</button>
+                </div>
+                <div className="loading-section">
+                    {isLoading &&
+                        <LoadingIndicator loading={isLoading} className="loading-spinner"/>
+                    }
                 </div>
                 {message && (
                     <div className={`message ${message.type}`}>

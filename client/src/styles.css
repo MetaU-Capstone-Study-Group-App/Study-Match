@@ -696,3 +696,11 @@ h2 {
 #go-to-groups-button {
     margin-top: 50px;
 }
+
+.calendar-page, .loading-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 50px;
+}
