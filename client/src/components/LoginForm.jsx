@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext';
 import '../styles.css'
 import EmptyNavBar from "./EmptyNavBar";
+import LoadingIndicator from "./LoadingIndicator";
 
 // Allows users to login with username and password
 const LoginForm = () => {
@@ -10,6 +11,7 @@ const LoginForm = () => {
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
     const {setUser} = useUser();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleLoginChange = (event) => {
         const {name, value} = event.target;
@@ -21,6 +23,7 @@ const LoginForm = () => {
 
     const handleLoginSubmit = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
         try {
             const response = await fetch("http://localhost:3000/auth/login", {
                 method: "POST",
@@ -34,11 +37,14 @@ const LoginForm = () => {
             if (response.ok) {
                 setMessage({type: "success", text: "Login successful!"});
                 setUser(data); 
+                setIsLoading(false);
                 navigate("/home"); 
             } else {
+                setIsLoading(false);
                 setMessage({type: "error", text: data.error || "Login failed."});
             }
         } catch (error) {
+            setIsLoading(false);
             setMessage({type: "error", text: "Network error. Please try again."});
         }
     };
@@ -77,7 +83,11 @@ const LoginForm = () => {
                     Don't have an account?
                     <button type="submit" className="buttons" onClick={() => {navigate("/auth/signup")}}>Sign Up</button>
                 </label>
-
+                <div className="loading-section">
+                    {isLoading &&
+                        <LoadingIndicator loading={isLoading} className="loading-spinner"/>
+                    }
+                </div>
                 {message && (
                     <p className={`message ${message.type}`}>{message.text}</p>
                 )}

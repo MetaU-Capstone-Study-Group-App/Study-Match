@@ -9,6 +9,7 @@ import WeekDays from "../data/WeekDays";
 import MatchByAvailability from "../utils/MatchByAvailability";
 import CompatibilityScore from "../utils/CompatibilityScore";
 import { useNavigate } from "react-router-dom";
+import LoadingIndicator from './LoadingIndicator'
 
 const localizer = momentLocalizer(moment);
 const DEFAULT_YEAR = 2025;
@@ -27,6 +28,7 @@ const Calendar = () => {
     const [allUsers, setAllUsers] = useState([]);
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     const eventPropGetter = (event) => {
         const backgroundColor = '#068484';
@@ -146,13 +148,15 @@ const Calendar = () => {
     }, [user])
 
     const matchByAvailability = async () => {
+        setIsLoading(true);
         await MatchByAvailability(fetchData, allUsers);
         CompatibilityScore(fetchData, user);
+        setIsLoading(false);
         navigate("/groups");
     }
 
     return (
-        <>
+        <div>
             <div className="calendar">
                 <ReactBigCalendar
                     className="calendar-component"
@@ -182,11 +186,16 @@ const Calendar = () => {
                     user={user}
                 />
             )}
+            <div className="calendar-page">
             <button className="buttons" id='submit-availability-button' onClick={matchByAvailability}>Submit Availability</button>
+            {isLoading &&
+                <LoadingIndicator loading={isLoading} className="loading-spinner"/>
+            }
             {error && (
                 <p>{error}</p>
             )}
-        </>
+            </div>
+        </div>
     )
 }
 
