@@ -4,6 +4,7 @@ import '../styles.css'
 import Footer from "./Footer";
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
+import baseUrl from "../utils/baseUrl";
 
 // Quiz with 10 questions relating to Big Five Personality traits and a slider from 1-5 as the response for each question
 const PersonalityQuiz = () => {
@@ -13,9 +14,9 @@ const PersonalityQuiz = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
 
-    const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
+    const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
         try {
-            const response = await fetch(`http://localhost:3000/${endpoint}`, {
+            const response = await fetch(`${baseUrl}/${endpoint}`, {
                 method: method,
                 headers: headers,
                 credentials: credentials,
@@ -46,7 +47,7 @@ const PersonalityQuiz = () => {
             question_trait: currentObject.trait,
             response: sliderValue
         }
-        const newResponse = await fetchData("quiz/responses/", "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newResponseData));
+        const newResponse = await fetchData("quiz/responses/", "POST", {"Content-Type": "application/json"}, "include", JSON.stringify(newResponseData));
         if (currentObject.id >= PersonalityQuestions.length){
             navigate('/calendar');
         }

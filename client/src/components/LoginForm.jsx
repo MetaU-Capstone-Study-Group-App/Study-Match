@@ -4,6 +4,7 @@ import { useUser } from '../contexts/UserContext';
 import '../styles.css'
 import EmptyNavBar from "./EmptyNavBar";
 import LoadingIndicator from "./LoadingIndicator";
+import baseUrl from "../utils/baseUrl";
 
 // Allows users to login with username and password
 const LoginForm = () => {
@@ -25,7 +26,7 @@ const LoginForm = () => {
         event.preventDefault();
         setIsLoading(true);
         try {
-            const response = await fetch("http://localhost:3000/auth/login", {
+            const response = await fetch(`${baseUrl}/auth/login`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(formData),

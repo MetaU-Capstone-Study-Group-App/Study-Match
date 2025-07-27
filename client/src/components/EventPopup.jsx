@@ -59,7 +59,7 @@ const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData, user}) => 
 
         let eventTitle = title;
         if (isCreatingClass && newClassName){
-            const newClass = await fetchData('availability/classes/', "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify({name: newClassName}));
+            const newClass = await fetchData('availability/classes/', "POST", {"Content-Type": "application/json"}, "include", JSON.stringify({name: newClassName}));
             eventTitle = newClass.name;
         }
 
@@ -80,7 +80,7 @@ const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData, user}) => 
         })
 
         const classId = await getClassId(eventTitle);
-        const newUserClass = await fetchData('availability/userClasses/', "POST", {"Content-Type": "application/json"}, "same-origin", JSON.stringify({user_id: user.id, class_id: classId}));
+        const newUserClass = await fetchData('availability/userClasses/', "POST", {"Content-Type": "application/json"}, "include", JSON.stringify({user_id: user.id, class_id: classId}));
     }
 
     if (!isOpen) return null;

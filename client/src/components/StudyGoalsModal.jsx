@@ -40,7 +40,7 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className, fetchD
         const newStudyGoals = {
             study_goals: goalsAfterGuardrail
         }
-        const savedStudyGoals = await fetchData(`group/existingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newStudyGoals));
+        const savedStudyGoals = await fetchData(`group/existingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "include", JSON.stringify(newStudyGoals));
         setMainStudyGoals(savedStudyGoals);
         setLoading(false);
     }

@@ -11,6 +11,7 @@ import LoginForm from './components/LoginForm.jsx'
 import WithAuth from './components/WithAuth.jsx'
 import PersonalityQuiz from './components/PersonalityQuiz.jsx'
 import CalendarPage from './pages/CalendarPage.jsx'
+import baseUrl from './utils/baseUrl.js'
 
 const App = () => {
   const {user, setUser} = useUser();
@@ -21,7 +22,7 @@ const App = () => {
   const ProtectedCalendarPage = WithAuth(CalendarPage);
 
   useEffect(() => {
-    fetch("http://localhost:3000/auth/me", {credentials: "include"})
+    fetch(`${baseUrl}/auth/me`, {credentials: "include"})
       .then((response) => response.json())
       .then((data) => {
         if (data.id) {
