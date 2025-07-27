@@ -4,7 +4,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch index.js"
+    "dev": "node --watch index.js",
+    "seed": "node prisma/seed.js",
+    "build": "npm install && prisma generate && prisma migrate deploy",
+    "start": "node index.js",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +25,7 @@
     "express": "^5.1.0",
     "express-fileupload": "^1.5.1",
     "express-session": "^1.18.1",
+    "helmet": "^8.1.0",
     "multer": "^2.0.1"
   },
   "devDependencies": {
