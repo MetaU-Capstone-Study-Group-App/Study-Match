@@ -6,6 +6,7 @@ import FileUpload from '../components/FileUpload';
 import Footer from '../components/Footer';
 import LoadingIndicator from '../components/LoadingIndicator';
 import baseUrl from '../utils/baseUrl';
+import DefaultProfilePic from '/src/images/profile-pic.png'
 
 // Displays profile information for a specific user
 const ProfilePage = () => {
@@ -90,7 +91,7 @@ const ProfilePage = () => {
                             </div>
                             <div className="profile-info-section">
                                 <div className="profile-left">
-                                    <img src={uploadedFile ? uploadedFile : "src/images/profile-pic.png"} alt={user.name} className="profile-pic" width="250" height="250"/>
+                                    <img src={uploadedFile ? uploadedFile : DefaultProfilePic} alt={user.name} className="profile-pic" width="250" height="250"/>
                                     <FileUpload handleFileInputChange={handleFileInputChange}/>
                                 </div>
                                 <div className="profile-right">
