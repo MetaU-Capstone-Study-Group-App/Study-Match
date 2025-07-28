@@ -1,32 +1,70 @@
-const express = require('express')
-const app = express()
-const cors = require('cors')
-const PORT = 3000
-const authRoutes = require('./routes/auth.js')
-const userRoutes = require('./routes/UserRoutes.js')
-const quizRoutes = require('./routes/QuizRoutes.js')
-const availabilityRoutes = require('./routes/AvailabilityRoutes.js')
-const groupRoutes = require('./routes/GroupRoutes.js')
-const session = require('express-session')
+const express = require('express');
+const PORT = process.env.PORT || 3000;
+const app = express();
+const session = require('express-session');
+const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
+const { PrismaClient } = require('@prisma/client');
+const cors = require('cors');
+const path = require("path");
+const fs = require("fs");
+const helmet = require("helmet");
+
+app.set("trust proxy", 1);
+
+app.use(express.json());
 
 app.use(cors({
-    origin: 'http://localhost:5173', 
-    credentials: true
-}))
+    origin: ["https://study-match-mm3y.onrender.com", "http://localhost:5173"], 
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    credentials: true,
+}));
 
-app.use(express.json())
+app.use(
+    helmet({
+        crossOriginResourcePolicy: {policy: "cross-origin"},
+    }),
+);
 
-app.use(session({
-    secret: 'study-match', 
-    resave: false,
-    saveUninitialized: false,
-    cookie: {secure: false, httpOnly: true, maxAge: 1000 * 60 * 60} 
-}))
+app.use("/images", express.static(path.join(__dirname, "images")));
 
+const prisma = new PrismaClient();
+
+const isProduction = process.env.NODE_ENVIRONMENT === "production";
+
+app.use(
+    session({
+        cookie: {
+            secure: isProduction,
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 60, // 1 hour
+            sameSite: isProduction ? "none" : "lax",
+        },
+        secret: 'study-match',
+        resave: false,
+        saveUninitialized: false,
+        store: new PrismaSessionStore(
+            prisma,
+        {
+            checkPeriod: 2 * 60 * 1000,  
+            dbRecordIdIsSessionId: true,
+            dbRecordIdFunction: undefined,
+        })
+    })
+);
+
+const authRoutes = require('./routes/auth.js');
 app.use('/auth', authRoutes)
+
+const userRoutes = require('./routes/UserRoutes.js');
 app.use('/user', userRoutes)
+
+const quizRoutes = require('./routes/QuizRoutes.js');
 app.use('/quiz', quizRoutes)
+
+const availabilityRoutes = require('./routes/AvailabilityRoutes.js');
 app.use('/availability', availabilityRoutes)
+
+const groupRoutes = require('./routes/GroupRoutes.js');
 app.use('/group', groupRoutes)
 
 app.listen(PORT, () => {

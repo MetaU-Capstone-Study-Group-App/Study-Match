@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import FileUpload from '../components/FileUpload';
 import Footer from '../components/Footer';
 import LoadingIndicator from '../components/LoadingIndicator';
+import baseUrl from '../utils/baseUrl';
+import DefaultProfilePic from '/src/images/profile-pic.png'
 
 // Displays profile information for a specific user
 const ProfilePage = () => {
@@ -16,15 +18,15 @@ const ProfilePage = () => {
     const [userInfo, setUserInfo] = useState({});
 
     const handleLogout = async () => {
-        await fetch("http://localhost:3000/auth/logout", {method: "POST", credentials: "include"});
+        await fetch(`${baseUrl}/auth/logout`, {method: "POST", credentials: "include"});
         setUser(null); 
         navigate("/");
     };
 
-    const fetchData = async (endpoint, method = "GET", credentials = "same-origin", body = null) => {
+    const fetchData = async (endpoint, method = "GET", credentials = "include", body = null) => {
         try {
             setIsLoading(true);
-            const response = await fetch(`http://localhost:3000/${endpoint}`, {
+            const response = await fetch(`${baseUrl}/${endpoint}`, {
                 method: method,
                 credentials: credentials,
                 body: body,
@@ -89,7 +91,7 @@ const ProfilePage = () => {
                             </div>
                             <div className="profile-info-section">
                                 <div className="profile-left">
-                                    <img src={uploadedFile ? uploadedFile : "src/images/profile-pic.png"} alt={user.name} className="profile-pic" width="250" height="250"/>
+                                    <img src={uploadedFile ? uploadedFile : DefaultProfilePic} alt={user.name} className="profile-pic" width="250" height="250"/>
                                     <FileUpload handleFileInputChange={handleFileInputChange}/>
                                 </div>
                                 <div className="profile-right">

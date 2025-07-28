@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext';
+import baseUrl from "../utils/baseUrl";
 
 // Handles user authentication
 const WithAuth = (WrappedComponent) => {
@@ -10,7 +11,7 @@ const WithAuth = (WrappedComponent) => {
 
         useEffect(() => {
             if (!user) {
-                fetch("http://localhost:3000/auth/me", {credentials: "include"})
+                fetch(`${baseUrl}/auth/me`, {credentials: "include"})
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.id) { 

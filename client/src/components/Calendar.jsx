@@ -10,6 +10,7 @@ import MatchByAvailability from "../utils/MatchByAvailability";
 import CompatibilityScore from "../utils/CompatibilityScore";
 import { useNavigate } from "react-router-dom";
 import LoadingIndicator from './LoadingIndicator'
+import baseUrl from "../utils/baseUrl";
 
 const localizer = momentLocalizer(moment);
 const DEFAULT_YEAR = 2025;
@@ -39,9 +40,9 @@ const Calendar = () => {
         }
     }
 
-    const fetchData = async (endpoint, method = "GET", headers, credentials = "same-origin", body = null) => {
+    const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
         try {
-            const response = await fetch(`http://localhost:3000/${endpoint}`, {
+            const response = await fetch(`${baseUrl}/${endpoint}`, {
                 method: method,
                 headers: headers,
                 credentials: credentials,
@@ -102,7 +103,7 @@ const Calendar = () => {
             end_time: eventData.end.toLocaleTimeString('en-US', { hour12: false }),
             class_name: eventData.title
         }
-        const newBusyTime = await fetchData(busyTimeEndpoint, busyTimeMethod, {"Content-Type": "application/json"}, "same-origin", JSON.stringify(newBusyTimeData));
+        const newBusyTime = await fetchData(busyTimeEndpoint, busyTimeMethod, {"Content-Type": "application/json"}, "include", JSON.stringify(newBusyTimeData));
         setEventId(newBusyTime.id);
     }
 
