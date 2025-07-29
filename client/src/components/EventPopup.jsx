@@ -17,6 +17,7 @@ const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData, user}) => 
     const [isCreatingClass, setIsCreatingClass] = useState(false);
     const [classList, setClassList] = useState([]);
     const [newClassName, setNewClassName] = useState("");
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchClasses = async () => {
@@ -72,6 +73,11 @@ const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData, user}) => 
         const endDate = new Date(initialDate);
         endDate.setHours(endHour, endMinute);
 
+        if (startDate > endDate){
+            setError("Error: End time must be after start time. Please try again.")
+            return null;
+        }
+
         onSave ({
             id: event?.id,
             title: eventTitle,
@@ -89,6 +95,9 @@ const EventPopup = ({isOpen, onClose, onSave, date, event, fetchData, user}) => 
         <div className="event-popup-container">
             <div className="event-popup-form">
                 <h2>{event ? "Edit Event" : "Add Event"}</h2>
+                {error && (
+                    <div className="error-message">{error}</div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label>Class/Event Name:</label>

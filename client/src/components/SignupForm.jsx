@@ -224,6 +224,7 @@ const SignupForm = () => {
                                 <input
                                     type="number"
                                     min="0.00"
+                                    max="1.00"
                                     step="0.01"
                                     className="signup-inputs"
                                     id="personality_weight"
@@ -238,6 +239,7 @@ const SignupForm = () => {
                                 <input
                                     type="number"
                                     min="0.00"
+                                    max="1.00"
                                     step="0.01"
                                     className="signup-inputs"
                                     id="location_weight"
@@ -252,6 +254,7 @@ const SignupForm = () => {
                                 <input
                                     type="number"
                                     min="0.00"
+                                    max="1.00"
                                     step="0.01"
                                     className="signup-inputs"
                                     id="goals_weight"
@@ -266,6 +269,7 @@ const SignupForm = () => {
                                 <input
                                     type="number"
                                     min="0.00"
+                                    max="1.00"
                                     step="0.01"
                                     className="signup-inputs"
                                     id="school_weight"
@@ -280,6 +284,7 @@ const SignupForm = () => {
                                 <input
                                     type="number"
                                     min="0.00"
+                                    max="1.00"
                                     step="0.01"
                                     className="signup-inputs"
                                     id="class_standing_weight"
@@ -328,11 +333,6 @@ const SignupForm = () => {
                         <LoadingIndicator loading={isLoading} className="loading-spinner"/>
                     }
                 </div>
-                {message && (
-                    <div className={`message ${message.type}`}>
-                        {message.text}
-                    </div>
-                )}
                 {error && (
                     <p>{error}</p>
                 )}

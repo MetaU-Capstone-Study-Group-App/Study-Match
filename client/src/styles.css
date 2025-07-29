@@ -455,9 +455,10 @@ h2 {
     display: flex;
     align-items: center;
     flex-direction: column;
+    gap: 20px;
 }
 
-.new-group-modal-form input, .new-group-modal-form textarea {
+.new-group-modal-form input, .new-group-modal-form textarea, .new-group-modal-form select {
     padding: 15px;
 }
 
@@ -703,4 +704,8 @@ h2 {
     align-items: center;
     flex-direction: column;
     margin-bottom: 50px;
+}
+
+.error-message {
+    margin-bottom: 25px;
 }

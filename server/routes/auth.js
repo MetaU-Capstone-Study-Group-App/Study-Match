@@ -9,11 +9,11 @@ router.post('/signup', async (req, res) => {
     const {name, username, password, preferred_start_time, preferred_end_time, school, latitude, longitude, class_standing, email, phone_number, personality_weight, location_weight, goals_weight, school_weight, class_standing_weight} = req.body
     try {
         if (!username || !password || !name || !preferred_start_time || !preferred_end_time || !email || !phone_number) {
-            return res.status(400).json({error: "All marked input fields are required."})
+            return res.status(400).json({error: "Error: All marked input fields are required. Please try again."})
         }
         
         if (password.length < 8) {
-            return res.status(400).json({error: "Password must be at least 8 characters long."})
+            return res.status(400).json({error: "Error: Password must be at least 8 characters long. Please try again."})
         }
 
         const existingUser = await prisma.user.findUnique({
@@ -23,7 +23,7 @@ router.post('/signup', async (req, res) => {
         })
 
         if (existingUser) {
-            return res.status(400).json({error: 'Username already exists.'})
+            return res.status(400).json({error: 'Error: Username already exists. Please try again.'})
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
@@ -38,9 +38,7 @@ router.post('/signup', async (req, res) => {
 
         const sumOfWeights = Object.values(weights).reduce((a,b) => a + b, 0);
         if (sumOfWeights !== 1.0){
-            for (const i in weights){
-                weights[i] = weights[i] / sumOfWeights;
-            }
+            return res.status(400).json({error: "Error: All five weights must add up to 1. Please try again."})
         }
 
         const newUser = await prisma.user.create({
@@ -66,7 +64,7 @@ router.post('/signup', async (req, res) => {
 
         res.json({id: req.session.userId, username: newUser.username, name: newUser.name})
     } catch (error) {
-        res.status(500).json({error: "Not able to create an account."})
+        res.status(500).json({error: "Error: Not able to create an account. Please try again."})
     }
 })
 

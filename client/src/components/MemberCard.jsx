@@ -2,6 +2,7 @@ import '../styles.css'
 import { useEffect, useState } from 'react';
 import EmptyStar from '/src/images/empty-star.png'
 import YellowStar from '/src/images/yellow-star.png'
+import DefaultProfilePic from '/src/images/profile-pic.png'
 
 const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id, user, handleFavorited}) => {
     const [uploadedProfilePic, setUploadedProfilePic] = useState(null);
@@ -12,6 +13,10 @@ const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id, us
         const profilePictureArray = new Uint8Array(Object.values(profilePicture));
         const imageBlob = new Blob([profilePictureArray]);
         setUploadedProfilePic(URL.createObjectURL(imageBlob));
+    }
+
+    const formatPhoneNumber = (phoneNumber) => {
+        return `(${phoneNumber.slice(0,3)}) ${phoneNumber.slice(3,6)}-${phoneNumber.slice(6,10)}`;
     }
 
     const handleDisplayFavorites = async () => {
@@ -61,11 +66,11 @@ const MemberCard = ({name, email, phoneNumber, profilePicture, fetchData, id, us
 
     return (
         <div className="member-card">
-            <img src={uploadedProfilePic ? uploadedProfilePic : "src/images/profile-pic.png"} alt={name} className="profile-pic" width="70" height="70"/>
+            <img src={uploadedProfilePic ? uploadedProfilePic : DefaultProfilePic} alt={name} className="profile-pic" width="70" height="70"/>
             <div className="member-card-info">
                 <div className="member-card-name">{name}</div>
                 <div className="member-card-email">{email}</div>
-                <div className="member-card-phone-number">{phoneNumber}</div>
+                <div className="member-card-phone-number">{formatPhoneNumber(phoneNumber)}</div>
             </div>
             <div className="member-card-info-favorite">
                 {user.id !== id && <img src={isFavorited ? YellowStar : EmptyStar} width="20" height="20" onClick={handleFavorite} className="favorite-button"/>}

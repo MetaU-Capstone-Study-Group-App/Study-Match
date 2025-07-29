@@ -58,7 +58,7 @@ const GroupCard = ({className, dayOfWeek, time, users, groupCompatibilityScore, 
             <h5 className="group-card-users">Members:</h5>
             <div className="group-card-members">
                 {users.map((item, index) => {
-                    if (userInformation[item]){
+                    if (userInformation[item] && userInformation[item].length > 0){
                         return (
                             <MemberCard 
                                 key={index} name={userInformation[item][0].name} email={userInformation[item][0].email} phoneNumber={userInformation[item][0].phone_number} profilePicture={userInformation[item][0].profile_picture} fetchData={fetchData} id={userInformation[item][0].id} user={user} handleFavorited={handleFavorited}
