@@ -79,7 +79,7 @@ router.get('/existingGroup/:groupId', async (req, res) => {
         },
     });
     if (!existingStudyGoals.study_goals){
-        res.json(null);
+        return res.json(null);
     }
     res.json(existingStudyGoals.study_goals);
 })
