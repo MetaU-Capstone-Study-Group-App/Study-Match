@@ -458,7 +458,7 @@ h2 {
     gap: 20px;
 }
 
-.new-group-modal-form input, .new-group-modal-form textarea, .new-group-modal-form select {
+.new-group-modal-form input, .new-group-modal-form textarea, .new-group-modal-form select, .event-popup-inputs {
     padding: 15px;
 }
 
