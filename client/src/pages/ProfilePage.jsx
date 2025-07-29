@@ -65,6 +65,12 @@ const ProfilePage = () => {
         setUserInfo(userProfileInfo);
     }
 
+    const formatPhoneNumber = (phoneNumber) => {
+        if (user && phoneNumber){
+            return `(${phoneNumber.slice(0,3)}) ${phoneNumber.slice(3,6)}-${phoneNumber.slice(6,10)}`;
+        }
+    }
+
     useEffect(() => {
         if (user){
             fetchUserInfo();
@@ -98,7 +104,7 @@ const ProfilePage = () => {
                                     <div className="profile-right-sections">
                                         <p><b>Username:</b> {user.username}</p>
                                         <p><b>Email Address:</b> {userInfo.email}</p>
-                                        <p><b>Phone Number:</b> {userInfo.phone_number}</p>
+                                        <p><b>Phone Number:</b> {formatPhoneNumber(userInfo.phone_number)}</p>
                                     </div>
                                     <div className="profile-right-sections">
                                         <p><b>School:</b> {userInfo.school}</p>

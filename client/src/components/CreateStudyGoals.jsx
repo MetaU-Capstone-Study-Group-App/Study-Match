@@ -7,7 +7,7 @@ const CreateStudyGoals = ({setStudyGoalsModalIsOpen}) => {
     }
 
     return (
-        <button className="buttons" id="study-goals-button" onClick={handleCreateStudyGoals}>Generate Study Goals</button>
+        <button className="buttons" id="study-goals-button" onClick={handleCreateStudyGoals}>View & Generate Study Goals</button>
     )
 }
 

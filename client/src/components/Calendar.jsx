@@ -149,11 +149,17 @@ const Calendar = () => {
     }, [user])
 
     const matchByAvailability = async () => {
-        setIsLoading(true);
-        await MatchByAvailability(fetchData, allUsers);
-        CompatibilityScore(fetchData, user);
-        setIsLoading(false);
-        navigate("/groups");
+        try {
+            setIsLoading(true);
+            await MatchByAvailability(fetchData, allUsers);
+            CompatibilityScore(fetchData, user);
+            setIsLoading(false);
+            navigate("/groups");
+        }
+        catch (error) {
+            setIsLoading(false);
+            setError("Error matching into study groups. Please try again.");
+        }
     }
 
     return (

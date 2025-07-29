@@ -212,8 +212,9 @@ const isPreferredMatch = (groupStartTime, groupEndTime, preferredTimes, stringTo
 // Checks if there exists at least one group that falls during the user's preferred time range
 const checkPreferredMatchExists = (preferredTimes, filteredExistingGroupsMap, stringToTime) => {
     let hasPreferredMatch = false;
-    const existingGroupsSet = new Set(filteredExistingGroupsMap.values().map((existingGroups) => existingGroups.map(existingGroup => `${existingGroup.start_time}-${existingGroup.end_time}`)));
-    const existingGroupsArray = new Array([...existingGroupsSet]);
+    const existingGroupValues = filteredExistingGroupsMap.values();
+    const existingGroupsFilteredSet = new Set(existingGroupValues.map((existingGroups) => existingGroups.map(existingGroup => `${existingGroup.start_time}-${existingGroup.end_time}`)));
+    const existingGroupsArray = new Array([...existingGroupsFilteredSet]);
     const preferredGroups = existingGroupsArray.map((existingGroup) => existingGroup.map(group => {
         const groupTimes = group[0].split('-');
         const groupStartTime = groupTimes[0];
