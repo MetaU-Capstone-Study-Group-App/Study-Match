@@ -2,19 +2,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from '../contexts/UserContext';
 import '../styles.css'
-import EmptyNavBar from "./EmptyNavBar";
-import LoadingIndicator from "./LoadingIndicator";
+import EmptyNavBar from "../components/EmptyNavBar";
+import LoadingIndicator from "../components/LoadingIndicator";
 import baseUrl from "../utils/baseUrl";
 
-// Allows users to login with username and password
-const LoginForm = () => {
-    const [formData, setFormData] = useState({username: "", password: ""});
+const ResetPasswordPage = () => {
+    const [formData, setFormData] = useState({username: "", new_password: ""});
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
     const {setUser} = useUser();
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleLoginChange = (event) => {
+    const handlePasswordChange = (event) => {
         const {name, value} = event.target;
         setFormData((prev) => ({
             ...prev,
@@ -22,12 +21,12 @@ const LoginForm = () => {
         }));
     };
 
-    const handleLoginSubmit = async (event) => {
+    const handlePasswordSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
         try {
-            const response = await fetch(`${baseUrl}/auth/login`, {
-                method: "POST",
+            const response = await fetch(`${baseUrl}/auth/resetPassword`, {
+                method: "PUT",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(formData),
                 credentials: "include",
@@ -36,58 +35,49 @@ const LoginForm = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setMessage({type: "success", text: "Login successful!"});
+                setMessage({type: "success", text: "Password was reset successfully!"});
                 setUser(data); 
                 setIsLoading(false);
                 navigate("/home"); 
             } else {
                 setIsLoading(false);
-                setMessage({type: "error", text: data.error || "Login failed."});
+                setMessage({type: "error", text: data.error || "Password reset failed."});
             }
         } catch (error) {
             setIsLoading(false);
             setMessage({type: "error", text: "Network error. Please try again."});
         }
     };
-
     return (
-        <div className="login">
+        <div className="reset-password">
             <EmptyNavBar />
-            <h2>Login</h2>
-            <form onSubmit={handleLoginSubmit} className="login-form">
-                <label className="login-labels">
+            <h2>Reset Password</h2>
+            <form onSubmit={handlePasswordSubmit} className="reset-password-form">
+                <label className="reset-password-labels">
                     Username:
                     <input
                         type="text"
-                        className="login-username-input"
+                        className="reset-password-username-input"
                         name="username"
                         value={formData.username}
-                        onChange={handleLoginChange}
+                        onChange={handlePasswordChange}
                         required
                     />
                 </label>
 
-                <label className="login-labels">
-                    Password:
+                <label className="reset-password-labels">
+                    New Password:
                     <input
                         type="password"
-                        className="login-password-input"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleLoginChange}
+                        className="reset-password-password-input"
+                        name="new_password"
+                        value={formData.new_password}
+                        onChange={handlePasswordChange}
                         required
                     />
                 </label>
 
-                <button type="submit" className="buttons">Log In</button>
-                <label className="signup-label">
-                    Don't have an account?
-                    <button type="submit" className="buttons" onClick={() => {navigate("/auth/signup")}}>Sign Up</button>
-                </label>
-                <label className="signup-label">
-                    Forgot Password?
-                    <button type="submit" className="buttons" onClick={() => {navigate("/auth/resetPassword")}}>Reset Password</button>
-                </label>
+                <button type="submit" className="buttons">Reset Password</button>
                 <div className="loading-section">
                     {isLoading &&
                         <LoadingIndicator loading={isLoading} className="loading-spinner"/>
@@ -104,4 +94,4 @@ const LoginForm = () => {
     );
 }
 
-export default LoginForm;
+export default ResetPasswordPage;
