@@ -174,7 +174,7 @@ h2 {
     font-size: 40px;
 }
 
-.login, .signup {
+.login, .signup, .reset-password {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -191,7 +191,7 @@ h2 {
     gap: 10px;
 }
 
-.login-form, .signup-form {
+.login-form, .signup-form, .reset-password-form {
     border: 1px solid black;
     box-shadow: 0 12px 20px rgba(0,0,0,0.15);
     border-radius: 10px;
@@ -205,7 +205,7 @@ h2 {
     text-align: center;
 }
 
-.login-username-input, .login-password-input, .signup-inputs {
+.login-username-input, .login-password-input, .signup-inputs, .reset-password-username-input, .reset-password-password-input {
     display: flex;
     gap: 20px;
     color: black;

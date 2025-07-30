@@ -12,6 +12,7 @@ import WithAuth from './components/WithAuth.jsx'
 import PersonalityQuiz from './components/PersonalityQuiz.jsx'
 import CalendarPage from './pages/CalendarPage.jsx'
 import baseUrl from './utils/baseUrl.js'
+import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
 
 const App = () => {
   const {user, setUser} = useUser();
@@ -41,6 +42,7 @@ const App = () => {
         <Route path='/calendar' element={<ProtectedCalendarPage />}/>
         <Route path="/auth/signup" element={<SignupForm />} />
         <Route path="/auth/login" element={<LoginForm />} />
+        <Route path="/auth/resetPassword" element={<ResetPasswordPage />} />
     </Routes>
     )
 }

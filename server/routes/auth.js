@@ -29,11 +29,11 @@ router.post('/signup', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10)
 
         const weights = {
-            personality_weight: parseFloat(personality_weight) || 0.2,
-            school_weight: parseFloat(school_weight) || 0.1,
-            class_standing_weight: parseFloat(class_standing_weight) || 0.1,
-            goals_weight: parseFloat(goals_weight) || 0.2,
-            location_weight: parseFloat(location_weight) || 0.4
+            personality_weight: parseFloat(personality_weight) ?? 0.2,
+            school_weight: parseFloat(school_weight) ?? 0.1,
+            class_standing_weight: parseFloat(class_standing_weight) ?? 0.1,
+            goals_weight: parseFloat(goals_weight) ?? 0.2,
+            location_weight: parseFloat(location_weight) ?? 0.4
         }
 
         const sumOfWeights = Object.values(weights).reduce((a,b) => a + b, 0);
@@ -97,6 +97,41 @@ router.post('/login', async (req, res) => {
         res.json({id: req.session.userId, username: user.username, name: user.name})
     } catch (error) {
         res.status(500).json({error: "Not able to login."})
+    }
+})
+
+// Reset account password
+router.put('/resetPassword', async (req, res) => {
+    const {username, new_password} = req.body
+    try {
+        if (!username || !new_password) {
+            return res.status(400).json({error: "Username and new password are required."})
+        }
+
+        const user = await prisma.user.findUnique({
+            where: {username}
+        })
+
+        if (!user) {
+            return res.status(401).json({error: "Invalid username."})
+        }
+
+        const hashedNewPassword = await bcrypt.hash(new_password, 10)
+
+        const updatedUser = await prisma.user.update({
+            where: {username: username},
+            data: {
+                password: hashedNewPassword
+            }
+        })
+
+        req.session.userId = user.id
+        req.session.username = user.username
+        req.session.name = user.name
+
+        res.json({id: req.session.userId, username: user.username, name: user.name})
+    } catch (error) {
+        res.status(500).json({error: "Not able to reset password."})
     }
 })
 

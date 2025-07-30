@@ -58,8 +58,11 @@ const calculateLocationDistance = async (firstUserId, secondUserId, fetchData) =
 // Calculates location compatibility score between two users using the distance between their addresses and the max reasonable distance a user can travel (75 miles)
 const calculateLocationScore = async (firstUserId, secondUserId, fetchData) => {
     const distanceBetweenLocations = await calculateLocationDistance(firstUserId, secondUserId, fetchData);
-    if (distanceBetweenLocations){
-        const MAX_DISTANCE_IN_MILES = 75;
+    const MAX_DISTANCE_IN_MILES = 75;
+    if (distanceBetweenLocations > MAX_DISTANCE_IN_MILES){
+        return 0;
+    }
+    else if (distanceBetweenLocations){
         return 1 - (distanceBetweenLocations / MAX_DISTANCE_IN_MILES);
     }
     else {
