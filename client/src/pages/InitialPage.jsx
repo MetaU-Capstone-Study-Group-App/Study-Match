@@ -21,7 +21,7 @@ const InitialPage = () => {
 
     return (
         <div className="home">
-        <header className="login-header">
+        <header className="initial-page-header">
             <div className="navbar">
                 <div className="navbar-left">
                     <h1>Study Match</h1>

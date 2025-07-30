@@ -88,14 +88,14 @@ const LoginForm = () => {
                     Forgot Password?
                     <button type="submit" className="buttons" onClick={() => {navigate("/auth/resetPassword")}}>Reset Password</button>
                 </label>
+                {message && (
+                    <p className={`message ${message.type}`}>{message.text}</p>
+                )}
                 <div className="loading-section">
                     {isLoading &&
                         <LoadingIndicator loading={isLoading} className="loading-spinner"/>
                     }
                 </div>
-                {message && (
-                    <p className={`message ${message.type}`}>{message.text}</p>
-                )}
             </form>
             <footer className="footer">
                 <p>© Study Match. All Rights Reserved.</p>
