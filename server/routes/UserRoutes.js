@@ -132,4 +132,34 @@ router.delete('/favorite/:favoriteId', async (req, res) => {
     res.json(deletedUserFavorite)
 })
 
+router.put('/editProfile/:userId', async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const {username, email, phone_number, school, class_standing, preferred_start_time, preferred_end_time} = req.body;
+    const profileInfoToChange = [];
+
+    const profileInfo = [{
+        username: username,
+        email: email,
+        phone_number: phone_number,
+        school: school,
+        class_standing: class_standing,
+        preferred_start_time: preferred_start_time,
+        preferred_end_time: preferred_end_time
+    }]
+
+    for (const parameter of profileInfo){
+        if (parameter){
+            profileInfoToChange.push(parameter);
+        }
+    }
+
+    const updatedProfile = await prisma.user.update({
+        where: {id: userId},
+        data: {
+            ...profileInfoToChange[0]
+        },
+    })
+    res.json(updatedProfile);
+})
+
 module.exports = router

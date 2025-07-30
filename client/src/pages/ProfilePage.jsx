@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import LoadingIndicator from '../components/LoadingIndicator';
 import baseUrl from '../utils/baseUrl';
 import DefaultProfilePic from '/src/images/profile-pic.png'
+import EditProfileModal from '../components/EditProfileModal';
 
 // Displays profile information for a specific user
 const ProfilePage = () => {
@@ -16,6 +17,7 @@ const ProfilePage = () => {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [userInfo, setUserInfo] = useState({});
+    const [editProfileIsOpen, setEditProfileIsOpen] = useState(false);
 
     const handleLogout = async () => {
         await fetch(`${baseUrl}/auth/logout`, {method: "POST", credentials: "include"});
@@ -23,13 +25,14 @@ const ProfilePage = () => {
         navigate("/");
     };
 
-    const fetchData = async (endpoint, method = "GET", credentials = "include", body = null) => {
+    const fetchData = async (endpoint, method = "GET", credentials = "include", body = null, headers) => {
         try {
             setIsLoading(true);
             const response = await fetch(`${baseUrl}/${endpoint}`, {
                 method: method,
                 credentials: credentials,
                 body: body,
+                headers: headers
             });
             if (!response.ok){
                 throw new Error('Not able to fetch data.')
@@ -71,6 +74,22 @@ const ProfilePage = () => {
         }
     }
 
+    const handleEditProfile = () => {
+        setEditProfileIsOpen(true);
+    }
+
+    const onEditProfileClose = () => {
+        setEditProfileIsOpen(false);
+    }
+
+    const editProfileInfo = async (editedProfileData) => {
+        setIsLoading(true);
+        const editedProfileInfo = await fetchData(`user/editProfile/${user.id}`, "PUT", "include", JSON.stringify(editedProfileData), {"Content-Type": "application/json"});
+        fetchUserInfo();
+        fetchProfilePicture();
+        setIsLoading(false);
+    }
+
     useEffect(() => {
         if (user){
             fetchUserInfo();
@@ -102,7 +121,7 @@ const ProfilePage = () => {
                                 </div>
                                 <div className="profile-right">
                                     <div className="profile-right-sections">
-                                        <p><b>Username:</b> {user.username}</p>
+                                        <p><b>Username:</b> {userInfo.username}</p>
                                         <p><b>Email Address:</b> {userInfo.email}</p>
                                         <p><b>Phone Number:</b> {formatPhoneNumber(userInfo.phone_number)}</p>
                                     </div>
@@ -113,8 +132,10 @@ const ProfilePage = () => {
                                     </div>
                                 </div>
                                 <div className='profile-buttons'>
+                                    <button className="buttons" onClick={handleEditProfile}>Edit Profile</button>
                                     <button className="buttons" onClick={handleLogout}>Log Out</button>
                                 </div>
+                                <EditProfileModal editProfileIsOpen={editProfileIsOpen} onEditProfileClose={onEditProfileClose} editProfileInfo={editProfileInfo}/>
                             </div>
                         </>
                     ) : (

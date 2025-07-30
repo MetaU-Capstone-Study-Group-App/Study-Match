@@ -9,6 +9,7 @@ import EmptyNavBar from "./EmptyNavBar";
 import LoadingIndicator from "./LoadingIndicator";
 import baseUrl from "../utils/baseUrl";
 import WeightsSlider from "./WeightsSlider";
+import Footer from "./Footer";
 
 // Allows users to create an account
 const SignupForm = () => {
@@ -285,6 +286,7 @@ const SignupForm = () => {
                     <p>{error}</p>
                 )}
             </form>
+            <Footer />
         </div>
     )
 }
