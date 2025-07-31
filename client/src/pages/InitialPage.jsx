@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HomeSlogan from "../components/HomeSlogan";
 import Home from "./Home";
+import NoBackgroundLogo from '/src/images/logo-no-background.png'
 
 // Displayed before a user logs into their account or creates an account
 const InitialPage = () => {
@@ -24,6 +25,9 @@ const InitialPage = () => {
         <header className="initial-page-header">
             <div className="navbar">
                 <div className="navbar-left">
+                    <div className="navbar-logo">
+                        <img src={NoBackgroundLogo} width="85" height="50"/>
+                    </div>
                     <h1>Study Match</h1>
                 </div>
                 <div className="navbar-right">

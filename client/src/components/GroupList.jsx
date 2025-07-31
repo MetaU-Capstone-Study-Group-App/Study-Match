@@ -6,7 +6,7 @@ import CompatibilityScore from '../utils/CompatibilityScore'
 import LoadingIndicator from './LoadingIndicator'
 
 // Displays all of a user's study groups in a grid format
-const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetchData, handleUpdateGroupStatus, currentStatus, scoreWeights}) => {
+const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetchData, handleUpdateGroupStatus, currentStatus, scoreWeights, setGroupListLoading}) => {
     const GENERIC_DATE = `2025-07-01T`;
     const [userExistingGroups, setUserExistingGroups] = useState([]);
     const [groupScores, setGroupScores] = useState({});
@@ -161,6 +161,10 @@ const GroupList = ({data, user, existingGroups, getClassName, getUserName, fetch
     useEffect(() => {
         recommendGroups();
     }, [statusGroups])
+
+    useEffect(() => {
+        setGroupListLoading(isLoading);
+    }, [isLoading])
 
     if (!data || !user){
         return (

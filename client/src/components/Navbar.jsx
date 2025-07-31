@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import '../styles.css'
+import Logo from '/src/images/logo-no-background.png'
 
-const Navbar = () => {
+const Navbar = ({page}) => {
     const navigate = useNavigate();
 
     const handleNavigateProfilePage = () => {
@@ -19,6 +20,9 @@ const Navbar = () => {
     return (
         <div className="navbar">
             <div className="navbar-left">
+                <div className="navbar-logo">
+                    <img src={Logo} width="85" height="50"/>
+                </div>
                 <h1>Study Match</h1>
             </div>
             <div className="navbar-right">
