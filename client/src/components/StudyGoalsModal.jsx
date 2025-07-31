@@ -9,6 +9,8 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className, fetchD
     const [inputValue, setInputValue] = useState("");
     const [mainStudyGoals, setMainStudyGoals] = useState("");
     const [loading, setLoading] = useState(false);
+    const [generatingGoals, setGeneratingGoals] = useState(false);
+    const [checkingGoals, setCheckingGoals] = useState(false);
 
     useEffect(() => {
         if (studyGoalsModalIsOpen){
@@ -31,17 +33,21 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className, fetchD
     // Generates main study goals using class name, resources inputted by the user, and previous goals generated for the group (if any)
     const handleNewGoalsSubmit = async (event) => {
         setLoading(true);
+        setGeneratingGoals(true);
         event.preventDefault();
         setInputValue("");
         let mainGoals = "";
         const existingStudyGoals = await fetchData(`group/existingGroup/${groupId}/`, "GET");
         mainGoals = await GoalsGenerator(className, inputValue, existingStudyGoals);
+        setGeneratingGoals(false);
+        setCheckingGoals(true);
         const goalsAfterGuardrail = await GenAIGuardrail(mainGoals);
         const newStudyGoals = {
             study_goals: goalsAfterGuardrail
         }
         const savedStudyGoals = await fetchData(`group/existingGroup/${groupId}/`, "PUT", {"Content-Type": "application/json"}, "include", JSON.stringify(newStudyGoals));
         setMainStudyGoals(savedStudyGoals);
+        setCheckingGoals(false);
         setLoading(false);
     }
 
@@ -77,9 +83,20 @@ const StudyGoalsModal = ({studyGoalsModalIsOpen, onModalClose, className, fetchD
                     {loading && 
                         <LoadingIndicator loading={loading} />
                     }
-                    <div className="generated-study-goals">
-                        <ReactMarkdown>{mainStudyGoals}</ReactMarkdown>
-                    </div>
+                    {
+                        generatingGoals && loading &&
+                        <div className="study-goals-loading-text">Generating study goals...</div>
+                    }
+                    {
+                        checkingGoals && loading &&
+                        <div className="study-goals-loading-text">Validating study goals...</div>
+                    }
+                    {
+                        !loading && 
+                        <div className="generated-study-goals">
+                            <ReactMarkdown>{mainStudyGoals}</ReactMarkdown>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

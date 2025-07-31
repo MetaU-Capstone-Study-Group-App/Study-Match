@@ -22,6 +22,7 @@ const GroupsPage = () => {
     const [error, setError] = useState("");
     const [currentStatus, setCurrentStatus] = useState({});
     const [scoreWeights, setScoreWeights] = useState({});
+    const [groupListLoading, setGroupListLoading] = useState(false);
 
     const fetchData = async (endpoint, method = "GET", headers, credentials = "include", body = null) => {
         try {
@@ -140,9 +141,15 @@ const GroupsPage = () => {
                     <LoadingIndicator loading={isLoading} />
                 ) : (
                     <div>
-                        <CreateGroup setGroupModalIsOpen={setGroupModalIsOpen} /> 
-                        <NewGroupModal groupModalIsOpen={groupModalIsOpen} onModalClose={onModalClose} createGroup={createGroup} fetchData={fetchData} classList={classList} fetchExistingGroups={fetchExistingGroups}/>
-                        <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName} fetchData={fetchData} handleUpdateGroupStatus={handleUpdateGroupStatus} currentStatus={currentStatus} scoreWeights={scoreWeights}/>
+                        {!groupListLoading ? (
+                            <>
+                                <CreateGroup setGroupModalIsOpen={setGroupModalIsOpen} /> 
+                                <NewGroupModal groupModalIsOpen={groupModalIsOpen} onModalClose={onModalClose} createGroup={createGroup} fetchData={fetchData} classList={classList} fetchExistingGroups={fetchExistingGroups}/>
+                            </>
+                        ) : (
+                            <LoadingIndicator loading={isLoading} />
+                        )}
+                        <GroupList data={userExistingGroups} user={user} existingGroups={existingGroups} getClassName={getClassName} getUserName={getUserName} fetchData={fetchData} handleUpdateGroupStatus={handleUpdateGroupStatus} currentStatus={currentStatus} scoreWeights={scoreWeights} setGroupListLoading={setGroupListLoading}/>
                     </div>
                 )}
                 {error && (

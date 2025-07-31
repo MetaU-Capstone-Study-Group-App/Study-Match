@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import baseUrl from "../utils/baseUrl";
+import EmptyNavBar from "./EmptyNavBar";
 
 // Quiz with 10 questions relating to Big Five Personality traits and a slider from 1-5 as the response for each question
 const PersonalityQuiz = () => {
@@ -65,11 +66,7 @@ const PersonalityQuiz = () => {
 
     return (
         <div className="personality-quiz-container">
-            <div className="navbar">
-                <div className="navbar-left">
-                    <h1>Study Match</h1>
-                </div>
-            </div>
+            <EmptyNavBar />
             <div className="page-header">Personality Quiz</div>
             <div className="personality-quiz-form">
                 <h3>For the following questions, please rate the accuracy of each statement on a scale from 1 to 5, where 1 represents "Very Inaccurate" and 5 represents "Very Accurate".</h3>
